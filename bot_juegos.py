@@ -139,7 +139,28 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # Condiciones finales
         if "_" not in tablero:
-            await update.message.reply_text(f"✨ ¡VICTORIA! ✨\nLa palabra era: {datos['palabra_secreta']}")
+            await update.message.reply_text(f"¡VICTORIA, FELICIDADES {user_name.upper()}! \nLa palabra era: {datos['palabra_secreta']}")
             datos["activa"] = False
         elif vidas == 0:
             await update.message.reply_text(f"{user_name} ha sido eliminado del juego.")
+
+if __name__ == '__main__':
+    # 1. Creas la aplicación con tu Token (el que te dio BotFather)
+    application = ApplicationBuilder().token('TU_TOKEN_AQUÍ').build()
+    
+    # 2. REGISTRAS LOS COMANDOS (Los "recepcionistas")
+    # Nota: El primer texto es lo que el usuario escribe, el segundo es tu función.
+    
+    application.add_handler(CommandHandler("ahorcado", comando_ahorcado))
+    application.add_handler(CommandHandler("start_ahorcado", start_ahorcado))
+    
+    # Registramos el click del botón
+    application.add_handler(CallbackQueryHandler(unirme, pattern="unirme_click"))
+    
+    # Registramos el lector de mensajes (letras y palabra secreta)
+    # Importante: Este suele ir al final para que no interfiera con los comandos
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensajes))
+    
+    # 3. Arrancas el bot
+    print("Bot encendido... ¡A jugar!")
+    application.run_polling()
