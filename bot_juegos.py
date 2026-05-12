@@ -1,6 +1,25 @@
 import random
+import os
+from threading import Thread
+from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
+
+# --- 1. DESPERTADOR PARA RENDER (FLASK) ---
+app_web = Flask('')
+
+@app_web.route('/')
+def home():
+    return "🥭 Sistema MANGO - Activo"
+
+def run_web():
+    port = int(os.environ.get('PORT', 8080))
+    app_web.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run_web)
+    t.daemon = True
+    t.start()
 
 # Diccionarios globales
 sesión = {}
@@ -139,14 +158,20 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # Condiciones finales
         if "_" not in tablero:
-            await update.message.reply_text(f"¡VICTORIA, FELICIDADES {user_name.upper()}! \nLa palabra era: {datos['palabra_secreta']}")
+            await update.message.reply_text(f"¡VICTORIA, FELICIDADES {user_name}! \nLa palabra era: {datos['palabra_secreta']}")
             datos["activa"] = False
         elif vidas == 0:
             await update.message.reply_text(f"{user_name} ha sido eliminado del juego.")
 
 if __name__ == '__main__':
-    # 1. Creas la aplicación con tu Token (el que te dio BotFather)
-    application = ApplicationBuilder().token('TU_TOKEN_AQUÍ').build()
+    
+    TOKEN = os.getenv("TOKEN_TELEGRAM")
+    
+    if not TOKEN:
+        print("❌ Error: No se encontró el TOKEN_TELEGRAM")
+    else:
+        keep_alive()
+        app = ApplicationBuilder().token(TOKEN).build()
     
     # 2. REGISTRAS LOS COMANDOS (Los "recepcionistas")
     # Nota: El primer texto es lo que el usuario escribe, el segundo es tu función.
