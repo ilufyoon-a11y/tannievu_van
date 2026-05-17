@@ -32,6 +32,18 @@ sesión_sillas = {
     "activa": False
 }
 
+# -------------------------------- TODO ESTO ES EL MENSAJE AL INICIAR EL BOT --------------------------------
+
+    #MENSAJE DE INCIACION
+
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    gif_welcome = "https://i.pinimg.com/originals/7f/e1/24/7fe124e7e79808bfb940b1aefa199249.gif"
+    await update.message.reply_animation(
+        animation = gif_welcome,
+        caption = "¡Holaa! Muchas gracias por ayudarme a probar mis codigos hechos con las patas, lo aprecio mucho, muack")
+
+# -------------------------------- TODO ESTO ES EL MENSAJE AL INICIAR EL BOT --------------------------------
+        
 # --- 3. FUNCIONES AUXILIARES (AHORCADO) ---
 def dibujar_pantalla_ahorcado(chat_id):
     datos = sesión[chat_id]
@@ -186,6 +198,8 @@ if __name__ == '__main__':
     if TOKEN:
         keep_alive()
         application = ApplicationBuilder().token(TOKEN).build()
+
+        application.add_handler(CommandHandler("start", start_command))
         
         # Comandos Ahorcado
         application.add_handler(CommandHandler("ahorcado", unirse_ahorcado))
