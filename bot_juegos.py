@@ -29,6 +29,7 @@ GIF_INFO       = "https://i.pinimg.com/originals/af/e2/32/afe23206bc53e3e2858430
 GIF_AHORCADO   = "https://i.pinimg.com/originals/5a/69/09/5a6909832b566bbf9c338c6bb99f253d.gif"
 GIF_BOMBA      = "https://i.pinimg.com/originals/12/56/3d/12563dd1c28fe4b1d5fb77f763e257f5.gif"
 GIF_RATONES    = "https://i.pinimg.com/originals/57/60/4c/57604c65e4f4a55bb185e1be1e4c0116.gif"
+GIF_RITMO      = "https://i.pinimg.com/originals/4f/67/6e/4f676ee6c7f543d92a2ea28109758120.gif"
 GIF_ERROR      = "https://i.pinimg.com/originals/66/9c/fb/669cfb27126c8eb1fcaf9847a3e91a7e.gif"
 
 sesión = {}            # Ahorcado
@@ -222,29 +223,33 @@ async def rondas_battle_royale(chat_id, context):
 async def unirse_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_stop["jugadores"] = []
     sesión_stop["activa"] = False
-    boton = InlineKeyboardButton("ENTRAR AL RITMO", callback_data="unirme_stop_click")
-    await update.message.reply_text(
-        "RITMO A GO-GO\n\nDiga usted  correctas en su turno. Si repites, fallas la letra o te duermes... ¡ELIMINADO! 💀", 
+    boton = InlineKeyboardButton("UNIRME", callback_data="unirme_stop_click")
+    await update.message.reply_animation(
+        animation = GIF_RITMO,
+        caption = "¡Juguemos al Ritmo AGO-GO! Por favor, presiona el boton para unirte a la partida", 
+        reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
 async def iniciar_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if len(sesión_stop["jugadores"]) < 2:
-        await update.message.reply_text("⚠️ Necesitamos mínimo 2 causas para el Ritmo A Go-Go.")
+        await update.message.reply_animation(
+            animation = GIF_ERROR,
+            caption = "Se necesitan minimo 2 personas para jugar. De tratarse un error por favor vuelve a inciar el juego"
+        )
         return
     
     sesión_stop["activa"] = True
     sesión_stop["sobrevivientes"] = [j["id"] for j in sesión_stop["jugadores"]]
     sesión_stop["palabras_dichas"] = []
     sesión_stop["turno_index"] = 0
-    sesión_stop["letra_actual"] = random.choice("ABCDEFGHJLMNOPQRSTV")
+    sesión_stop["letra_actual"] = random.choice("ABCDEFGJLMNOPRSTU")
     sesión_stop["categoria_actual"] = random.choice(CATEGORIAS_STOP)
     
     await update.message.reply_text(
-        f"🏁 ¡EMPIEZA EL RITMO A GO-GO! 🏁\n\n🗂️ Categoría: **{sesión_stop['categoria_actual']}**\n🔤 Letra: ✨ **{sesión_stop['letra_actual']}** ✨\n\n¡Atentos a su turno!", 
-        parse_mode="Markdown"
+        f"¡INICIÓ EL RITMO A GO-GO! \n\n🗂️ Categoría: {sesión_stop['categoria_actual']}\nLetra: {sesión_stop['letra_actual']}\n\n¡Atentos a su turno!", 
     )
-    await asyncio.sleep(2)
+    await asyncio.sleep(3)
     await lanzar_turno_stop(chat_id, context)
 
 async def lanzar_turno_stop(chat_id, context):
