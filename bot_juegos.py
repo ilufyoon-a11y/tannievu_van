@@ -109,7 +109,7 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return 
     moderador = random.choice(sesión[chat_id]["jugadores"])
-    sesión[chat_id].update({"moderador_id": moderator["id"], "activa": True})
+    sesión[chat_id].update({"moderador_id": moderador["id"], "activa": True})
     esperando_palabra[moderador["id"]] = chat_id
     await update.message.reply_text(f"¡Iniciado! Moderador elegido. {moderador['name']} Pásame la palabra al privado para poder iniciar el juego .")
 
