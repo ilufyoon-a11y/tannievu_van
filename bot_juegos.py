@@ -35,7 +35,14 @@ sesión_ratones = {
 }
 
 sesión_stop = {
-    "jugadores": [], "letra_actual": "", "categoria_actual": "", "activa": False, "puntos": {}
+    "jugadores": [],        # Lista de inscritos
+    "sobrevivientes": [],   # IDs de los que siguen vivos
+    "turno_index": 0,       # Quién está jugando ahorita
+    "palabras_dichas": [],  # Lista para que NO se repitan
+    "letra_actual": "",
+    "categoria_actual": "",
+    "activa": False,
+    "timer_task": None      # Control del reloj por turno
 }
 
 CATEGORIAS_STOP = ["FRUTA O VERDURA 🍎", "PAÍS O CIUDAD 🗺️", "ANIMAL 🦁", "COLOR 🎨", "CARRERA O PROFESIÓN 🏗️", "CANTANTE O BANDA 🎤"]
@@ -62,10 +69,10 @@ async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "🐭 **3. RATONES BATTLE ROYALE** (Velocidad 3x3)\n"
         "➡️ `/ratones` - Entrar a la madriguera\n"
         "➡️ `/start_ratones` - Lanzar el tablero\n\n"
-        "📝 **4. JUEGO DEL ¡STOP!** (Agilidad mental)\n"
-        "➡️ `/stop` - Alistarse para escribir\n"
-        "➡️ `/start_stop` - Lanzar letra y categoría\n\n"
-        "💡 _Tip: Para los juegos de velocidad, diles a todos los causas que se unan antes de darle start o no los dejará jugar._ 💅"
+        "🥁 **4. RITMO A GO-GO** (Eliminación por turnos)\n"
+        "➡️ `/stop` - Alistarse para el ritmo\n"
+        "➡️ `/start_stop` - Lanzar letra, categoría e iniciar turnos\n\n"
+        "💡 _Tip: Para los juegos de velocidad y turnos, diles a todos los causas que se unan antes de darle start o no los dejará jugar._ 💅"
     )
     await update.message.reply_text(mensaje_menu, parse_mode="Markdown")
 
@@ -136,184 +143,4 @@ async def iniciar_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🎬 ¡Apareciendo tablero en 3x3! Atentos...")
     asyncio.create_task(rondas_battle_royale(chat_id, context))
 
-async def rondas_battle_royale(chat_id, context):
-    ronda = 1
-    while sesión_ratones["activa"] and len(sesión_ratones["sobrevivientes"]) > 1:
-        await asyncio.sleep(random.randint(2, 5))
-        vivos = [next(j['name'] for j in sesión_ratones["jugadores"] if j['id'] == uid) for uid in sesión_ratones["sobrevivientes"]]
-        await context.bot.send_message(chat_id=chat_id, text=f"🏁 **RONDA {ronda}**\nVivos: {', '.join(vivos)}")
-        await asyncio.sleep(1.5)
-
-        botones = [[InlineKeyboardButton("🕳️", callback_data="raton_fallo") for _ in range(3)] for _ in range(3)]
-        botones[random.randint(0, 2)][random.randint(0, 2)] = InlineKeyboardButton("🐭 ¡APLASTA!", callback_data="raton_salvado")
-        sesión_ratones["esperando_click"] = list(sesión_ratones["sobrevivientes"])
-        
-        sesión_ratones["mensaje_id"] = await context.bot.send_message(
-            chat_id=chat_id, text="❗ **¡APARECIÓ EL RATÓN! ¡DALE CLICK YA!** ❗", reply_markup=InlineKeyboardMarkup(botones)
-        )
-
-        limite = 5.0
-        while limite > 0 and len(sesión_ratones["esperando_click"]) > 1:
-            await asyncio.sleep(0.5)
-            limite -= 0.5
-
-        try: await context.bot.delete_message(chat_id=chat_id, message_id=sesión_ratones["mensaje_id"].message_id)
-        except: pass
-
-        if len(sesión_ratones["esperando_click"]) > 0:
-            lento_id = sesión_ratones["esperando_click"][-1]
-            lento_name = next(j['name'] for j in sesión_ratones["jugadores"] if j['id'] == lento_id)
-            sesión_ratones["sobrevivientes"].remove(lento_id)
-            await context.bot.send_message(chat_id=chat_id, text=f"💀 ¡{lento_name} fue muy lento! El ratón escapó. ELIMINADO.")
-        ronda += 1
-
-    sesión_ratones["activa"] = False
-    if len(sesión_ratones["sobrevivientes"]) == 1:
-        ganador_name = next(j['name'] for j in sesión_ratones["jugadores"] if j['id'] == sesión_ratones["sobrevivientes"][0])
-        await context.bot.send_message(chat_id=chat_id, text=f"👑 🎉 **¡TENEMOS UN CAMPEÓN DE LA MADRIGUERA!** 🎉 👑\n\nFelicidades **{ganador_name.upper()}**.")
-
-# --- 8. JUEGO 4: ¡STOP! (TEXTO) ---
-async def unirse_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    sesión_stop["jugadores"] = []
-    sesión_stop["puntos"] = {}
-    sesión_stop["activa"] = False
-    boton = InlineKeyboardButton("📝 ENTRAR A COMPETIR 📝", callback_data="unirme_stop_click")
-    await update.message.reply_text("🧠 **¡JUEGO DEL STOP!** 🧠\nEl primero en escribir la palabra correcta en el chat gana.", reply_markup=InlineKeyboardMarkup([[boton]]))
-
-async def iniciar_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
-    if len(sesión_stop["jugadores"]) < 1:
-        await update.message.reply_text("⚠️ Necesitamos causas inscritos.")
-        return
-    sesión_stop["activa"] = True
-    for j in sesión_stop["jugadores"]:
-        if j["id"] not in sesión_stop["puntos"]: sesión_stop["puntos"][j["id"]] = 0
-    
-    sesión_stop["letra_actual"] = random.choice("ABCDEFGHJLMNOPQRSTV")
-    sesión_stop["categoria_actual"] = random.choice(CATEGORIAS_STOP)
-    await update.message.reply_text(
-        f"🏁 ¡¡ALERTA DE STOP!! 🏁\n\n🗂️ Categoría: **{sesión_stop['categoria_actual']}**\n🔤 Letra: ✨ **{sesión_stop['letra_actual']}** ✨\n\n¡ESCRIBAN RÁPIDO!", parse_mode="Markdown"
-    )
-
-# --- 9. MANEJADOR DE CALLBACKS (BOTONES) ---
-async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    user = query.from_user
-    chat_id = query.message.chat.id
-    await query.answer()
-
-    # Callbacks Ahorcado
-    if query.data == "unirme_click":
-        if chat_id not in sesión: sesión[chat_id] = {"jugadores": [], "activa": False}
-        if not any(j['id'] == user.id for j in sesión[chat_id]["jugadores"]):
-            sesión[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"✅ {user.first_name} se unió al ahorcado.")
-
-    # Callbacks Bomba
-    elif query.data == "unirme_bomba_click":
-        if not any(j['id'] == user.id for j in sesión_bomba["jugadores"]):
-            sesión_bomba["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"💣 {user.first_name} entró al búnker.")
-    elif query.data == "pasar_bomba_click":
-        if not sesión_bomba["activa"] or user.id != sesión_bomba["bomba_en"]: return
-        otros = [j for j in sesión_bomba["jugadores"] if j["id"] != user.id]
-        if otros:
-            nuevo = random.choice(otros)
-            sesión_bomba["bomba_en"] = nuevo["id"]
-            await query.message.reply_text(f"💨 ¡Uff! {user.first_name} le pasó la bomba a **{nuevo['name']}**.")
-
-    # Callbacks Ratones
-    elif query.data == "unirme_ratones_click":
-        if not any(j['id'] == user.id for j in sesión_ratones["jugadores"]):
-            sesión_ratones["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"🐹 {user.first_name} entró a la madriguera.")
-    elif query.data == "raton_salvado":
-        if sesión_ratones["activa"] and user.id in sesión_ratones["esperando_click"]:
-            sesión_ratones["esperando_click"].remove(user.id)
-            await query.message.reply_text(f"🛡️ ¡{user.first_name} aplastó al ratón y se salvó!")
-    elif query.data == "raton_fallo":
-        if user.id in sesión_ratones["esperando_click"]:
-            await query.message.reply_text(f"🤡 ¡{user.first_name} le dio al hueco vacío! Lento.")
-
-    # Callbacks STOP
-    elif query.data == "unirme_stop_click":
-        if not any(j['id'] == user.id for j in sesión_stop["jugadores"]):
-            sesión_stop["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"📝 {user.first_name} está listo para escribir.")
-
-# --- 10. MANEJADOR DE MENSAJES (TEXTO) ---
-async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    user_name = update.effective_user.first_name
-    chat_type = update.effective_chat.type
-    chat_id = update.effective_chat.id
-    texto = update.message.text.upper() if update.message.text else ""
-    
-    # Setup Ahorcado por privado
-    if chat_type == "private" and user_id in esperando_palabra:
-        gid = esperando_palabra[user_id]
-        sesión[gid].update({"palabra_secreta": texto, "letras_adivinadas": [], "jugadores_vidas": {}})
-        del esperando_palabra[user_id]
-        await update.message.reply_text("¡Palabra guardada! Vuelve al grupo.")
-        guiones = " ".join(["_" if c != " " else "  " for c in texto])
-        await context.bot.send_message(chat_id=gid, text=f"¡El moderador ya eligió!\nPalabra: `{guiones}`", parse_mode="Markdown")
-        return
-
-    # Escucha de juego STOP
-    if sesión_stop.get("activa") and texto and not update.message.text.startswith("/"):
-        if texto.startswith(sesión_stop["letra_actual"]) and user_id in sesión_stop["puntos"]:
-            sesión_stop["activa"] = False
-            sesión_stop["puntos"][user_id] += 1
-            await update.message.reply_text(f"🛑 **¡¡STOOOOP!!** 🛑\n\n🏆 ¡{user_name} ganó la ronda con `{update.message.text}`! (+1 punto)")
-            return
-
-    # Escucha del juego Ahorcado
-    if chat_id in sesión and sesión[chat_id].get("activa") and "palabra_secreta" in sesión[chat_id]:
-        if len(texto) != 1 or not texto.isalpha() or user_id == sesión[chat_id]["moderador_id"]: return
-        datos = sesión[chat_id]
-        if user_id not in datos["jugadores_vidas"]: datos["jugadores_vidas"][user_id] = 6
-        if datos["jugadores_vidas"][user_id] <= 0: return
-
-        if texto in datos["palabra_secreta"]:
-            if texto not in datos["letras_adivinadas"]: datos["letras_adivinadas"].append(texto)
-        else:
-            datos["jugadores_vidas"][user_id] -= 1
-
-        tablero = dibujar_pantalla_ahorcado(chat_id)
-        await update.message.reply_text(f"Palabra: `{tablero}`\nIntentos restantes: {datos['jugadores_vidas'][user_id]}", parse_mode="Markdown")
-        if "_" not in tablero:
-            await update.message.reply_text(f"🏆 ¡VICTORIA DE {user_name.upper()}! La palabra era {datos['palabra_secreta']}")
-            datos["activa"] = False
-
-# --- 11. BLOQUE PRINCIPAL DE ARRANQUE ---
-if __name__ == '__main__':
-    TOKEN = os.getenv("TOKEN_TELEGRAM")
-    if TOKEN:
-        keep_alive()
-        application = ApplicationBuilder().token(TOKEN).build()
-        
-        # MENÚ PRINCIPAL
-        application.add_handler(CommandHandler("start", start_bienvenida))
-        
-        # Handlers JUEGO 1: Ahorcado
-        application.add_handler(CommandHandler("ahorcado", unirse_ahorcado))
-        application.add_handler(CommandHandler("start_ahorcado", iniciar_ahorcado))
-        
-        # Handlers JUEGO 2: La Bomba
-        application.add_handler(CommandHandler("bomba", unirse_bomba))
-        application.add_handler(CommandHandler("start_bomba", iniciar_bomba))
-        
-        # Handlers JUEGO 3: Ratones 3x3
-        application.add_handler(CommandHandler("ratones", unirse_ratones))
-        application.add_handler(CommandHandler("start_ratones", iniciar_ratones))
-        
-        # Handlers JUEGO 4: ¡STOP!
-        application.add_handler(CommandHandler("stop", unirse_stop))
-        application.add_handler(CommandHandler("start_stop", iniciar_stop))
-        
-        # Callbacks y Mensajes globales
-        application.add_handler(CallbackQueryHandler(manejar_botones))
-        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensajes))
-        
-        print("🥭 Sistema MANGO en línea con menú /start. ¡A jugar! 🚀")
-        application.run_polling()
+async def rondas_battle_royale(chat
