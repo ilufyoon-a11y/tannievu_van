@@ -97,8 +97,15 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --- 5. JUEGO 1: AHORCADO ---
 async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    # Nos aseguramos de crear la sesión del grupo desde que ponen el comando
-    sesión[chat_id] = {"jugadores": [], "activa": False}
+    
+    # 🌟 CORRECCIÓN AQUÍ: Evitamos chancar la lista de los inscritos si vuelven a enviar el comando
+    if chat_id not in sesión: 
+        sesión[chat_id] = {"jugadores": [], "activa": False}
+    else:
+        # Si ya existía, reiniciamos el estado del juego pero vaciamos de forma controlada para la nueva convocatoria
+        sesión[chat_id]["activa"] = False
+        sesión[chat_id]["jugadores"] = []
+        
     boton = InlineKeyboardButton("UNIRSE", callback_data="unirme_click")
     await update.message.reply_animation(
         animation = GIF_AHORCADO,
@@ -114,10 +121,16 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption = "Se necesitan minimo 2 personas para jugar. De tratarse un error por favor vuelve a inciar el juego"
         )
         return 
+        
+    # Selección dinámica e imparcial 🎯
     moderador = random.choice(sesión[chat_id]["jugadores"])
+    
+    # Lo sacamos de la lista para que no juegue contra sí mismo
+    sesión[chat_id]["jugadores"].remove(moderador)
+    
     sesión[chat_id].update({"moderador_id": moderador["id"], "activa": True})
     esperando_palabra[moderador["id"]] = chat_id
-    await update.message.reply_text(f"¡Iniciado! Moderador elegido. {moderador['name']} Pásame la palabra al privado para poder iniciar el juego .")
+    await update.message.reply_text(f"¡Iniciado! Moderador elegido: {moderador['name']}. Pásame la palabra al privado para poder iniciar el juego.")
 
 # --- 6. JUEGO 2: LA BOMBA ---
 async def unirse_bomba(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -313,12 +326,13 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Callbacks Ahorcado
     if query.data == "unirme_click":
-        if chat_id not in sesión: sesión[chat_id] = {"jugadores": [], "activa": False}
+        if chat_id not in sesión: 
+            sesión[chat_id] = {"jugadores": [], "activa": False}
         if not any(j['id'] == user.id for j in sesión[chat_id]["jugadores"]):
             sesión[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name})
             await query.message.reply_text(f"{user.first_name} se unió a la ronda.")
 
-    # Callbacks Bomba 🕶️
+    # Callbacks Bomba
     elif query.data == "unirme_bomba_click":
         if sesión_bomba["activa"]: 
             await query.message.reply_text(f"❌ {user.first_name}, ¡la partida ya empezó! Espera la otra ronda.")
@@ -416,7 +430,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await lanzar_turno_stop(chat_id, context)
             return
 
-    # Escucha del juego Ahorcado 🎯 (¡Ya lee perfectamente las letras!)
+    # Escucha del juego Ahorcado
     if chat_id in sesión and sesión[chat_id].get("activa") and "palabra_secreta" in sesión[chat_id]:
         if len(texto) != 1 or not texto.isalpha() or user_id == sesión[chat_id]["moderador_id"]: 
             return
