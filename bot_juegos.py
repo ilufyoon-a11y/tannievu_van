@@ -95,7 +95,7 @@ async def iniciar_sillas(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # ENVÍO DE MÚSICA (Asegúrate de que el archivo 'sillas.ogg' esté en tu GitHub)
     try:
-        with open('sillas.ogg', 'rb') as f:
+        with open('Please.ogg', 'rb') as f:
             await context.bot.send_voice(chat_id=chat_id, voice=f)
     except FileNotFoundError:
         await update.message.reply_text("🔊 (¡La música está sonando en mi cabeza porque no encontré el archivo sillas.ogg! Subelo a Render, chiki)")
