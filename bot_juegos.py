@@ -179,7 +179,7 @@ async def iniciar_bomba(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_bomba["bomba_en"] = primer_jugador["id"]
     sesión_bomba["bomba_emoji"] = primer_jugador["emoji"]
     
-    await update.message.reply_text(f"¡LA BOMBA ESTÁ ENCENDIDA! 💣\n\nHa caído en manos de un jugador incógnito: {primer_jugador['emoji']}")
+    await update.message.reply_text(f"¡LA BOMBA ESTÁ ENCENDIDA!\n\nHa caído en manos de un jugador incógnito: {primer_jugador['emoji']}")
     sesión_bomba["tarea_bomba"] = asyncio.create_task(cuenta_regresiva_bomba(chat_id, context))
 
 async def cuenta_regresiva_bomba(chat_id, context):
@@ -204,7 +204,7 @@ async def cuenta_regresiva_bomba(chat_id, context):
         perdedor_id = sesión_bomba["bomba_en"]
         perdedor = next(j for j in sesión_bomba["jugadores"] if j['id'] == perdedor_id)
         
-        texto_final = f"¡¡¡¡BOOOOOOM!!!! 💥\n\nLa bomba explotó en manos de {perdedor['emoji']}.\n¡Se le cayó la máscara! Era **{perdedor['name']}** y quedó hecho cenizas. 💀"
+        texto_final = f"¡¡¡¡BOOOOOOM!!!! \n\nLa bomba explotó en manos de {perdedor['name']} y quedó hecho cenizas."
         
         try:
             await context.bot.edit_message_text(chat_id=chat_id, message_id=sesión_bomba["mensaje_id"], text=texto_final)
@@ -235,7 +235,7 @@ async def iniciar_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     sesión_ratones["activa"] = True
     sesión_ratones["sobrevivientes"] = [j["id"] for j in sesión_ratones["jugadores"]]
-    await update.message.reply_text("¡Apareciendo tablero en 3x3! Atentos...")
+    await update.message.reply_text("¡Apareciendo tablero! Atentos...")
     asyncio.create_task(rondas_battle_royale(chat_id, context))
 
 async def rondas_battle_royale(chat_id, context):
@@ -247,7 +247,7 @@ async def rondas_battle_royale(chat_id, context):
         await asyncio.sleep(4)
 
         botones = [[InlineKeyboardButton("🕳️", callback_data="raton_fallo") for _ in range(3)] for _ in range(3)]
-        botones[random.randint(0, 2)][random.randint(0, 2)] = InlineKeyboardButton("¡🐁!", callback_data="raton_salvado")
+        botones[random.randint(0, 2)][random.randint(0, 2)] = InlineKeyboardButton("🐭", callback_data="raton_salvado")
         sesión_ratones["esperando_click"] = list(sesión_ratones["sobrevivientes"])
         
         sesión_ratones["mensaje_id"] = await context.bot.send_message(
@@ -534,9 +534,8 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     await update.message.reply_text(
-        f"¡CLOSE VAN {user_name}! 💥\n\n"
-        "Se cerraron todas las rondas, se mataron los timers y la cancha quedó limpiecita. "
-        "¡Ya pueden armar otra partida desde cero sin que nada se cruce!"
+        f"¡CLOSE VAN! 💥\n\n"
+        "Se cerraron todas las rondas existentes." 
     )
 
 # --- 11. BLOQUE PRINCIPAL DE ARRANQUE ---
@@ -548,6 +547,7 @@ if __name__ == '__main__':
         
         # MENÚ PRINCIPAL
         application.add_handler(CommandHandler("start", start_bienvenida))
+        application.add_handler(CommandHandler("off_van", detener_juegos))
 
         # Handlers JUEGO 1: Ahorcado
         application.add_handler(CommandHandler("ahorcado", unirse_ahorcado))
