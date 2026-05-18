@@ -86,7 +86,7 @@ async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --- 4. COMANDO MENÚ PRINCIPAL ---
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_animation(
-        nimation = GIF_INFO,
+        animation = GIF_INFO,
         caption = (
             " ˗ˏˋ ꒰ LISTA DE COMANDOS INTRODUCIDOS ꒱ ˎˊ˗\n\n"
             "1. EL AHORCADO \n"
