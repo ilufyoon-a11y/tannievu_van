@@ -132,13 +132,32 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return 
         
-    # Selección dinámica e imparcial 🎯
-    moderador = random.choice(sesión[chat_id]["jugadores"])
+    # Lista de candidatos disponibles en esta ronda
+    candidatos = list(sesión[chat_id]["jugadores"])
     
-    # Lo sacamos de la lista para que no juegue contra sí mismo
+    # 🧠 ANTI-REPETICIÓN: Si ya hubo un moderador antes, intentamos no elegirlo otra vez
+    ultimo_mod = sesión[chat_id].get("ultimo_moderador_id")
+    if ultimo_mod and len(candidatos) > 1:
+        # Filtramos la lista para quitar al moderador de la ronda pasada
+        filtrados = [j for j in candidatos if j["id"] != ultimo_mod]
+        if filtrados: # Si queda alguien en la lista, elegimos de ahí
+            moderador = random.choice(filtrados)
+        else:
+            moderador = random.choice(candidatos)
+    else:
+        # Si es la primera ronda o solo hay un jugador válido, va al azar normal
+        moderador = random.choice(candidatos)
+    
+    # Lo sacamos de la lista activa de jugadores para esta ronda
     sesión[chat_id]["jugadores"].remove(moderador)
     
-    sesión[chat_id].update({"moderador_id": moderador["id"], "activa": True})
+    # Guardamos los datos de la ronda actual y registramos quién fue el moderador para la próxima vez
+    sesión[chat_id].update({
+        "moderador_id": moderador["id"], 
+        "ultimo_moderador_id": moderador["id"], 
+        "activa": True
+    })
+    
     esperando_palabra[moderador["id"]] = chat_id
     await update.message.reply_text(f"¡Iniciado! Moderador elegido: {moderador['name']}. Pásame la palabra al privado para poder iniciar el juego.")
 
