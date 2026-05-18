@@ -495,6 +495,50 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await lanzar_turno_stop(chat_id, context)
             return
 
+# --- COMANDO DE APAGADO GENERAL ---
+async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    user_name = update.effective_user.first_name
+    
+    # 1. 🎯 APAGÓN TOTAL AL AHORCADO
+    if chat_id in sesión:
+        sesión[chat_id]["activa"] = False
+        sesión[chat_id]["jugadores"] = []
+        if "palabra_secreta" in sesión[chat_id]:
+            del sesión[chat_id]["palabra_secreta"]
+            
+    # 2. 💣 APAGÓN TOTAL A LA BOMBA
+    sesión_bomba["activa"] = False
+    sesión_bomba["jugadores"] = []
+    if sesión_bomba.get("tarea_bomba"):
+        try:
+            sesión_bomba["tarea_bomba"].cancel()
+        except:
+            pass
+
+    # 3. 🐭 APAGÓN TOTAL A LOS RATONES
+    sesión_ratones["activa"] = False
+    sesión_ratones["jugadores"] = []
+    sesión_ratones["sobrevivientes"] = []
+    sesión_ratones["esperando_click"] = []
+
+    # 4. 🎤 APAGÓN TOTAL A RITMO A GO-GO (STOP)
+    sesión_stop["activa"] = False
+    sesión_stop["jugadores"] = []
+    sesión_stop["sobrevivientes"] = []
+    sesión_stop["palabras_dichas"] = []
+    if sesión_stop.get("timer_task"):
+        try:
+            sesión_stop["timer_task"].cancel()
+        except:
+            pass
+
+    await update.message.reply_text(
+        f"¡CLOSE VAN {user_name}! 💥\n\n"
+        "Se cerraron todas las rondas, se mataron los timers y la cancha quedó limpiecita. "
+        "¡Ya pueden armar otra partida desde cero sin que nada se cruce!"
+    )
+
 # --- 11. BLOQUE PRINCIPAL DE ARRANQUE ---
 if __name__ == '__main__':
     TOKEN = os.getenv("TOKEN_TELEGRAM")
