@@ -161,7 +161,7 @@ async def iniciar_bomba(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_bomba["tarea_bomba"] = asyncio.create_task(cuenta_regresiva_bomba(chat_id, context))
 
 async def cuenta_regresiva_bomba(chat_id, context):
-    tiempo_explotar = random.randint(5, 15) 
+    tiempo_explotar = random.randint(15, 35) 
     
     botones = []
     for jugador in sesión_bomba["jugadores"]:
