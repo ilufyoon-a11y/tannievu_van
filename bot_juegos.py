@@ -78,13 +78,15 @@ def dibujar_pantalla_ahorcado(chat_id):
 
 # ₊˚ ✧ ‿︵‿୨୧‿︵‿ ✧ ₊˚ COMANDO START ₊˚ ✧ ‿︵‿୨୧‿︵‿ ✧ ₊˚
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_document(
-        document = GIF_BIENVENIDA,
+    # Como GIF_BIENVENIDA sigue siendo un link de Pinterest, lo ideal es reply_animation
+    await update.message.reply_animation(
+        animation = GIF_BIENVENIDA,
         caption = "── .✦ Muchas gracias por ayudarme a testear mis codigos hechos con las patas, lo aprecio mucho, muack"
     )
 
 # --- 4. COMANDO MENÚ PRINCIPAL ---
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # GIF_INFO usa un ID de Telegram codificado como documento/video corto
     await update.message.reply_document(
         document = GIF_INFO,
         caption = (
@@ -108,11 +110,9 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     
-    # 🌟 CORRECCIÓN AQUÍ: Evitamos chancar la lista de los inscritos si vuelven a enviar el comando
     if chat_id not in sesión: 
         sesión[chat_id] = {"jugadores": [], "activa": False}
     else:
-        # Si ya existía, reiniciamos el estado del juego pero vaciamos de forma controlada para la nueva convocatoria
         sesión[chat_id]["activa"] = False
         sesión[chat_id]["jugadores"] = []
         
@@ -132,26 +132,18 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return 
         
-    # Lista de candidatos disponibles en esta ronda
     candidatos = list(sesión[chat_id]["jugadores"])
-    
-    # 🧠 ANTI-REPETICIÓN: Si ya hubo un moderador antes, intentamos no elegirlo otra vez
     ultimo_mod = sesión[chat_id].get("ultimo_moderador_id")
     if ultimo_mod and len(candidatos) > 1:
-        # Filtramos la lista para quitar al moderador de la ronda pasada
         filtrados = [j for j in candidatos if j["id"] != ultimo_mod]
-        if filtrados: # Si queda alguien en la lista, elegimos de ahí
+        if filtrados:
             moderador = random.choice(filtrados)
         else:
             moderador = random.choice(candidatos)
     else:
-        # Si es la primera ronda o solo hay un jugador válido, va al azar normal
         moderador = random.choice(candidatos)
     
-    # Lo sacamos de la lista activa de jugadores para esta ronda
     sesión[chat_id]["jugadores"].remove(moderador)
-    
-    # Guardamos los datos de la ronda actual y registramos quién fue el moderador para la próxima vez
     sesión[chat_id].update({
         "moderador_id": moderador["id"], 
         "ultimo_moderador_id": moderador["id"], 
@@ -166,8 +158,9 @@ async def unirse_bomba(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_bomba["jugadores"] = []
     sesión_bomba["activa"] = False
     boton = InlineKeyboardButton("ENTRAR AL CAMPO", callback_data="unirme_bomba_click")
-    await update.message.reply_animation(
-        animation = GIF_BOMBA,
+    # Cambiado a reply_document porque GIF_BOMBA ahora es un ID interno 'BQAC...'
+    await update.message.reply_document(
+        document = GIF_BOMBA,
         caption = "¡Juguemos a la Bomba! Por favor presiona el boton para unirte:", 
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -426,7 +419,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not texto:
         return
 
-    # Setup Ahorcado por privado (El moderador ingresa la palabra)
+    # Setup Ahorcado por privado
     if chat_type == "private" and user_id in esperando_palabra:
         gid = esperando_palabra[user_id]
         
@@ -471,36 +464,9 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"Intentos restantes de {user_name}: {datos['jugadores_vidas'][user_id]}"
             )
             
-            # Verificación de victoria limpia sin espacios
             if "_" not in tablero.replace(" ", ""):
                 await update.message.reply_text(f"¡VICTORIA DE {user_name}! 🥳 La palabra era: {datos['palabra_secreta'].upper()}")
                 datos["activa"] = False
-            return
-
-    # Escucha de Ritmo A Go-Go
-    if sesión_stop.get("activa") and texto and not update.message.text.startswith("/"):
-        actual_id = sesión_stop["sobrevivientes"][sesión_stop["turno_index"]]
-        if user_id == actual_id:
-            if sesión_stop["timer_task"]: 
-                sesión_stop["timer_task"].cancel()
-
-            palabra_limpia = texto.lower()
-
-            if palabra_limpia in sesión_stop["palabras_dichas"]:
-                sesión_stop["sobrevivientes"].remove(user_id)
-                await update.message.reply_text(f"¡YA LA DIJERON! '{texto}' se repitió. {user_name} ELIMINADO")
-            elif not texto.upper().startswith(sesión_stop["letra_actual"].upper()):
-                sesión_stop["sobrevivientes"].remove(user_id)
-                await update.message.reply_text(f"Tenía que empezar con {sesión_stop['letra_actual']}. {user_name} ELIMINADO")
-            else:
-                sesión_stop["palabras_dichas"].append(palabra_limpia)
-                await update.message.reply_text(f"¡Bien! '{texto}' anotada.")
-                sesión_stop["turno_index"] += 1
-
-            if sesión_stop["turno_index"] >= len(sesión_stop["sobrevivientes"]):
-                sesión_stop["turno_index"] = 0
-
-            await lanzar_turno_stop(chat_id, context)
             return
 
     # Escucha de Ritmo A Go-Go
