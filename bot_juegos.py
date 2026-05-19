@@ -26,7 +26,7 @@ def keep_alive():
 # 📸 BANCO DE GIFS GLOBALES (¡Reusables en cualquier función! 💅)
 GIF_BIENVENIDA = "https://i.pinimg.com/originals/7f/e1/24/7fe124e7e79808bfb940b1aefa199249.gif"
 GIF_INFO       = "https://i.postimg.cc/JnHVnpy2/lv-0-20260518150214-ezgif-com-cut.gif"
-GIF_AHORCADO   = "https://i.postimg.cc/yNmggyMB/In-Shot-20260518-160525585.gif"
+GIF_AHORCADO   = "AgACAgEAAxkBAAIcvGoL791u355h_5aS4eXVl3ZdUqZbAAKFDGsbHKlhRNIEXidHWA1CAQADAgADcwADOwQ"
 GIF_BOMBA      = "AgACAgEAAxkBAAIctGoL7rfCA5Ojj7fSuMYWn_6WVqH4AAKDDGsbHKlhRO9DfmI_-OIXAQADAgADcwADOwQ"
 GIF_RATONES    = "CgACAgEAAxkBAAIcVGoLexdgkZuzvUmOmDPVoz2I5R_bAAJEBwACiURZREcuvW_lsALzOwQ"
 GIF_RITMOAGO   = "https://i.postimg.cc/MXJJQ1k9/lv-0-20260518152334.gif"
@@ -117,8 +117,8 @@ async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesión[chat_id]["jugadores"] = []
         
     boton = InlineKeyboardButton("UNIRSE", callback_data="unirme_click")
-    await update.message.reply_animation(
-        animation = GIF_AHORCADO,
+    await update.message.reply_photo(
+        photo = GIF_AHORCADO,
         caption = "¡Juguemos al Ahorcado! Por favor presiona el boton para unirte:", 
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
