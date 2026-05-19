@@ -42,11 +42,20 @@ sesión = {}            # Ahorcado
 esperando_palabra = {} # Ahorcado (Privado)
 
 sesión_bomba = {
-    "jugadores": [], "bomba_en": None, "bomba_emoji": None, "activa": False, "tarea_bomba": None, "mensaje_id": None
+    "jugadores": [], 
+    "bomba_en": None, 
+    "bomba_emoji": None, 
+    "activa": False, 
+    "tarea_bomba": None, 
+    "mensaje_id": None
 }
 
 sesión_ratones = {
-    "jugadores": [], "sobrevivientes": [], "esperando_click": [], "activa": False, "mensaje_id": None
+    "jugadores": [], 
+    "sobrevivientes": [], 
+    "esperando_click": [], 
+    "activa": False, 
+    "mensaje_id": None
 }
 
 sesión_stop = {
@@ -60,19 +69,7 @@ sesión_stop = {
     "timer_task": None      # Control del reloj por turno
 }
 
-# 🎨 NUEVO DICCIONARIO VACÍO PARA EL JUEGO DEL DIBUJO
-sesión_pictionary = {
-    "activa": False,
-    "palabra_correcta": None,
-    "dibujante_id": None,
-    "dibujante_name": None
-}
-
-# Banco de palabras secretas para el Pictionary
-PALABRAS_PICTIONARY = [
-    "shooky", "chimmy", "cooky", "tata", "mang", "rj", "koya", "van", 
-    "microfono", "guitarra", "gato", "cafe", "piano", "army bomb"
-]
+sesión_jitb = {}
 
 CATEGORIAS_STOP = ["NOMBRE", "JUEGOS", "APELLIDO", "FRUTA O VERDURA ", "PAÍS O CIUDAD", "ANIMAL", "COLOR", "OBJETO", "PROFESIÓN  U OFICIO", "CANTANTE O BANDA", "COMIDA", "PELICULA O SERIE", "FAMOSO"]
 EMOJIS_BOMBA = ["🦊", "🥑", "🐱", "🐸", "🐼", "🌶️", "👻", "👽", "🤖", "🦄", "👑", "🍕", "🎈", "🔮", "🦈", "🐥", "🐻", "🦖"]
@@ -253,6 +250,12 @@ async def unirse_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    #EVITAR QUE SE INICIE UNA NUEVA PARTIDA POR ERROR DE DEDO 
+    if sesión_ratones.get("activa", False):
+        await update.message.reply_text("Ya hay una ronda en curso. No puedes iniciar el juego ahora!)
+        return
+    
     if len(sesión_ratones["jugadores"]) < 2:
         await update.message.reply_photo(
             photo = GIF_ERROR,
@@ -371,38 +374,72 @@ async def timer_jugador_stop(chat_id, jugador_id, name, context):
 
 
 # =====================================================================
-# 8. JUEGO 5: PICTIONARY TRUCHO 🎨
+# 8. JUEGO 5: WHAT'S IN THE BOX - NOMBRE INSPIRADO EN MI AMORCITO HOBA
 # =====================================================================
-async def iniciar_pictionary(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    
-    if sesión_pictionary["activa"]:
-        await update.message.reply_text(f"¡Ya hay un garabato activo! Adivinen el de {sesión_pictionary['dibujante_name']} primero. 🤫")
-        return
 
-    palabra_elegida = random.choice(PALABRAS_PICTIONARY)
-    
-    sesión_pictionary.update({
-        "activa": True,
-        "palabra_correcta": palabra_elegida.lower(),
-        "dibujante_id": user.id,
-        "dibujante_name": user.first_name
-    })
+async def unirse_box(async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
 
-    await update.message.reply_text(
-        f"🎨 *¡PICTIONARY TRUCHO INICIADO!* 🎨\n\n"
-        f"El artista asignado es *{user.first_name}*.\n"
-        f"Te acabo de mandar tu palabra secreta al privado. ¡Dibújala feo y manda la foto al grupo!"
+    if chat_id not in sesión_jitb:
+    sesión_jitb[chat_id] = {
+        "jugadores": [],             # Lista de participantes de este grupo
+        "activa": False,             # Estado del juego en este grupo
+        "ultimo_clown_id": None      # El último encubridor de este grupo
+    }
+    
+    else:
+        sesión_jitb[chat_id]["activa"] = False
+        sesión_jitb[chat_id]["jugadores"] = []
+
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_click")
+    await update.message.reply_photo(
+        photo = GIF_JITB,
+        caption = "¡Juguemos a memory box! Por favor presiona el boton para unirte:", 
+        reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
-    try:
-        await context.bot.send_message(
-            chat_id=user.id,
-            text=f"🤫 Tu palabra secreta es: *{palabra_elegida.upper()}*.\n\nHaz un garabato rápido en tu cel, guárdalo como imagen y envíalo a este grupo para que tus amigos adivinen."
+async def iniciar_jitbx(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    if chat_id not in sesión or len(sesión[chat_id]["jugadores"]) < 2:
+        await update.message.reply_animation(
+            animation = GIF_ERROR,
+            caption = "Se necesitan minimo 2 personas para jugar. De tratarse un error, por favor, vuelve a iniciar el juego"
         )
-    except:
-        await update.message.reply_text("❌ No pude mandarte un mensaje privado. Por favor, inicia un chat conmigo primero dándole a /start en mi privado.")
+        return     
 
+    candidatos = list(sesión_jitb[chat_id]["jugadores"])
+    ultimo_encubridor = sesión_jitb[chat_id].get("ultimo_encubridor_id")
+    if ultimo_encubridor and len(candidatos) > 1:
+        filtrados = [j for j in candidatos if j["id"] != ultimo_encubridor]
+        if filtrados:
+            encubridor = random.choice(filtrados)
+        else:
+            encubridor = random.choice(candidatos)
+    else:
+        encubridor = random.choice(candidatos)
+    
+    sesión_jitb[chat_id]["jugadores"].remove(encubridor)
+    sesión_jitb[chat_id].update({
+        "encubridor_id": encubridor["id"], 
+        "ultimo_encubridor_id": encubridor["id"], 
+        "activa": True
+    })
+    
+    esperando_elementos[encubridor["id"]] = chat_id
+    await update.message.reply_text(
+        f"¡Ronda iniciada! Encubridor@ elegido. Esperando que esconda los objetos para poder iniciar el juego.")
+
+    try:
+        await context.bot.send_photo(
+            chat_id = encubridor["id"],
+            photo = "", 
+            caption = ()
+        )
+    
+    except Exception as e:
+        await update.message.reply_photo(
+            f"No se puede enviar mensaje a {encubridor['username']}."
+            f"Asegurate de haberle dado /start al bot.") 
 
 # =====================================================================
 # 9. MANEJADOR DE CALLBACKS (BOTONES) - CON ESCUDOS ACTIVOS 🛡️
@@ -671,9 +708,10 @@ if __name__ == '__main__':
         # Handlers JUEGO 4: Ritmo A Go-Go
         application.add_handler(CommandHandler("stop", unirse_stop))
         application.add_handler(CommandHandler("start_stop", iniciar_stop))
-        
-        # Handlers JUEGO 5: Pictionary Trucho 🎨
-        application.add_handler(CommandHandler("garabato", iniciar_pictionary))
+
+        # 📦 Handlers JUEGO 5: What's in the Box (HOBA)
+        application.add_handler(CommandHandler("box", unirse_box))
+        application.add_handler(CommandHandler("start_box", iniciar_jitbx))
         
         # Callbacks y Mensajes globales
         application.add_handler(CallbackQueryHandler(manejar_botones))
