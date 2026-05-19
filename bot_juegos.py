@@ -3,7 +3,7 @@ import os
 import asyncio
 from threading import Thread
 from flask import Flask
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, URL
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
 
 # --- 1. DESPERTADOR PARA RENDER (FLASK) ---
@@ -23,14 +23,14 @@ def keep_alive():
     t.start()
 
 # --- 2. VARIABLES GLOBALES Y DICCONARIOS ---
-# 📸 BANCO DE GIFS GLOBALES (Cambiados a links directos oficiales para que no fallen jamás 💅)
+# 📸 BANCO DE GIFS GLOBALES (¡Reusables en cualquier función! 💅)
 GIF_BIENVENIDA = "https://i.pinimg.com/originals/7f/e1/24/7fe124e7e79808bfb940b1aefa199249.gif"
-GIF_INFO       = "https://i.postimg.cc/JnHVnpy2/lv-0-20260518150214-ezgif-com-cut.gif"
-GIF_AHORCADO   = "https://i.pinimg.com/originals/dd/03/4b/dd034b791e855dd4e7a33e21e42848b5.gif"
-GIF_BOMBA      = "https://i.pinimg.com/originals/a0/03/89/a0038936f4ef8ee96f4241e39a3f2d21.gif"
-GIF_RATONES    = "https://i.pinimg.com/originals/81/92/9b/81929bdfad79cd2cfc7a72d7f87bfcf6.gif" 
-GIF_RITMOAGO   = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z0ZHg3Y3I5M2M1Y2p5Yndnd3BwY3A0bms2Z3B6N2ZpYzA0ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlIDf19UfHxE4py/giphy.gif"
-GIF_ERROR      = "https://i.pinimg.com/originals/88/47/9d/88479d2bbf1802b1f868d4d42065874c.gif"
+GIF_INFO       = "BQACAgEAAxkBAAIcQGoLcnBBtCFfAWrjVlCWW9jRzwbNAAKZCAACET1ZRB3JSNFeeMBsOwQ"
+GIF_AHORCADO   = "CgACAgEAAxkBAAIcc2oLgwNPqJGPVtva4LQVApMtB8p2AAJLBwACiURZRKuHiIeKvxdSOwQ"
+GIF_BOMBA      = "BQACAgEAAxkBAAIcF2oLJPd_DMATUHOOpXVrxTJuMWD_AAJ3CAACET1ZROF6hqT2K2yEOwQ"
+GIF_RATONES    = "CgACAgEAAxkBAAIcVGoLexdgkZuzvUmOmDPVoz2I5R_bAAJEBwACiURZREcuvW_lsALzOwQ"
+GIF_RITMOAGO   = "CgACAgEAAxkBAAIcaGoLgGjjUjqPBNZd24KEfhobulidAAJJBwACiURZRMjekP7ASWG6OwQ"
+GIF_ERROR      = "CgACAgEAAxkBAAIcYGoLgEkS0IC8Nm5eZvkTxPl95zDJAAJHBwACiURZROyXOAb37_ihOwQ"
 
 sesión = {}            # Ahorcado
 esperando_palabra = {} # Ahorcado (Privado)
@@ -78,6 +78,7 @@ def dibujar_pantalla_ahorcado(chat_id):
 
 # ₊˚ ✧ ‿︵‿୨୧‿︵‿ ✧ ₊˚ COMANDO START ₊˚ ✧ ‿︵‿୨୧‿︵‿ ✧ ₊˚
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Como GIF_BIENVENIDA sigue siendo un link de Pinterest, lo ideal es reply_animation
     await update.message.reply_animation(
         animation = GIF_BIENVENIDA,
         caption = "── .✦ Muchas gracias por ayudarme a testear mis codigos hechos con las patas, lo aprecio mucho, muack"
@@ -85,9 +86,9 @@ async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # --- 4. COMANDO MENÚ PRINCIPAL ---
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # REGRESADO A REPLY_ANIMATION PORQUE YA ES UN LINK .GIF REAL ✨
-    await update.message.reply_animation(
-        animation = URL(GIF_INFO),
+    # GIF_INFO usa un ID de Telegram codificado como documento/video corto
+    await update.message.reply_document(
+        document = GIF_INFO,
         caption = (
             " ˗ˏˋ ꒰ LISTA DE COMANDOS INTRODUCIDOS ꒱ ˎˊ˗\n\n"
             "1. EL AHORCADO \n"
@@ -157,8 +158,9 @@ async def unirse_bomba(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_bomba["jugadores"] = []
     sesión_bomba["activa"] = False
     boton = InlineKeyboardButton("ENTRAR AL CAMPO", callback_data="unirme_bomba_click")
-    await update.message.reply_animation(
-        animation = GIF_BOMBA,
+    # Cambiado a reply_document porque GIF_BOMBA ahora es un ID interno 'BQAC...'
+    await update.message.reply_document(
+        document = GIF_BOMBA,
         caption = "¡Juguemos a la Bomba! Por favor presiona el boton para unirte:", 
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -277,8 +279,8 @@ async def unirse_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_stop["jugadores"] = []
     sesión_stop["activa"] = False
     boton = InlineKeyboardButton("UNIRME", callback_data="unirme_stop_click")
-    await update.message.reply_animation(
-        animation = GIF_RITMOAGO,
+    await update.message.reply_document(
+        document = GIF_RITMOAGO,
         caption = "¡Juguemos al Ritmo AGO-GO! Por favor, presiona el boton para unirte a la partida", 
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -417,9 +419,6 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not texto:
         return
 
-    if texto.startswith("/"):
-        return
-
     # Setup Ahorcado por privado
     if chat_type == "private" and user_id in esperando_palabra:
         gid = esperando_palabra[user_id]
@@ -471,7 +470,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
     # Escucha de Ritmo A Go-Go
-    if sesión_stop.get("activa") and texto:
+    if sesión_stop.get("activa") and texto and not update.message.text.startswith("/"):
         actual_id = sesión_stop["sobrevivientes"][sesión_stop["turno_index"]]
         if user_id == actual_id:
             if sesión_stop["timer_task"]: 
@@ -499,33 +498,45 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --- COMANDO DE APAGADO GENERAL ---
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+    user_name = update.effective_user.first_name
     
+    # 1. 🎯 APAGÓN TOTAL AL AHORCADO
     if chat_id in sesión:
         sesión[chat_id]["activa"] = False
         sesión[chat_id]["jugadores"] = []
         if "palabra_secreta" in sesión[chat_id]:
             del sesión[chat_id]["palabra_secreta"]
             
+    # 2. 💣 APAGÓN TOTAL A LA BOMBA
     sesión_bomba["activa"] = False
     sesión_bomba["jugadores"] = []
     if sesión_bomba.get("tarea_bomba"):
-        try: sesión_bomba["tarea_bomba"].cancel()
-        except: pass
+        try:
+            sesión_bomba["tarea_bomba"].cancel()
+        except:
+            pass
 
+    # 3. 🐭 APAGÓN TOTAL A LOS RATONES
     sesión_ratones["activa"] = False
     sesión_ratones["jugadores"] = []
     sesión_ratones["sobrevivientes"] = []
     sesión_ratones["esperando_click"] = []
 
+    # 4. 🎤 APAGÓN TOTAL A RITMO A GO-GO (STOP)
     sesión_stop["activa"] = False
     sesión_stop["jugadores"] = []
     sesión_stop["sobrevivientes"] = []
     sesión_stop["palabras_dichas"] = []
     if sesión_stop.get("timer_task"):
-        try: sesión_stop["timer_task"].cancel()
-        except: pass
+        try:
+            sesión_stop["timer_task"].cancel()
+        except:
+            pass
 
-    await update.message.reply_text("¡CLOSE VAN! 💥\n\nSe cerraron todas las rondas existentes.")
+    await update.message.reply_text(
+        f"¡CLOSE VAN! 💥\n\n"
+        "Se cerraron todas las rondas existentes." 
+    )
 
 # --- 11. BLOQUE PRINCIPAL DE ARRANQUE ---
 if __name__ == '__main__':
@@ -534,22 +545,28 @@ if __name__ == '__main__':
         keep_alive()
         application = ApplicationBuilder().token(TOKEN).build()
         
+        # MENÚ PRINCIPAL
         application.add_handler(CommandHandler("start", start_bienvenida))
-        application.add_handler(CommandHandler("info", comandos))
         application.add_handler(CommandHandler("off_van", detener_juegos))
 
+        # Handlers JUEGO 1: Ahorcado
         application.add_handler(CommandHandler("ahorcado", unirse_ahorcado))
+        application.add_handler(CommandHandler("info", comandos))
         application.add_handler(CommandHandler("start_ahorcado", iniciar_ahorcado))
         
+        # Handlers JUEGO 2: La Bomba
         application.add_handler(CommandHandler("bomba", unirse_bomba))
         application.add_handler(CommandHandler("start_bomba", iniciar_bomba))
         
+        # Handlers JUEGO 3: Ratones 3x3
         application.add_handler(CommandHandler("ratones", unirse_ratones))
         application.add_handler(CommandHandler("start_ratones", iniciar_ratones))
         
+        # Handlers JUEGO 4: Ritmo A Go-Go
         application.add_handler(CommandHandler("stop", unirse_stop))
         application.add_handler(CommandHandler("start_stop", iniciar_stop))
         
+        # Callbacks y Mensajes globales
         application.add_handler(CallbackQueryHandler(manejar_botones))
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensajes))
         
