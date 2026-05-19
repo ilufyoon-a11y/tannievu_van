@@ -238,8 +238,8 @@ async def unirse_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def iniciar_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if len(sesión_ratones["jugadores"]) < 2:
-        await update.message.reply_animation(
-            animation = GIF_ERROR,
+        await update.message.reply_photo(
+            photo = GIF_ERROR,
             caption = "Se necesitan minimo 2 personas para jugar. De tratarse un error por favor vuelve a inciar el juego"
         )
         return
@@ -299,8 +299,8 @@ async def unirse_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def iniciar_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if len(sesión_stop["jugadores"]) < 2:
-        await update.message.reply_animation(
-            animation = GIF_ERROR,
+        await update.message.reply_photo(
+            photo = GIF_ERROR,
             caption = "Se necesitan minimo 2 personas para jugar. De tratarse un error por favor vuelve a inciar el juego"
         )
         return
