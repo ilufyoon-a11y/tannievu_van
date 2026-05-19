@@ -229,8 +229,8 @@ async def unirse_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_ratones["sobrevivientes"] = []
     sesión_ratones["activa"] = False
     boton = InlineKeyboardButton(" UNIRSE ", callback_data="unirme_ratones_click")
-    await update.message.reply_animation(
-        animation = GIF_RATONES,
+    await update.message.reply_photo(
+        photo = GIF_RATONES,
         caption = "¡Golpea al ratón! \n¡El último en aplastarlo en cada ronda queda fuera!",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
