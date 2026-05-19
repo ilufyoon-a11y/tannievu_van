@@ -25,7 +25,7 @@ def keep_alive():
 # --- 2. VARIABLES GLOBALES Y DICCONARIOS ---
 # 📸 BANCO DE GIFS GLOBALES (Cambiados a links directos oficiales para que no fallen jamás 💅)
 GIF_BIENVENIDA = "https://i.pinimg.com/originals/7f/e1/24/7fe124e7e79808bfb940b1aefa199249.gif"
-GIF_INFO       = "https://i.pinimg.com/originals/4d/9d/21/4d9d21469be432e146522c710f697472.gif"
+GIF_INFO       = "https://i.postimg.cc/JnHVnpy2/lv-0-20260518150214-ezgif-com-cut.gif"
 GIF_AHORCADO   = "https://i.pinimg.com/originals/dd/03/4b/dd034b791e855dd4e7a33e21e42848b5.gif"
 GIF_BOMBA      = "https://i.pinimg.com/originals/a0/03/89/a0038936f4ef8ee96f4241e39a3f2d21.gif"
 GIF_RATONES    = "https://i.pinimg.com/originals/81/92/9b/81929bdfad79cd2cfc7a72d7f87bfcf6.gif" 
