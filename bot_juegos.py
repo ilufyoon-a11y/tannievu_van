@@ -87,7 +87,7 @@ async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # REGRESADO A REPLY_ANIMATION PORQUE YA ES UN LINK .GIF REAL ✨
     await update.message.reply_animation(
-        animation = GIF_INFO,
+        animation = URL(GIF_INFO),
         caption = (
             " ˗ˏˋ ꒰ LISTA DE COMANDOS INTRODUCIDOS ꒱ ˎˊ˗\n\n"
             "1. EL AHORCADO \n"
