@@ -37,9 +37,11 @@ GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg"
 GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg"
 GIF_ERROR      = "https://i.postimg.cc/G38XXrMW/Airbrush-IMAGE-ENHANCER-1779170852039-1779170852039.jpg"
 GIF_OFFVAN     = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg"
+GIF_JITB       = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg" # Agregado por consistencia
 
 sesión = {}            # Ahorcado
 esperando_palabra = {} # Ahorcado (Privado)
+esperando_elementos = {} # Jack In The Box (Privado)
 
 sesión_bomba = {
     "jugadores": [], 
@@ -69,7 +71,20 @@ sesión_stop = {
     "timer_task": None      # Control del reloj por turno
 }
 
+# Variables para el juego Zombie 🧟
+sesión_zombie = {
+    "jugadores": [],        # Lista de participantes
+    "activa": False,        # Si la partida está corriendo
+    "zombies": [],          # IDs de los que son zombies
+    "vivos": [],            # IDs de los que siguen humanos limpios
+    "fase": None,           # 'infeccion' o 'votacion'
+    "votos": {},            # {votante_id: id_votado}
+    "mensaje_voto_id": None # ID del mensaje de votación en el grupo
+}
+esperando_mordida = {}     # Para el privado del zombie
+
 sesión_jitb = {}
+sesión_pictionary = {"activa": False, "palabra_correcta": None, "dibujante_id": None} # Agregado para evitar error en off_van
 
 CATEGORIAS_STOP = ["NOMBRE", "JUEGOS", "APELLIDO", "FRUTA O VERDURA ", "PAÍS O CIUDAD", "ANIMAL", "COLOR", "OBJETO", "PROFESIÓN  U OFICIO", "CANTANTE O BANDA", "COMIDA", "PELICULA O SERIE", "FAMOSO"]
 EMOJIS_BOMBA = ["🦊", "🥑", "🐱", "🐸", "🐼", "🌶️", "👻", "👽", "🤖", "🦄", "👑", "🍕", "🎈", "🔮", "🦈", "🐥", "🐻", "🦖"]
@@ -119,8 +134,6 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "4. RITMO A GO-GO \n"
             "⤷ /stop ⇢ Alistarse para el la partida\n"
             "⤷ /start_stop ⇢ Lanza la letra, categoría e iniciar turnos\n\n"
-            "5. PICTIONARY TRUCHO \n"
-            "⤷ /garabato ⇢ Te da una palabra al azar por privado para que la dibujes y el grupo adivine\n"
         )
     )
 
@@ -253,7 +266,7 @@ async def iniciar_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     #EVITAR QUE SE INICIE UNA NUEVA PARTIDA POR ERROR DE DEDO 
     if sesión_ratones.get("activa", False):
-        await update.message.reply_text("Ya hay una ronda en curso. No puedes iniciar el juego ahora!)
+        await update.message.reply_text("Ya hay una ronda en curso. No puedes iniciar el juego ahora!")
         return
     
     if len(sesión_ratones["jugadores"]) < 2:
@@ -376,22 +389,20 @@ async def timer_jugador_stop(chat_id, jugador_id, name, context):
 # =====================================================================
 # 8. JUEGO 5: WHAT'S IN THE BOX - NOMBRE INSPIRADO EN MI AMORCITO HOBA
 # =====================================================================
-
-async def unirse_box(async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if chat_id not in sesión_jitb:
-    sesión_jitb[chat_id] = {
-        "jugadores": [],             # Lista de participantes de este grupo
-        "activa": False,             # Estado del juego en este grupo
-        "ultimo_clown_id": None      # El último encubridor de este grupo
-    }
-    
+        sesión_jitb[chat_id] = {
+            "jugadores": [],             # Lista de participantes de este grupo
+            "activa": False,             # Estado del juego en este grupo
+            "ultimo_encubridor_id": None # El último encubridor de este grupo
+        }
     else:
         sesión_jitb[chat_id]["activa"] = False
         sesión_jitb[chat_id]["jugadores"] = []
 
-    boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_box_click")
     await update.message.reply_photo(
         photo = GIF_JITB,
         caption = "¡Juguemos a memory box! Por favor presiona el boton para unirte:", 
@@ -400,7 +411,7 @@ async def unirse_box(async def unirse_ahorcado(update: Update, context: ContextT
 
 async def iniciar_jitbx(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    if chat_id not in sesión or len(sesión[chat_id]["jugadores"]) < 2:
+    if chat_id not in sesión_jitb or len(sesión_jitb[chat_id]["jugadores"]) < 2:
         await update.message.reply_animation(
             animation = GIF_ERROR,
             caption = "Se necesitan minimo 2 personas para jugar. De tratarse un error, por favor, vuelve a iniciar el juego"
@@ -432,15 +443,201 @@ async def iniciar_jitbx(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         await context.bot.send_photo(
             chat_id = encubridor["id"],
-            photo = "", 
-            caption = ()
+            photo = GIF_OFFVAN, 
+            caption = (
+                "🃏 ¡Te toca ser el encubridor en Jack In The Box!\n\n"
+                "Por favor, responde a este mensaje enviando exactamente 6 emojis pegados o separados por espacios.\n"
+                "Ejemplo: 🍎🍌🍇🍊🍓🍉\n\n"
+                "⚠️ ¡Los demás intentarán recordarlos rápido!"
+            )
         )
-    
     except Exception as e:
-        await update.message.reply_photo(
-            f"No se puede enviar mensaje a {encubridor['username']}."
-            f"Asegurate de haberle dado /start al bot.") 
+        await update.message.reply_text(
+            f"No se puede enviar mensaje a @{encubridor.get('username', 'usuario')}. "
+            f"Asegúrate de haberle dado /start al bot en tu privado.") 
 
+
+# =====================================================================
+# JUEGO 6: INFECCIÓN ZOMBIE 🧟
+# =====================================================================
+async def unirse_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    
+    # Reiniciamos la sesión del grupo
+    sesión_zombie["jugadores"] = []
+    sesión_zombie["zombies"] = []
+    sesión_zombie["vivos"] = []
+    sesión_zombie["votos"] = {}
+    sesión_zombie["activa"] = False
+    sesión_zombie["fase"] = None
+    
+    boton = InlineKeyboardButton("☣️ 𝐔𝐍𝐈𝐑𝐌𝐄 𝐀𝐋 𝐁𝐔́𝐍𝐊𝐄𝐑", callback_data="unirme_zombie_click")
+    await update.message.reply_photo(
+        photo = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg", # Puedes cambiar esta URL por una de zombies chiki
+        caption = "🚨 **ALERTA DE BIOHAZARD** 🚨\n\nSe está esparciendo un virus. Entra al búnker antes de que cierren las puertas.",
+        reply_markup=InlineKeyboardMarkup([[boton]])
+    )
+
+async def iniciar_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    
+    if sesión_zombie["activa"]:
+        await update.message.reply_text("Ya hay una epidemia en curso.")
+        return
+        
+    if len(sesión_zombie["jugadores"]) < 3:
+        await update.message.reply_animation(
+            animation = GIF_ERROR,
+            caption = "¡Se necesitan mínimo 3 supervivientes para que tenga gracia el juego y las votaciones! 🔬"
+        )
+        return
+
+    sesión_zombie["activa"] = True
+    sesión_zombie["fase"] = "infeccion"
+    sesión_zombie["vivos"] = [j["id"] for j in sesión_zombie["jugadores"]]
+    
+    # Elegimos al Paciente Cero en secreto 🤫
+    paciente_cero_id = random.choice(sesión_zombie["vivos"])
+    sesión_zombie["zombies"].append(paciente_cero_id)
+    sesión_zombie["vivos"].remove(paciente_cero_id)
+    
+    paciente_cero_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == paciente_cero_id)
+    
+    await update.message.reply_text(
+        "☣️ **EL VIRUS HA ENTRADO AL BÚNKER** ☣️\n\n"
+        "Uno de ustedes es el **Paciente Cero**. El brote ha comenzado en secreto.\n"
+        "Zombies: Revisen su chat privado para morder a alguien... 🩸"
+    )
+    
+    # Le mandamos el botón de ataque al Zombie por privado
+    botones_ataque = []
+    for humano_id in sesión_zombie["vivos"]:
+        humano_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == humano_id)
+        botones_ataque.append([InlineKeyboardButton(f"Morder a 🩸 {humano_obj['name']}", callback_data=f"morder_{humano_id}_{chat_id}")])
+        
+    try:
+        await context.bot.send_message(
+            chat_id = paciente_cero_id,
+            text = "🧟 **¡ERES EL PACIENTE CERO!** 🧟\n\nTus dientes están listos. Selecciona a quién vas a infectar de la lista:",
+            reply_markup = InlineKeyboardMarkup(botones_ataque)
+        )
+    except Exception:
+        await context.bot.send_message(
+            chat_id = chat_id,
+            text = f"⚠️ El Paciente Cero ({paciente_cero_obj['name']}) no tiene el bot iniciado al privado. ¡Inicien el bot antes de jugar!"
+        )
+        sesión_zombie["activa"] = False
+
+async def abrir_votacion_zombie(chat_id, context):
+    sesión_zombie["fase"] = "votacion"
+    sesión_zombie["votos"] = {} # Limpiamos votos anteriores
+    
+    # Botones en el grupo para votar a cualquiera de los sobrevivientes
+    botones_voto = []
+    for jugador in sesión_zombie["jugadores"]:
+        # Solo se puede votar a gente que siga en el juego (sea zombie o humano)
+        botones_voto.append([InlineKeyboardButton(f"🗳️ Votar a {jugador['name']}", callback_data=f"voto_z_{jugador['id']}")])
+    
+    msg_voto = await context.bot.send_message(
+        chat_id = chat_id,
+        text = (
+            "📢 ⚠️ **¡REUNIÓN DE EMERGENCIA!** ⚠️ 📢\n\n"
+            "¡El virus se ha propagado! Un humano ha sido infectado y ahora hay un nuevo zombie entre nosotros.\n"
+            "Deben discutir en el grupo y votar a quién sacrificar. ¡Si eliminan a todos los zombies ganan, si eliminan a un humano pierden defensas!\n\n"
+            "Presionen los botones para votar (Tienen 30 segundos):"
+        ),
+        reply_markup = InlineKeyboardMarkup(botones_voto)
+    )
+    sesión_zombie["mensaje_voto_id"] = msg_voto.message_id
+    
+    # Temporizador de 30 segundos para votar
+    asyncio.create_task(timer_votacion_zombie(chat_id, context))
+
+async def timer_votacion_zombie(chat_id, context):
+    await asyncio.sleep(30)
+    if sesión_zombie["activa"] and sesión_zombie["fase"] == "votacion":
+        await procesar_resultados_votacion(chat_id, context)
+
+async def procesar_resultados_votacion(chat_id, context):
+    sesión_zombie["fase"] = None
+    
+    # Borramos el mensaje de votación para que ya no interactúen
+    try: await context.bot.delete_message(chat_id=chat_id, message_id=sesión_zombie["mensaje_voto_id"])
+    except: pass
+    
+    if not sesión_zombie["votos"]:
+        await context.bot.send_message(chat_id=chat_id, text="🤷‍♂️ Nadie votó a tiempo. El pánico los congeló. La infección continúa...")
+        # Siguiente ronda de ataque zombie si quedan humanos
+        await pasar_a_siguiente_ataque(chat_id, context)
+        return
+
+    # Contamos los votos
+    conteo = {}
+    for vid in sesión_zombie["votos"].values():
+        conteo[vid] = conteo.get(vid, 0) + 1
+        
+    mas_votado_id = max(conteo, key=conteo.get)
+    max_votos = conteo[mas_votado_id]
+    
+    # Verificar empate
+    empates = [k for k, v in conteo.items() if v == max_votos]
+    if len(empates) > 1:
+        await context.bot.send_message(chat_id=chat_id, text="⚖️ **¡HAY UN EMPATE EN LOS VOTOS!** Nadie es sacrificado esta ronda por falta de consenso.")
+        await pasar_a_siguiente_ataque(chat_id, context)
+        return
+        
+    eliminado_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == mas_votado_id)
+    
+    # Verificamos qué era el eliminado
+    if mas_votado_id in sesión_zombie["zombies"]:
+        sesión_zombie["zombies"].remove(mas_votado_id)
+        # Lo sacamos del juego
+        sesión_zombie["jugadores"] = [j for j in sesión_zombie["jugadores"] if j["id"] != mas_votado_id]
+        
+        await context.bot.send_message(
+            chat_id = chat_id,
+            text = f"💀 **{eliminado_obj['name']} fue lanzado fuera del búnker con {max_votos} votos...**\n¡Y EFECTIVAMENTE ERA UN ZOMBIE! 🎉"
+        )
+    else:
+        sesión_zombie["vivos"].remove(mas_votado_id)
+        sesión_zombie["jugadores"] = [j <div class="for"> for j in sesión_zombie["jugadores"] if j["id"] != mas_votado_id]
+        
+        await context.bot.send_message(
+            chat_id = chat_id,
+            text = f"💔 **{eliminado_obj['name']} fue sacrificado injustamente con {max_votos} votos...**\nEra un humano completamente sano. El búnker cae en la paranoia..."
+        )
+
+    # Comprobamos condiciones de victoria
+    if not sesión_zombie["zombies"]:
+        await context.bot.send_message(chat_id=chat_id, text="🥳 🎉 **¡VICTORIA HUMANA!** Todos los zombies fueron eliminados. El búnker está a salvo por ahora.")
+        sesión_zombie["activa"] = False
+    elif not sesión_zombie["vivos"]:
+        await context.bot.send_message(chat_id=chat_id, text="🧟‍♂️ 🚨 **¡VICTORIA ZOMBIE!** Ya no quedan humanos sanos. La horda ha tomado el control.")
+        sesión_zombie["activa"] = False
+    else:
+        # El juego sigue
+        await pasar_a_siguiente_ataque(chat_id, context)
+
+async def pasar_a_siguiente_ataque(chat_id, context):
+    sesión_zombie["fase"] = "infeccion"
+    
+    # Todos los zombies actuales reciben el panel para morder, pero solo uno necesita morder para activar la fase
+    for z_id in sesión_zombie["zombies"]:
+        botones_ataque = []
+        for humano_id in sesión_zombie["vivos"]:
+            humano_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == humano_id)
+            botones_ataque.append([InlineKeyboardButton(f"Morder a 🩸 {humano_obj['name']}", callback_data=f"morder_{humano_id}_{chat_id}")])
+            
+        try:
+            await context.bot.send_message(
+                chat_id = z_id,
+                text = "🧟 **Ronda de Infección:** Elige a tu siguiente víctima antes de que sospechen:",
+                reply_markup = InlineKeyboardMarkup(botones_ataque)
+            )
+        except: pass
+    
+    await context.bot.send_message(chat_id=chat_id, text="🌙 **La noche cae en el búnker...** Los zombies están acechando desde los ductos de ventilación.")
+        
 # =====================================================================
 # 9. MANEJADOR DE CALLBACKS (BOTONES) - CON ESCUDOS ACTIVOS 🛡️
 # =====================================================================
@@ -461,6 +658,17 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not any(j['id'] == user.id for j in sesión[chat_id]["jugadores"]):
             sesión[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name})
             await query.message.reply_text(f"𔓕 ֹ {user.first_name} se unió 𓂃")
+
+    # Callbacks Box
+    elif query.data == "unirme_box_click":
+        if chat_id not in sesión_jitb:
+            sesión_jitb[chat_id] = {"jugadores": [], "activa": False}
+        if sesión_jitb[chat_id]["activa"]:
+            await query.answer("❌ ¡Esta ronda de Jack In The Box ya empezó!", show_alert=True)
+            return
+        if not any(j['id'] == user.id for j in sesión_jitb[chat_id]["jugadores"]):
+            sesión_jitb[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name, "username": user.username})
+            await query.message.reply_text(f"📦 {user.first_name} entró a la caja.")
 
     # Callbacks Bomba
     elif query.data == "unirme_bomba_click":
@@ -527,6 +735,62 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             sesión_stop["jugadores"].append({"id": user.id, "name": user.first_name})
             await query.message.reply_text(f"{user.first_name} está listo para jugar.")
 
+# === Callbacks Juego Zombie ===
+    elif query.data == "unirme_zombie_click":
+        if sesión_zombie["activa"]:
+            await query.answer("❌ ¡La infección ya empezó! No puedes entrar a mitad de brote.", show_alert=True)
+            return
+        if not any(j['id'] == user.id for j in sesión_zombie["jugadores"]):
+            sesión_zombie["jugadores"].append({"id": user.id, "name": user.first_name, "username": user.username})
+            await query.message.reply_text(f"☣️ {user.first_name} se encerró en el búnker.")
+
+    elif query.data.startswith("morder_"):
+        # Esto pasa en el privado del zombie
+        partes = query.data.split("_")
+        victima_id = int(partes[1])
+        grupo_chat_id = int(partes[2])
+        
+        if not sesión_zombie["activa"] or sesión_zombie["fase"] != "infeccion":
+            await query.answer("No puedes morder en este momento.", show_alert=True)
+            return
+            
+        if user.id not in sesión_zombie["zombies"]:
+            await query.answer("¡Tú no eres un zombie!", show_alert=True)
+            return
+
+        # Infectar a la víctima
+        if victima_id in sesión_zombie["vivos"]:
+            sesión_zombie["vivos"].remove(victima_id)
+            sesión_zombie["zombies"].append(victima_id)
+            
+            victima_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == victima_id)
+            await query.edit_message_text(f"🩸 Has infectado con éxito a {victima_obj['name']}. ¡Ahora es de tu bando!")
+            
+            # Avisarle a la nueva víctima en secreto
+            try:
+                await context.bot.send_message(chat_id=victima_id, text="☣️ **¡TE HAN MORDIDO!** Ahora eres un Zombie. Ayuda a tu horda a ganar desvidiando las sospechas.")
+            except: pass
+            
+            # Lanzamos la votación de emergencia en el grupo principal
+            await abrir_votacion_zombie(grupo_chat_id, context)
+
+    elif query.data.startswith("voto_z_"):
+        if not sesión_zombie["activa"] or sesión_zombie["fase"] != "votacion":
+            await query.answer("No estamos en fase de votación.", show_alert=True)
+            return
+            
+        # Verificar si el que vota pertenece al juego
+        if not any(j["id"] == user.id for j in sesión_zombie["jugadores"]):
+            await query.answer("❌ No estás participando en esta ronda.", show_alert=True)
+            return
+            
+        votado_id = int(query.data.replace("voto_z_", ""))
+        
+        # Guardamos o cambiamos el voto
+        sesión_zombie["votos"][user.id] = votado_id
+        votado_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == votado_id)
+        
+        await query.answer(f"Registrado tu voto para: {votado_obj['name']}", show_alert=False)
 
 # =====================================================================
 # 10. MANEJADOR DE MENSAJES (TEXTO)
@@ -557,22 +821,44 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=gid, text=f"¡El moderador ya eligió!\nPalabra: '{guiones}'")
         return
 
-    # Escucha del juego Pictionary en el Grupo 🎯
-    if sesión_pictionary.get("activa") and chat_type != "private" and not texto.startswith("/"):
-        if texto.lower() == sesión_pictionary["palabra_correcta"]:
-            if user_id == sesión_pictionary["dibujante_id"]:
-                await update.message.reply_text("¡Oye! Tú eres el dibujante, no hagas trampa soplándote a ti mismo. 🧐")
-                return
-            
-            sesión_pictionary["activa"] = False
-            palabra_ganadora = sesión_pictionary["palabra_correcta"].upper()
-            await update.message.reply_text(
-                f"🏆 *¡TENEMOS UN ADIVINADOR EXPERTO!* 🏆\n\n"
-                f"*{user_name}* descifró el garabato de {sesión_pictionary['dibujante_name']}.\n"
-                f"¡La palabra era: *{palabra_ganadora}*! 🥳🎨"
-            )
-            return
+    # Setup jack in the box por privado
+    if chat_type == "private" and user_id in esperando_elementos:
+        gid = esperando_elementos[user_id]
 
+        emojis_originales = list(texto.replace(" ", ""))
+        if len(emojis_originales) != 6:
+            await update.message.reply_text("¡Error! No son 6 elementos, por favor, vuelve a enviar")
+            return      
+        
+        sesión_jitb[gid].update({
+            "emojis_secretos": emojis_originales,      # Los 6 que deben adivinar
+            "emojis_adivinados": [],                  # Aquí meteremos los que ya descubrieron
+            "puntajes": {},                           # Guardará {user_id: puntos}
+            "activa": True
+        })
+
+        del esperando_elementos[user_id]
+        await update.message.reply_text("¡Los 6 elementos han sido guardados y mezclados!")
+        
+        lista_visual = " ".join(emojis_originales)
+        mensaje_flash = await context.bot.send_message(
+            chat_id=gid,
+            text=f"¡LA CAJA SERÁ ABIERTA! \n\n Mira bien los elementos, desapareceran en 2 segundos:\n\n👉  {lista_visual}  👈"
+        )
+        
+        await asyncio.sleep(2)
+
+        try:
+            await context.bot.delete_message(chat_id=gid, message_id=mensaje_flash.message_id)
+        except Exception:
+            pass
+
+        await context.bot.send_message(
+            chat_id=gid,
+            text="📭 ¡La caja se cerró! ¡A MANDAR EMOJIS! 🎰\nEscribe de uno en uno. Si le atinas a uno que estaba en la caja, te llevas 1 punto."
+        )
+        return
+        
     # Escucha del juego Ahorcado en el Grupo 🎯
     if chat_id in sesión and sesión[chat_id].get("activa") and "palabra_secreta" in sesión[chat_id]:
         if len(texto) == 1 and texto.isalpha():
@@ -605,6 +891,50 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if "_" not in tablero.replace(" ", ""):
                 await update.message.reply_text(f"¡VICTORIA DE {user_name}! 🥳 La palabra era: {datos['palabra_secreta'].upper()}")
                 datos["activa"] = False
+            return
+
+    # Escucha del juego Jack In The Box en el Grupo 🕵️‍♂️
+    if chat_type != "private" and chat_id in sesión_jitb and sesión_jitb[chat_id].get("activa"):
+        sesion = sesión_jitb[chat_id]
+        if texto in sesion.get("emojis_secretos", []) and texto not in sesion.get("emojis_adivinados", []):
+            sesion["emojis_adivinados"].append(texto)
+            sesion["puntajes"][user_id] = sesion["puntajes"].get(user_id, 0) + 1
+            
+            total_adivinados = len(sesion["emojis_adivinados"])
+            await update.message.reply_text(
+                f"✨ ¡PUNTO PARA {user_name}! El emoji {texto} sí estaba en la caja. 🎉\n"
+                f"Llevamos [{total_adivinados}/6] descubiertos."
+            )
+            
+            if total_adivinados == 6:
+                sesion["activa"] = False
+                
+                # ─── RECUENTO DE PUNTAJES ───
+                # Buscamos los nombres reales de los que anotaron puntos usando la lista de jugadores inscritos
+                tabla_posiciones = []
+                for uid, pts in sesion["puntajes"].items():
+                    # Buscamos el nombre del jugador en la lista usando su ID
+                    jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid), None)
+                    nombre_pantalla = jugador_obj["name"] if jugador_obj else f"Jugador ID: {uid}"
+                    tabla_posiciones.append((nombre_pantalla, pts))
+                
+                # Los ordenamos de mayor a menor puntaje
+                tabla_posiciones.sort(key=lambda x: x[1], reverse=True)
+                
+                # Armamos el mensaje estético para el grupo
+                mensaje_recuento = "🏁 ¡JUEGO TERMINADO! Se descubrieron todos los emojis de la caja. 🧠⚡\n\n"
+                mensaje_recuento += "Puntuación: \n"
+                
+                medallas = ["🥇", "🥈", "🥉"]
+                for index, (nombre, puntos) in enumerate(tabla_posiciones):
+                    # Si están en el top 3 les ponemos medalla, si no, un puntito lindo
+                    decorador = medallas[index] if index < len(medallas) else "🔹"
+                    mensaje_recuento += f"{decorador} {nombre}: {puntos} pt(s)\n"
+                
+                await context.bot.send_message(
+                    chat_id=chat_id,
+                    text=mensaje_recuento,
+                )
             return
 
     # Escucha de Ritmo A Go-Go
@@ -669,10 +999,17 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try: sesión_stop["timer_task"].cancel()
         except: pass
 
-    # 5. 🎨 APAGÓN TOTAL AL PICTIONARY
-    sesión_pictionary["activa"] = False
-    sesión_pictionary["palabra_correcta"] = None
-    sesión_pictionary["dibujante_id"] = None
+    # 5. 📦 APAGÓN TOTAL A JACK IN THE BOX
+    if chat_id in sesión_jitb:
+        sesión_jitb[chat_id]["activa"] = False
+        sesión_jitb[chat_id]["jugadores"] = []
+
+    # 7. 🧟 APAGÓN TOTAL A INFECCIÓN ZOMBIE
+    sesión_zombie["activa"] = False
+    sesión_zombie["jugadores"] = []
+    sesión_zombie["zombies"] = []
+    sesión_zombie["vivos"] = []
+    sesión_zombie["fase"] = None
 
     await update.message.reply_text(
         f"¡CLOSE VAN! 💥\n\nSe cerraron todas las rondas existentes." 
@@ -700,22 +1037,26 @@ if __name__ == '__main__':
         # Handlers JUEGO 2: La Bomba
         application.add_handler(CommandHandler("bomba", unirse_bomba))
         application.add_handler(CommandHandler("start_bomba", iniciar_bomba))
-        
-        # Handlers JUEGO 3: Ratones 3x3
+
+        # Handlers JUEGO 3: Ratones
         application.add_handler(CommandHandler("ratones", unirse_ratones))
         application.add_handler(CommandHandler("start_ratones", iniciar_ratones))
-        
+
         # Handlers JUEGO 4: Ritmo A Go-Go
         application.add_handler(CommandHandler("stop", unirse_stop))
         application.add_handler(CommandHandler("start_stop", iniciar_stop))
 
-        # 📦 Handlers JUEGO 5: What's in the Box (HOBA)
+        # Handlers JUEGO 5: Jack In The Box
         application.add_handler(CommandHandler("box", unirse_box))
         application.add_handler(CommandHandler("start_box", iniciar_jitbx))
-        
-        # Callbacks y Mensajes globales
+
+        # Handlers JUEGO 6: Infección Zombie
+        application.add_handler(CommandHandler("zombie", unirse_zombie))
+        application.add_handler(CommandHandler("start_zombie", iniciar_zombie))
+
+        # Handlers de Botones y Mensajes Generales
         application.add_handler(CallbackQueryHandler(manejar_botones))
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensajes))
-        
-        print("SISTEMA FUNCIONANDO, PRUEBALO!")
+
+        # ¡Arrancamos!
         application.run_polling()
