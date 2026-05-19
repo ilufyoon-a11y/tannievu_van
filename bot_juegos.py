@@ -29,7 +29,7 @@ GIF_INFO       = "https://i.postimg.cc/JnHVnpy2/lv-0-20260518150214-ezgif-com-cu
 GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg"
 # Parcheado: Link directo .jpg para que se abra gigante en el chat 💥
 FOTO_BOMBA     = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
-GIF_RATONES    = "CgACAgEAAxkBAAIcVGoLexdgkZuzvUmOmDPVoz2I5R_bAAJEBwACiURZREcuvW_lsALzOwQ"
+GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg"
 GIF_RITMOAGO   = "https://i.postimg.cc/MXJJQ1k9/lv-0-20260518152334.gif"
 GIF_ERROR      = "CgACAgEAAxkBAAIcYGoLgEkS0IC8Nm5eZvkTxPl95zDJAAJHBwACiURZROyXOAb37_ihOwQ"
 
