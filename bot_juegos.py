@@ -27,8 +27,8 @@ def keep_alive():
 # CAMBIA ESTOS LINKS POR TUS ENLACES DIRECTOS DE POSTIMAGES (.jpg)
 FOTO_BIENVENIDA   = "https://i.postimg.cc/Xv7Y1n8p/bienvenida.jpg"
 FOTO_INFO         = "https://i.postimg.cc/Xv7Y1n8p/menu_info.jpg"
-FOTO_AHORCADO     = "https://i.postimg.cc/Xv7Y1n8p/ahorcado.jpg"
-FOTO_BOMBA        = "https://i.postimg.cc/4y03nXgX/c0a2bfc5785b7d83d41f933447f5be2f.jpg"
+FOTO_AHORCADO     = "AgACAgEAAxkBAAIcvGoL791u355h_5aS4eXVl3ZdUqZbAAKFDGsbHKlhRNIEXidHWA1CAQADAgADcwADOwQ"
+FOTO_BOMBA        = "AgACAgEAAxkBAAIcvGoL791u355h_5aS4eXVl3ZdUqZbAAKFDGsbHKlhRNIEXidHWA1CAQADAgADcwADOwQ"
 FOTO_RATONES      = "https://i.postimg.cc/Xv7Y1n8p/ratones.jpg"
 FOTO_RITMOAGO     = "https://i.postimg.cc/Xv7Y1n8p/ritmo_gogo.jpg"
 FOTO_ERROR        = "https://i.postimg.cc/Xv7Y1n8p/error_sistema.jpg"
