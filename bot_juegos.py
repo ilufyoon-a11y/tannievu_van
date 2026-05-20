@@ -531,10 +531,7 @@ async def abrir_votacion_zombie(chat_id, context):
     msg_voto = await context.bot.send_message(
         chat_id = chat_id,
         text = (
-            "📢 ⚠️ **¡REUNIÓN DE EMERGENCIA!** ⚠️ 📢\n\n"
-            "¡El virus se ha propagado! Un humano ha sido infectado y ahora hay un nuevo zombie entre nosotros.\n"
-            "Deben discutir en el grupo y votar a quién sacrificar. ¡Si eliminan a todos los zombies ganan, si eliminan a un humano pierden defensas!\n\n"
-            "Presionen los botones para votar (Tienen 30 segundos):"
+            "¡𝖱𝖾𝗎𝗇𝗂𝗈𝗇 𝖽𝖾 𝖾𝗆𝖾𝗋𝗀𝖾𝗇𝖼𝗂𝖺! 𝖠𝗅𝗀𝗎𝗂𝖾𝗇 𝗒𝖺 𝖿𝗎𝖾 𝗆𝗈𝗋𝖽𝗂𝖽𝗈 𝖺𝗌𝗂 𝗊𝗎𝖾 𝖽𝖾𝖻𝖾𝗇 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝗋 𝖺𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝗆𝗎𝖾𝗋𝖽𝖺 𝖺 𝗈𝗍𝗋𝖺 𝗉𝖾𝗋𝗌𝗈𝗇𝖺, 𝗌𝗈𝗅𝗈 𝖼𝗎𝖾𝗇𝗍𝖺𝗇 𝖼𝗈𝗇 𝟣𝟤𝟢 𝗆𝗂𝗇𝗎𝗍𝗈𝗌 𝗉𝖺𝗋𝖺 𝗉𝗈𝗇𝖾𝗋𝗌𝖾 𝖽𝖾 𝖺𝖼𝗎𝖾𝗋𝖽𝗈 𝗒 𝗏𝗈𝗍𝖺𝗋"
         ),
         reply_markup = InlineKeyboardMarkup(botones_voto)
     )
