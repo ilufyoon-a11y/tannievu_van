@@ -634,7 +634,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         if not any(j['id'] == user.id for j in sesión[chat_id]["jugadores"]):
             sesión[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"𔓕 ֹ {user.first_name} se unió 𓂃")
+            await query.message.reply_text(f"📝 ֹ {user.first_name} se unió 𓂃")
 
     # Callbacks Box
     elif query.data == "unirme_box_click":
@@ -645,7 +645,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         if not any(j['id'] == user.id for j in sesión_jitb[chat_id]["jugadores"]):
             sesión_jitb[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name, "username": user.username})
-            await query.message.reply_text(f"📦 {user.first_name} entró a la caja.")
+            await query.message.reply_text(f"📦 ֹ {user.first_name} se unió 𓂃")
 
     # Callbacks Bomba
     elif query.data == "unirme_bomba_click":
@@ -659,7 +659,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             emoji_asignado = random.choice(emojis_disponibles) if emojis_disponibles else random.choice(EMOJIS_BOMBA)
             
             sesión_bomba["jugadores"].append({"id": user.id, "name": user.first_name, "emoji": emoji_asignado})
-            await query.message.reply_text(f"💣 {user.first_name} entró de incógnito al campo.")
+            await query.message.reply_text(f"❄️ ֹ {user.first_name} se unió 𓂃")
 
     elif query.data.startswith("pasar_a_"):
         if not sesión_bomba["activa"] or user.id != sesión_bomba["bomba_en"]: 
@@ -691,7 +691,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         if not any(j['id'] == user.id for j in sesión_ratones["jugadores"]):
             sesión_ratones["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"{user.first_name} entró a la caceria.")
+            await query.message.reply_text(f"🐭 ֹ {user.first_name} se unió 𓂃")
             
     elif query.data == "raton_salvado":
         if sesión_ratones["activa"] and user.id in sesión_ratones["esperando_click"]:
@@ -710,7 +710,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         if not any(j['id'] == user.id for j in sesión_stop["jugadores"]):
             sesión_stop["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"{user.first_name} está listo para jugar.")
+            await query.message.reply_text(f"📝 ֹ {user.first_name} se unió 𓂃")
 
 # === Callbacks Juego Zombie ===
     elif query.data == "unirme_zombie_click":
@@ -719,7 +719,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         if not any(j['id'] == user.id for j in sesión_zombie["jugadores"]):
             sesión_zombie["jugadores"].append({"id": user.id, "name": user.first_name})
-            await query.message.reply_text(f"𔓕 ֹ {user.first_name} entró al búnker 🏃‍♂️💨")
+            await query.message.reply_text(f"🚌 ֹ {user.first_name} se unió 𓂃")
 
     elif query.data.startswith("morder_"):
         partes = query.data.split("_")
