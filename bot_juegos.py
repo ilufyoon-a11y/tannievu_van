@@ -1017,7 +1017,7 @@ if __name__ == '__main__':
         
         # Handlers JUEGO 2: La Bomba
         application.add_handler(CommandHandler("snowball", unirse_snowball))
-        application.add_handler(CommandHandler("start_bomba", iniciar_bomba))
+        application.add_handler(CommandHandler("start_snowball", iniciar_snowball))
 
         # Handlers JUEGO 3: Ratones
         application.add_handler(CommandHandler("ratones", unirse_ratones))
