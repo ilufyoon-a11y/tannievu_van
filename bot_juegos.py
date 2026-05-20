@@ -132,7 +132,7 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "𝖴𝗇𝖺 𝖻𝗈𝗅𝖺 𝖽𝖾 𝗇𝗂𝖾𝗏𝖾 𝖾𝗌𝗍𝖺 𝖻𝖺𝗃𝖺𝗇𝖽𝗈 𝖽𝖾𝗌𝖽𝖾 𝗎𝗇𝖺 𝖼𝗈𝗅𝗂𝗇𝖺 𝗒 𝗏𝖺 𝖽𝗂𝗋𝖾𝖼𝗍𝗈 𝗁𝖺𝖼𝗂𝖺 𝖺 𝗎𝗌𝗍𝖾𝖽𝖾𝗌. ¡𝖫𝖺𝗇𝗓𝖺𝗅𝖺 𝖺 𝗈𝗍𝗋𝗈 𝗈 𝗊𝗎𝖾𝖽𝖺 𝖺𝗉𝗅𝖺𝗌𝗍𝖺𝖽@!\n\n"
             "𝒊𝒊. 𝐑𝐚𝐭𝐨𝐧𝐞𝐬\n\n"
             "𝖴𝗇𝖺 𝗉𝗅𝖺𝗀𝖺 𝗌𝖾 𝗁𝖺 𝖽𝖾𝗌𝗁𝖺𝗍𝖺𝖽𝗈 𝗒 𝗅𝖺 𝗎𝗇𝗂𝖼𝖺 𝖿𝗈𝗋𝗆𝖺 𝖽𝖾 𝖽𝖾𝗌𝗁𝖺𝖼𝖾𝗋𝗌𝖾 𝖽𝖾 𝖾𝗅𝗅𝖺 𝖾𝗌 𝗀𝗈𝗅𝗉𝖾𝖺𝗇𝖽𝗈 𝖺 𝗅𝗈𝗌 𝗋𝖺𝗍𝗈𝗇𝖾𝗌\n\n"
-            "𝒊𝒗. 𝐒𝐭𝐨𝐩\n\n"
+            "𝒊𝒗. 𝐑𝐢𝐭𝐦𝐨 𝐀𝐠𝐨 𝐆𝐨\n\n"
             "𝖴𝗇𝖺 𝗏𝖺𝗋𝗂𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝗌𝗍𝗈𝗉, 𝖽𝗈𝗇𝖽𝖾 𝖼𝖺𝖽𝖺 𝗎𝗇𝗈 𝖽𝖾𝖻𝖾 𝖽𝖾𝖼𝗂𝗋 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗋𝖾𝗅𝖺𝖼𝗂𝗈𝗇𝖺𝖽𝖺𝗌 𝖺 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂𝖺 𝗌𝗂𝗇 𝗋𝖾𝗉𝖾𝗍𝗂𝗋 𝗅𝖺𝗌 𝖽𝗂𝖼𝗁𝖺𝗌 𝖺𝗇𝗍𝖾𝗋𝗂𝗈𝗋𝗆𝖾𝗇𝗍𝖾\n\n"
             "𝒗. 𝐖𝐡𝐚𝐭'𝐬 𝐢𝐧 𝐭𝐡𝐞 𝐛𝐨𝐱\n\n"
             "𝖨𝗇𝗌𝗉𝗂𝗋𝖺𝖽𝗈 𝖾𝗇 𝖵𝖺𝗋𝗂𝖾𝗍𝗒 𝖲𝗁𝗈𝗐𝗌 𝗈𝖿 𝖬𝖾𝗆𝗈𝗋𝗂𝖾𝗌: 𝖯𝖺𝗋𝗍 𝟣, 𝗍𝖾𝗇𝖽𝗋𝖺𝗇 𝗌𝗈𝗅𝗈 𝟤 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝗈𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!\n\n"
@@ -1040,8 +1040,8 @@ if __name__ == '__main__':
         application.add_handler(CommandHandler("start_ratones", iniciar_ratones))
 
         # Handlers JUEGO 4: Ritmo A Go-Go
-        application.add_handler(CommandHandler("stop", unirse_stop))
-        application.add_handler(CommandHandler("start_stop", iniciar_stop))
+        application.add_handler(CommandHandler("ritmo", unirse_stop))
+        application.add_handler(CommandHandler("start_ritmo", iniciar_stop))
 
         # Handlers JUEGO 5: Jack In The Box
         application.add_handler(CommandHandler("box", unirse_box))
