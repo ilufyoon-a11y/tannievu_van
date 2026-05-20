@@ -630,7 +630,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             sesión[chat_id] = {"jugadores": [], "activa": False}
         # 🛡️ Escudo Ahorcado Active
         if sesión[chat_id]["activa"]:
-            await query.answer("❌ ¡Esta ronda de Ahorcado ya empezó! Espera al siguiente turno.", show_alert=True)
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗇𝗂𝗋, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión[chat_id]["jugadores"]):
             sesión[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name})
@@ -641,7 +641,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if chat_id not in sesión_jitb:
             sesión_jitb[chat_id] = {"jugadores": [], "activa": False}
         if sesión_jitb[chat_id]["activa"]:
-            await query.answer("❌ ¡Esta ronda de Jack In The Box ya empezó!", show_alert=True)
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗇𝗂𝗋, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión_jitb[chat_id]["jugadores"]):
             sesión_jitb[chat_id]["jugadores"].append({"id": user.id, "name": user.first_name, "username": user.username})
@@ -651,7 +651,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "unirme_bomba_click":
         # 🛡️ Escudo Bomba Active (Cambiado a Alerta Emergente Pro 💅)
         if sesión_bomba["activa"]: 
-            await query.answer("❌ ¡La partida de La Bomba ya empezó! Espera a la otra ronda.", show_alert=True)
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗇𝗂𝗋, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión_bomba["jugadores"]):
             emojis_usados = [j["emoji"] for j in sesión_bomba["jugadores"]]
@@ -679,7 +679,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 nuevos_botones.append([InlineKeyboardButton(f"Lanzar a {jugador['emoji']}", callback_data=f"pasar_a_{jugador['id']}")])
         
         await query.message.edit_text(
-            text=f"¡{user_jugador['emoji']} se salvó de milagro!\n\n💣 ¡Ahora la tiene {nuevo_jugador['emoji']}!\n¡Rápido, elige a qué emoji mandársela!",
+            text=f"¡{user_jugador['name']} se salvó de milagro!\n\n💣 ¡Ahora la tiene {nuevo_jugador['name']}!\n¡Rápido, elige a qué persona mandársela!",
             reply_markup=InlineKeyboardMarkup(nuevos_botones)
         )
 
@@ -687,7 +687,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "unirme_ratones_click":
         # 🛡️ Escudo Ratones Active
         if sesión_ratones["activa"]:
-            await query.answer("❌ ¡La cacería de Ratones ya empezó! No puedes entrar a mitad de ronda.", show_alert=True)
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗇𝗂𝗋, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión_ratones["jugadores"]):
             sesión_ratones["jugadores"].append({"id": user.id, "name": user.first_name})
@@ -706,7 +706,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "unirme_stop_click":
         # 🛡️ Escudo Stop Active
         if sesión_stop["activa"]:
-            await query.answer("❌ ¡El Ritmo A Go-Go ya inició! Espera en el círculo para la otra.", show_alert=True)
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗇𝗂𝗋, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión_stop["jugadores"]):
             sesión_stop["jugadores"].append({"id": user.id, "name": user.first_name})
@@ -715,7 +715,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # === Callbacks Juego Zombie ===
     elif query.data == "unirme_zombie_click":
         if sesión_zombie.get("activa", False):
-            await query.answer("❌ El búnker ya está cerrado. La epidemia comenzó.", show_alert=True)
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗇𝗂𝗋, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión_zombie["jugadores"]):
             sesión_zombie["jugadores"].append({"id": user.id, "name": user.first_name})
