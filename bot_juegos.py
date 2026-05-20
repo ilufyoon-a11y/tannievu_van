@@ -591,7 +591,7 @@ async def procesar_resultados_votacion(chat_id, context):
         await context.bot.send_message(chat_id=chat_id, text="¡𝖲𝖮𝖡𝖱𝖤𝖵𝖨𝖵𝖨𝖤𝖱𝖮𝖭!. 𝖤𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝗒 𝖺𝗁𝗈𝗋𝖺 𝗉𝗎𝖾𝖽𝖾𝗇 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝖼𝖺𝗌𝖺")
         sesión_zombie["activa"] = False
     elif not sesión_zombie["vivos"]:
-        await context.bot.send_message(chat_id=chat_id, text="🧟‍♂️ 🚨 **¡VICTORIA ZOMBIE!** Ya no quedan humanos sanos. La horda ha tomado el control.")
+        await context.bot.send_message(chat_id=chat_id, text="¡𝖸𝖺 𝗇𝗈 𝗊𝗎𝖾𝖽𝖺𝗇 𝗁𝗎𝗆𝖺𝗇𝗈𝗌! 𝖤𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝗌𝖾 𝖼𝗈𝗇𝗏𝗂𝗋𝗍𝗂𝗈 𝖾𝗇 𝗈𝗍𝗋𝗈 𝖿𝗈𝖼𝗈 𝖽𝖾 𝗂𝗇𝖿𝖾𝖼𝖼𝗂𝗈𝗇")
         sesión_zombie["activa"] = False
     else:
         await pasar_a_siguiente_ataque(chat_id, context)
