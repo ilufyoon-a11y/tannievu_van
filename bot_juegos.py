@@ -297,7 +297,7 @@ async def rondas_battle_royale(chat_id, context):
         )
 
         limite = 5.0
-        while limite > 0 and len(sesión_ratones["esperando_click"]) > 1:
+        while limite > 0 and len(sesión_ratones["esperando_click"]) > 0:
             await asyncio.sleep(0.5)
             limite -= 0.5
 
@@ -428,7 +428,6 @@ async def iniciar_jitbx(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         encubridor = random.choice(candidatos)
     
-    sesión_jitb[chat_id]["jugadores"].remove(encubridor)
     sesión_jitb[chat_id].update({
         "encubridor_id": encubridor["id"], 
         "ultimo_encubridor_id": encubridor["id"], 
@@ -718,7 +717,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # === Callbacks Juego Zombie ===
     elif query.data == "unirme_zombie_click":
-        if sesión_zombie["activa"]:
+        if sesión_zombie.get("activa", False):
             await query.answer("❌ El búnker ya está cerrado. La epidemia comenzó.", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión_zombie["jugadores"]):
@@ -730,7 +729,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
         victima_id = int(partes[1])
         grupo_chat_id = int(partes[2])
         
-        if sesión_zombie["activa"] and sesión_zombie["fase"] == "infeccion":
+        if sesión_zombie.get("activa", False) and sesión_zombie.get("fase") == "infeccion":
             if victima_id in sesión_zombie["vivos"]:
                 sesión_zombie["vivos"].remove(victima_id)
                 sesión_zombie["zombies"].append(victima_id)
@@ -755,10 +754,10 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data.startswith("voto_z_"):
         votado_id = int(query.data.split("_")[2])
         
-        if sesión_zombie["activa"] and sesión_zombie["fase"] == "votacion":
+        if sesión_zombie.get("activa", False) and sesión_zombie.get("fase") == "votacion":
             if any(j['id'] == user.id for j in sesión_zombie["jugadores"]):
                 sesión_zombie["votos"][user.id] = votado_id
-                await query.answer(f"Registraste tu voto de manera secreta. 🗳️", show_alert=True)
+                await query.answer("Registraste tu voto de manera secreta. 🗳️", show_alert=True)
             else:
                 await query.answer("❌ No estás participando en esta ronda.", show_alert=True)
 
@@ -813,7 +812,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         lista_visual = " ".join(emojis_originales)
         mensaje_flash = await context.bot.send_message(
             chat_id=gid,
-            text=f"¡LA CAJA SERÁ ABIERTA! \n\n Mira bien los elementos, desapareceran en 2 segundos:\n\n👉  {lista_visual}  👈"
+            text=f"¡LA CAJA SERÁ ABIERTA! \n\n Mira bien los elementos, desaparecerán en 2 segundos:\n\n👉  {lista_visual}  👈"
         )
         
         await asyncio.sleep(2)
@@ -880,24 +879,19 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 sesion["activa"] = False
                 
                 # ─── RECUENTO DE PUNTAJES ───
-                # Buscamos los nombres reales de los que anotaron puntos usando la lista de jugadores inscritos
                 tabla_posiciones = []
                 for uid, pts in sesion["puntajes"].items():
-                    # Buscamos el nombre del jugador en la lista usando su ID
                     jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid), None)
                     nombre_pantalla = jugador_obj["name"] if jugador_obj else f"Jugador ID: {uid}"
                     tabla_posiciones.append((nombre_pantalla, pts))
                 
-                # Los ordenamos de mayor a menor puntaje
                 tabla_posiciones.sort(key=lambda x: x[1], reverse=True)
                 
-                # Armamos el mensaje estético para el grupo
                 mensaje_recuento = "🏁 ¡JUEGO TERMINADO! Se descubrieron todos los emojis de la caja. 🧠⚡\n\n"
                 mensaje_recuento += "Puntuación: \n"
                 
                 medallas = ["🥇", "🥈", "🥉"]
                 for index, (nombre, puntos) in enumerate(tabla_posiciones):
-                    # Si están en el top 3 les ponemos medalla, si no, un puntito lindo
                     decorador = medallas[index] if index < len(medallas) else "🔹"
                     mensaje_recuento += f"{decorador} {nombre}: {puntos} pt(s)\n"
                 
@@ -909,29 +903,48 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Escucha de Ritmo A Go-Go
     if sesión_stop.get("activa") and texto and not update.message.text.startswith("/"):
-        actual_id = sesión_stop["sobrevivientes"][sesión_stop["turno_index"]]
-        if user_id == actual_id:
-            if sesión_stop["timer_task"]: 
-                sesión_stop["timer_task"].cancel()
+        if user_id in sesión_stop.get("sobrevivientes", []):
+            actual_id = sesión_stop["sobrevivientes"][sesión_stop["turno_index"]]
+            if user_id == actual_id:
+                if sesión_stop.get("timer_task"): 
+                    sesión_stop["timer_task"].cancel()
 
-            palabra_limpia = texto.lower()
+                palabra_limpia = texto.lower()
+                eliminado = False
 
-            if palabra_limpia in sesión_stop["palabras_dichas"]:
-                sesión_stop["sobrevivientes"].remove(user_id)
-                await update.message.reply_text(f"¡YA LA DIJERON! '{texto}' se repitió. {user_name} ELIMINADO")
-            elif not texto.upper().startswith(sesión_stop["letra_actual"].upper()):
-                sesión_stop["sobrevivientes"].remove(user_id)
-                await update.message.reply_text(f"Tenía que empezar con {sesión_stop['letra_actual']}. {user_name} ELIMINADO")
-            else:
-                sesión_stop["palabras_dichas"].append(palabra_limpia)
-                await update.message.reply_text(f"¡Bien! '{texto}' anotada.")
-                sesión_stop["turno_index"] += 1
+                if palabra_limpia in sesión_stop["palabras_dichas"]:
+                    sesión_stop["sobrevivientes"].remove(user_id)
+                    await update.message.reply_text(f"¡YA LA DIJERON! '{texto}' se repitió. {user_name} ELIMINADO ❌")
+                    eliminado = True
+                elif not texto.upper().startswith(sesión_stop["letra_actual"].upper()):
+                    sesión_stop["sobrevivientes"].remove(user_id)
+                    await update.message.reply_text(f"Tenía que empezar con {sesión_stop['letra_actual']}. {user_name} ELIMINADO ❌")
+                    eliminado = True
+                else:
+                    sesión_stop["palabras_dichas"].append(palabra_limpia)
+                    await update.message.reply_text(f"¡Bien! '{texto}' anotada. ✅")
 
-            if sesión_stop["turno_index"] >= len(sesión_stop["sobrevivientes"]):
-                sesión_stop["turno_index"] = 0
+                # CORREGIDO: Verificación de Fin de Juego (Saber si queda un único ganador superviviente)
+                if len(sesión_stop["sobrevivientes"]) <= 1:
+                    sesión_stop["activa"] = False
+                    if sesión_stop["sobrevivientes"]:
+                        ganador_id = sesión_stop["sobrevivientes"][0]
+                        ganador_obj = next((j for j in sesión_stop["jugadores"] if j["id"] == ganador_id), None)
+                        g_name = ganador_obj["name"] if ganador_obj else "Alguien"
+                        await context.bot.send_message(chat_id=chat_id, text=f"🏁 ¡JUEGO TERMINADO! El último sobreviviente en pie es ¡{g_name}! 🏆👑")
+                    else:
+                        await context.bot.send_message(chat_id=chat_id, text=f"🏁 ¡JUEGO TERMINADO! Nadie logró sobrevivir a la ronda. 💀")
+                    return
 
-            await lanzar_turno_stop(chat_id, context)
-            return
+                # CORREGIDO: Ajuste seguro del índice de turnos tras eliminación
+                if not eliminado:
+                    sesión_stop["turno_index"] += 1
+
+                if sesión_stop["turno_index"] >= len(sesión_stop["sobrevivientes"]):
+                    sesión_stop["turno_index"] = 0
+
+                await lanzar_turno_stop(chat_id, context)
+                return
 
 
 # =====================================================================
@@ -981,9 +994,7 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_zombie["vivos"] = []
     sesión_zombie["fase"] = None
 
-    await update.message.reply_text(
-        f"¡CLOSE VAN! 💥\n\nSe cerraron todas las rondas existentes." 
-    )
+    await update.message.reply_text("¡CLOSE VAN! 💥\n\nSe cerraron todas las rondas existentes.")
 
 
 # =====================================================================
