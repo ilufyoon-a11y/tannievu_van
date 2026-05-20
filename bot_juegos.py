@@ -603,7 +603,7 @@ async def pasar_a_siguiente_ataque(chat_id, context):
         botones_ataque = []
         for humano_id in sesión_zombie["vivos"]:
             humano_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == humano_id)
-            botones_ataque.append([InlineKeyboardButton(f"Morder a 🩸 {humano_obj['name']}", callback_data=f"morder_{humano_id}_{chat_id}")])
+            botones_ataque.append([InlineKeyboardButton(f"𝖬𝗈𝗋𝖽𝖾𝗋 𝖺 {humano_obj['name']}", callback_data=f"morder_{humano_id}_{chat_id}")])
             
         try:
             await context.bot.send_message(
