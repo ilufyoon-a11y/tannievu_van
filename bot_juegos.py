@@ -28,16 +28,17 @@ def keep_alive():
 # =====================================================================
 # 2. VARIABLES GLOBALES Y DICCIONARIOS
 # =====================================================================
-# 📸 BANCO DE IMÁGENES FIJAS Y GIFS (¡Enlaces directos y limpios! 💅)
-GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg"
-GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg"
-GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg"
-FOTO_BOMBA      = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
-GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg"
-GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg"
-GIF_ERROR      = "https://i.postimg.cc/G38XXrMW/Airbrush-IMAGE-ENHANCER-1779170852039-1779170852039.jpg"
-GIF_OFFVAN     = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg"
-GIF_JITB       = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg" # Agregado por consistencia
+# 📸 BANCO DE IMÁGENES 
+GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg" #NECESITA ARREGLO
+GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg" #FUNCIONA PERFECTO 
+GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg" #FUNCIONA PERFECTO
+FOTO_SNOWWBALL = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg" #FUNCIONA PERFECTO
+GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg" #FUNCIONA PERFECTO
+GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg" #FUNCIONA PERFECTO
+GIF_ERROR      = "https://i.postimg.cc/G38XXrMW/Airbrush-IMAGE-ENHANCER-1779170852039-1779170852039.jpg" #FUNCIONA PERFECTO
+GIF_OFFVAN     = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg" #NECESITA SER LLAMADO COMO PHOTO
+GIF_JITB       = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg" #NECESITA ARREGLO - fir
+GIF_zombie     = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg" #FUNCIONA PERFECTO 
 
 sesión = {}            # Ahorcado
 esperando_palabra = {} # Ahorcado (Privado)
@@ -111,8 +112,8 @@ def dibujar_pantalla_ahorcado(chat_id):
 
 # ₊˚ ✧ ‿︵‿୨୧‿︵‿ ✧ ₊˚ COMANDO START ₊˚ ✧ ‿︵‿୨୧‿︵‿ ✧ ₊˚
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_animation(
-        animation = GIF_BIENVENIDA,
+    await update.message.reply_photo(
+        photo = GIF_BIENVENIDA,
         caption = "\n\n🌸ㅤㅤ⪩⪩ㅤㅤ𝐁𝐢𝐞𝐧𝐯𝐞𝐧𝐢𝐝@ㅤㅤ!!ㅤㅤ☆ \n\n𝖵𝖺𝗇 𝖾𝗌 𝗎𝗇 𝖻𝗈𝗍 𝗊𝗎𝖾 𝗈𝖿𝗋𝖾𝖼𝖾 𝗎𝗇𝖺 𝗏𝖺𝗋𝗂𝖾𝖽𝖺𝖽 𝖽𝖾 𝗃𝗎𝖾𝗀𝗈𝗌, 𝖺𝗎𝗇 𝖾𝗌𝗍𝖺 𝖾𝗇 𝗉𝗋𝗈𝖼𝖾𝗌𝗈 𝖽𝖾 𝗉𝗋𝗎𝖾𝖻𝖺 𝖺𝗌𝗂 𝗊𝗎𝖾 𝗌𝗂𝖾𝗇𝗍𝖾𝗍𝖾 𝖾𝗇 𝗍𝗈𝗍𝖺𝗅 𝗅𝗂𝖻𝖾𝗋𝗍𝖺𝖽 𝖽𝖾 𝖼𝗈𝗆𝗎𝗇𝗂𝖼𝖺𝗋 𝖼𝗎𝖺𝗅𝗊𝗎𝗂𝖾𝗋 𝗊𝗎𝖾𝗃𝖺/𝗌𝗎𝗀𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝖾𝗇 𝖾𝗅 𝖼𝗁𝖺𝗍 𝖽𝖾𝗅 𝖼𝖺𝗇𝖺𝗅. \n\n𝖤𝗌𝗉𝖾𝗋𝖺𝗆𝗈𝗌 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗃𝗎𝖾𝗀𝗈𝗌 𝖼𝗈𝗇𝗍𝖾𝗇𝗂𝖽𝗈𝗌 𝗌𝖾𝖺𝗇 𝖽𝖾 𝗌𝗎 𝖺𝗀𝗋𝖺𝖽𝗈! 💕"
     )
 
@@ -151,7 +152,7 @@ async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_click")
     await update.message.reply_photo(
-        photo = GIF_AHORCADO,
+        photo = GIF_SNOWWBALL,
         caption = "\n\n ៹ ࣪  📝 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖺𝗁𝗈𝗋𝖼𝖺𝖽𝗈! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃", 
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
