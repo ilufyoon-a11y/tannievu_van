@@ -37,7 +37,7 @@ GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg"
 GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg"
 GIF_ERROR      = "https://i.postimg.cc/G38XXrMW/Airbrush-IMAGE-ENHANCER-1779170852039-1779170852039.jpg"
 GIF_OFFVAN     = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg"
-GIF_JITB       = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg" # Agregado por consistencia
+GIF_JITB       = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg" # Agregado por consistencia
 
 sesión = {}            # Ahorcado
 esperando_palabra = {} # Ahorcado (Privado)
