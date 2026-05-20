@@ -576,7 +576,7 @@ async def procesar_resultados_votacion(chat_id, context):
         
         await context.bot.send_message(
             chat_id = chat_id,
-            text = f"💀 **{eliminado_obj['name']} fue lanzado fuera del búnker con {max_votos} votos...**\n¡Y EFECTIVAMENTE ERA UN ZOMBIE! 🎉"
+            text = f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖻𝗎𝗇𝗄𝖾𝗋. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, 𝗌𝖾 𝖽𝖾𝗌𝗁𝗂𝖼𝗂𝖾𝗋𝗈𝗇 𝖽𝖾𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈!"
         )
     else:
         sesión_zombie["vivos"].remove(mas_votado_id)
@@ -584,7 +584,7 @@ async def procesar_resultados_votacion(chat_id, context):
         
         await context.bot.send_message(
             chat_id = chat_id,
-            text = f"💔 **{eliminado_obj['name']} fue sacrificado injustamente con {max_votos} votos...**\nEra un humano completamente sano. El búnker cae en la paranoia..."
+            text = f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖻𝗎𝗇𝗄𝖾𝗋. 𝖤𝗋𝖺 𝗎𝗇 𝗁𝗎𝗆𝖺𝗇𝗈 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗌𝖺𝗇𝗈..."
         )
 
     if not sesión_zombie["zombies"]:
