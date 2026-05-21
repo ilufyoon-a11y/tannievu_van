@@ -42,7 +42,7 @@ GIF_ZOMBIE     = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg" #FUNCIONA PERFEC
 GIF_ENCUBRIDOR = "https://i.postimg.cc/QMmj1qZm/8a87226444e22cdd01aaff0060557a2b-(1).jpg"
 GIF_CERO       = "https://i.postimg.cc/vH5TDfDZ/763aa3f517ca4e8b1b1ae10f55dfb556-(1).jpg"
 GIF_LETRISTA   = "https://i.postimg.cc/Zndk78XB/Airbrush-IMAGE-ENHANCER-1779303536547-1779303536547.jpg"
-GIF_RECHAZADO  = ""
+GIF_RECHAZADO  = "https://i.postimg.cc/MTXZnXd8/1000005045.jpg"
 GIF_COMANDOS   = "https://i.postimg.cc/6qjQHnqv/1000005043-(1).jpg"
 
 sesión = {}            # Ahorcado
