@@ -726,7 +726,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await query.message_text(
                     f"¡{user.first_name} 𝖿𝗎𝖾 𝗆𝖺𝗌 𝗋𝖺𝗉𝗂𝖽𝗈 𝖾𝗇 𝖺𝗉𝗅𝖺𝗌𝗍𝖺𝗋 𝖺𝗅 𝗋𝖺𝗍𝗈𝗇!"
                     )
-                    return 
+                return 
                     
             sesión_ratones["esperando_click"].remove(user.id)
             await query.message.reply_text(
