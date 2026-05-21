@@ -42,6 +42,8 @@ GIF_ZOMBIE     = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg" #FUNCIONA PERFEC
 GIF_ENCUBRIDOR = "https://i.postimg.cc/QMmj1qZm/8a87226444e22cdd01aaff0060557a2b-(1).jpg"
 GIF_CERO       = "https://i.postimg.cc/vH5TDfDZ/763aa3f517ca4e8b1b1ae10f55dfb556-(1).jpg"
 GIF_LETRISTA   = "https://i.postimg.cc/Zndk78XB/Airbrush-IMAGE-ENHANCER-1779303536547-1779303536547.jpg"
+GIF_RECHAZADO  = ""
+GIF_COMANDOS   = "https://i.postimg.cc/6qjQHnqv/1000005043-(1).jpg"
 
 sesión = {}            # Ahorcado
 esperando_palabra = {} # Ahorcado (Privado)
@@ -121,7 +123,7 @@ async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 # --- COMANDO MENÚ PRINCIPAL ---
-async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo = GIF_INFO,
         caption = (
@@ -157,6 +159,14 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
 𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝖽𝖾𝖻𝖾𝗇 𝖾𝗌𝗉𝖾𝗋𝖺𝗋 𝗁𝖺𝗌𝗍𝖺 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗋𝖾𝗌𝖼𝖺𝗍𝖾𝗇, 𝗌𝗈𝗅𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾𝗇 𝗋𝖾𝗌𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝖾𝗇 𝗎𝗇 𝖺𝗎𝗍𝗈𝖻𝗎𝗌, 𝗉𝖾𝗋𝗈 𝗎𝗇 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝖾 𝖼𝗈𝗅𝗈 𝗒 𝖺𝗍𝖺𝖼𝖺 𝗉𝗈𝗋 𝗅𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌 𝖼𝗎𝖺𝗇𝖽𝗈 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝗌𝖾 𝖺𝗉𝖺𝗀𝖺𝗇 𝗉𝗈𝗋 𝗌𝖾𝗀𝗎𝗋𝗂𝖽𝖺𝖽 ¿𝖯𝗈𝖽𝗋𝖺𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?
 𝖢𝗈𝗆𝖺𝗇𝖽𝗈𝗌: /zombie - /start_zombie"""
         )
+    )
+
+
+async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo = GIF_COMANDOS,
+        caption = (""
+                  )
     )
 
 
@@ -1057,7 +1067,7 @@ if __name__ == '__main__':
         
         # MENÚ PRINCIPAL Y CONFIG
         application.add_handler(CommandHandler("start", start_bienvenida))
-        application.add_handler(CommandHandler("info", comandos))
+        application.add_handler(CommandHandler("info", info))
         application.add_handler(CommandHandler("off_van", detener_juegos))
 
         # Handlers JUEGO 1: Ahorcado
