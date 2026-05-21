@@ -32,7 +32,7 @@ def keep_alive():
 GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg" #FUNCIONA PERFECTO 
 GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg" #FUNCIONA PERFECTO 
 GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg" #FUNCIONA PERFECTO
-GIF_SNOWWBALL  = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg" #FUNCIONA PERFECTO
+GIF_SNOWBALL  = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg" #FUNCIONA PERFECTO
 GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg" #FUNCIONA PERFECTO
 GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg" #FUNCIONA PERFECTO
 GIF_ERROR      = "https://i.postimg.cc/G38XXrMW/Airbrush-IMAGE-ENHANCER-1779170852039-1779170852039.jpg" #FUNCIONA PERFECTO
