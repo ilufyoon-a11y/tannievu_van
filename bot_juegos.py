@@ -1062,6 +1062,7 @@ if __name__ == '__main__':
         # MENÚ PRINCIPAL Y CONFIG
         application.add_handler(CommandHandler("start", start_bienvenida))
         application.add_handler(CommandHandler("info", info))
+        application.add_handler(CommandHandler("cmds", comandos))
         application.add_handler(CommandHandler("off_van", detener_juegos))
 
         # Handlers JUEGO 1: Ahorcado
