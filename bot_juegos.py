@@ -147,7 +147,7 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo = GIF_COMANDOS,
-        caption = ("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
+        caption = ("🎡  𖹭𖹭 ㅤ𝗖𝗼𝗺𝗮𝗻𝗱𝗼𝘀 𝗱𝗶𝘀𝗽𝗼𝗻𝗶𝗯𝗹𝗲𝘀  ꒱꒱\n\n"
             "𝒊. 𝐀𝐡𝐨𝐫𝐜𝐚𝐝𝐨\n\n"
             "𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝖼𝗅𝖺𝗌𝗂𝖼𝗈 𝗊𝗎𝖾 𝗍𝗈𝖽𝗈𝗌 𝖼𝗈𝗇𝗈𝖼𝖾𝗇\n\n"
             "𝒊𝒊. 𝐒𝐧𝐨𝐰𝐛𝐚𝐥𝐥\n\n"
