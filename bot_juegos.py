@@ -579,7 +579,7 @@ async def abrir_votacion_zombie(chat_id, context):
     
     botones_voto = []
     for jugador in sesión_zombie["jugadores"]:
-        botones_voto.append([InlineKeyboardButtonf"𝖤𝗑𝗉𝗎𝗅𝗌𝖺𝗋 𝖺 {jugador['name']}", callback_data=f"voto_z:{jugador['id']}")])
+        botones_voto.append([InlineKeyboardButtonf"𝖤𝗑𝗉𝗎𝗅𝗌𝖺𝗋 𝖺 {jugador['name']}", callback_data=f"voto_z:{jugador['id']}"])
     
     msg_voto = await context.bot.send_message(
         chat_id = chat_id,
@@ -622,7 +622,7 @@ async def procesar_resultados_votacion(chat_id, context):
         await pasar_a_siguiente_ataque(chat_id, context)
         return
         
-    eliminado_obj = next(j for j in sesiÃ³n_zombie["jugadores"] if j["id"] == mas_votado_id)
+    eliminado_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == mas_votado_id)
     
     if mas_votado_id in sesión_zombie["zombies"]:
         sesión_zombie["zombies"].remove(mas_votado_id)
@@ -630,7 +630,7 @@ async def procesar_resultados_votacion(chat_id, context):
         
         await context.bot.send_message(
             chat_id = chat_id,
-            text = f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos}𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, 𝗌𝖾 𝖽𝖾𝗌𝗁𝗂𝖼𝗂𝖾𝗋𝗈𝗇 𝖽𝖾𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈!"
+            text = f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, 𝗌𝖾 𝖽𝖾𝗌𝗁𝗂𝖼𝗂𝖾𝗋𝗈𝗇 𝖽𝖾𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈!"
         )
     else:
         sesión_zombie["vivos"].remove(mas_votado_id)
