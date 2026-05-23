@@ -411,7 +411,7 @@ async def lanzar_turno_stop(chat_id, context):
     if len(sesión_stop["sobrevivientes"]) == 1:
         sesión_stop["activa"] = False
         ganador_name = next(j['name'] for j in sesión_stop["jugadores"] if j['id'] == sesión_stop["sobrevivientes"][0])
-        await context.bot.send_message(chat_id=chat_id, text=ff"¡{ganador_name} 𝗀𝖺𝗇𝗈 𝗅𝖺 𝗋𝗈𝗇𝖽𝖺!")
+        await context.bot.send_message(chat_id=chat_id, text=f"¡{ganador_name} 𝗀𝖺𝗇𝗈 𝗅𝖺 𝗋𝗈𝗇𝖽𝖺!")
         return
 
     actual_id = sesión_stop["sobrevivientes"][sesión_stop["turno_index"]]
