@@ -185,7 +185,8 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo = GIF_ERROR,
             caption = "𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋. 𝖣𝖾 𝗍𝗋𝖺𝗍𝖺𝗋𝗌𝖾 𝗎𝗇 𝖾𝗋𝗋𝗈𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗏𝗎𝖾𝗅𝗏𝖾 𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈."
-        )        return 
+        )        
+        return 
         
     candidatos = list(sesión[chat_id]["jugadores"])
     ultimo_mod = sesión[chat_id].get("ultimo_moderador_id")
