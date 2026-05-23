@@ -175,7 +175,7 @@ async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_click")
     await update.message.reply_photo(
         photo = GIF_AHORCADO,
-        caption = "\n\n ៹ ࣪  📝 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖺𝗁𝗈𝗋𝖼𝖺𝖽𝗈! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃”,
+        caption = "\n\n ៹ ࣪  📝 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖺𝗁𝗈𝗋𝖼𝖺𝖽𝗈! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
@@ -212,7 +212,7 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_photo(
             chat_id = moderador["id"],
             photo = GIF_LETRISTA,
-            caption = "¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗊𝗎𝖾 𝖽𝖾𝗌𝗌𝖾𝗌 𝗌𝖾𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝖺”
+            caption = "¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗊𝗎𝖾 𝖽𝖾𝗌𝗌𝖾𝗌 𝗌𝖾𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝖺"
 
         )
 
@@ -240,12 +240,12 @@ async def iniciar_snowball(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(sesión_bomba["jugadores"]) < 2:
         await update.message.reply_photo(
             photo = GIF_ERROR,
-            caption = "𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋. 𝖣𝖾 𝗍𝗋𝖺𝗍𝖺𝗋𝗌𝖾 𝗎𝗇 𝖾𝗋𝗋𝗈𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗏𝗎𝖾𝗅𝗏𝖾 𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈.”
+            caption = "𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋. 𝖣𝖾 𝗍𝗋𝖺𝗍𝖺𝗋𝗌𝖾 𝗎𝗇 𝖾𝗋𝗋𝗈𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗏𝗎𝖾𝗅𝗏𝖾 𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈."
         )
         return
     
     sesión_bomba["activa"] = True
-    primer_jugador = random.choice(੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡”_bomba["jugadores"])
+    primer_jugador = random.choice(["jugadores"])
     sesión_bomba["bomba_en"] = primer_jugador["id"]
     sesión_bomba["bomba_emoji"] = primer_jugador["emoji"]
     
@@ -262,7 +262,7 @@ async def cuenta_regresiva_bomba(chat_id, context):
     
     mensaje_bomba = await context.bot.send_message(
         chat_id=chat_id, 
-        text=f""¡𝖣𝖺𝗍𝖾 𝗉𝗋𝗂𝗌𝖺 𝗒 𝖽𝖾𝗌𝗁𝖺𝖼𝖾𝗍𝖾 𝖽𝖾 𝖾𝗅𝗅𝖺!",
+        text=f"¡𝖣𝖺𝗍𝖾 𝗉𝗋𝗂𝗌𝖺 𝗒 𝖽𝖾𝗌𝗁𝖺𝖼𝖾𝗍𝖾 𝖽𝖾 𝖾𝗅𝗅𝖺!",
         reply_markup=InlineKeyboardMarkup(botones),
     )
     
@@ -282,7 +282,7 @@ async def cuenta_regresiva_bomba(chat_id, context):
         except:
             await context.bot.send_message(chat_id=chat_id, text=texto_final)
 
-# JUEGO 3: RATONES BATTLE ROYALE ðŸ­
+# JUEGO 3: RATONES BATTLE ROYALE­
 async def unirse_ratones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_ratones["jugadores"] = []
     sesión_ratones["sobrevivientes"] = []
@@ -449,7 +449,7 @@ async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesión_jitb[chat_id]["activa"] = False
         sesión_jitb[chat_id]["jugadores"] = []
 
-    boton = InlineKeyboardButton"੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_box_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_box_click")
     await update.message.reply_photo(
         photo = GIF_JITB,
         caption = "៹ ࣪  📦 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝗊𝗎𝖾 𝗁𝖺𝗒 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃",
@@ -505,7 +505,7 @@ async def iniciar_jitbx(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈."))
 
 
-# JUEGO 6: INFECCIÃ“N ZOMBIE ðŸ§Ÿ
+# JUEGO 6: INFECCION ZOMBIE
 
 async def unirse_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -638,7 +638,7 @@ async def procesar_resultados_votacion(chat_id, context):
         
         await context.bot.send_message(
             chat_id = chat_id,
-            text = f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖻𝗎𝗇𝗄𝖾𝗋. 𝖤𝗋𝖺 𝗎𝗇 𝗁𝗎𝗆𝖺𝗇𝗈 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗌𝖺𝗇𝗈..."
+            text = f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌. 𝖤𝗋𝖺 𝗎𝗇 𝗁𝗎𝗆𝖺𝗇𝗈 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗌𝖺𝗇𝗈..."
         )
 
 
@@ -670,7 +670,7 @@ async def pasar_a_siguiente_ataque(chat_id, context):
     
     await context.bot.send_message(chat_id=chat_id, text="𝖫𝖺 𝗇𝗈𝖼𝗁𝖾 𝖼𝖺𝖾 𝗒 𝗌𝖾 𝖽𝖾𝖻𝖾𝗇 𝗉𝖺𝗀𝖺𝗋 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌... 𝖤𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖾𝗌𝗍𝖺 𝖺𝗅 𝖺𝖼𝖾𝖼𝗁𝗈")
         
-# 9. MANEJADOR DE CALLBACKS (BOTONES) - CON ESCUDOS ACTIVOS ðŸ›¡ï¸
+# 9. MANEJADOR DE CALLBACKS (BOTONES) 
 
 async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
