@@ -705,7 +705,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Callbacks Bomba
     elif query.data == "unirme_bomba_click":
         await query.answer()
-        if sesiÃ³n_bomba["activa"]: 
+        if sesión_bomba["activa"]: 
             await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗇𝗂𝗋, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         if not any(j['id'] == user.id for j in sesión_bomba["jugadores"]):
