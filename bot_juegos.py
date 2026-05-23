@@ -352,7 +352,7 @@ async def rondas_battle_royale(chat_id, context):
                 
             await context.bot.send_message(
                 chat_id=chat_id, 
-                text=f"¡{lento_name} 𝖿𝗎𝖾 𝗆𝗎𝗒 𝗅𝖾𝗇𝗍𝗈 𝗒 𝖾𝗅 𝗋𝖺𝗍𝗈𝗇 𝗅𝗈𝗀𝗋𝗈 𝖾𝗌𝖼𝖺𝗉𝖺𝗋!. 𝖰𝗎𝖾𝖽𝖺 𝖿𝗎𝖾𝗋𝖺 𝖽𝖾𝗅 𝗃𝗎𝖾𝗀𝗈""
+                text=f"¡{lento_name} 𝖿𝗎𝖾 𝗆𝗎𝗒 𝗅𝖾𝗇𝗍𝗈 𝗒 𝖾𝗅 𝗋𝖺𝗍𝗈𝗇 𝗅𝗈𝗀𝗋𝗈 𝖾𝗌𝖼𝖺𝗉𝖺𝗋!. 𝖰𝗎𝖾𝖽𝖺 𝖿𝗎𝖾𝗋𝖺 𝖽𝖾𝗅 𝗃𝗎𝖾𝗀𝗈"
             )
 
         ronda += 1
