@@ -606,6 +606,8 @@ async def timer_votacion_zombie(chat_id, context):
         await procesar_resultados_votacion(chat_id, context)
 
 async def procesar_resultados_votacion(chat_id, context):
+    if sesión_zombie["fase"] != "votacion":
+        return
     sesión_zombie["fase"] = None
     
     try: await context.bot.delete_message(chat_id=chat_id, message_id=sesión_zombie["mensaje_voto_id"])
@@ -836,15 +838,23 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     # 📢 ANUNCIO EN EL GRUPO: Avisamos quién murió/fue infectado
                     await context.bot.send_message(
                         chat_id = grupo_chat_id,
-                        text = f"¡𝖴𝖭 𝖠𝖳𝖠𝖰𝖴𝖤 𝖧𝖠 𝖮𝖢𝖴𝖱𝖱𝖨𝖣𝖮!\n\n{victima_obj['name']} 𝗁𝖺 𝗌𝗂𝖽𝗈 𝖺𝗍𝖺𝖼𝖺𝖽𝗈 𝖾𝗇 𝗅𝖺 𝗈𝗌𝖼𝗎𝗋𝗂𝖽𝖺𝖽 𝗉𝗈𝗋 𝗎𝗇 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝗌𝖾 𝖾𝗌𝗍𝖺́ 𝗍𝗋𝖺𝗇𝗌𝖿𝗈𝗋𝗆𝖺𝗇𝖽𝗈, 𝗍𝗎𝗏𝗈 𝗊𝗎𝖾 𝗌𝖾𝗋 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾 𝗂𝗇𝗆𝖾𝖽𝗂𝖺𝗍𝗈"
+                        text = f" 🧟 ¡𝖴𝖭 𝖠𝖳𝖠𝖰𝖴𝖤 𝖧𝖠 𝖮𝖢𝖴𝖱𝖱𝖨𝖣𝖮! 🧟\n\n{victima_obj['name']} 𝗁𝖺 𝗌𝗂𝖽𝗈 𝖺𝗍𝖺𝖼𝖺𝖽𝗈 𝖾𝗇 𝗅𝖺 𝗈𝗌𝖼𝗎𝗋𝗂𝖽𝖺𝖽 𝗉𝗈𝗋 𝗎𝗇 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝗌𝖾 𝖾𝗌𝗍𝖺 𝗍𝗋𝖺𝗇𝗌𝖿𝗈𝗋𝗆𝖺𝗇𝖽𝗈, 𝗍𝗎𝗏𝗈 𝗊𝗎𝖾 𝗌𝖾𝗋 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾 𝗂𝗇𝗆𝖾𝖽𝗂𝖺𝗍𝗈"
                     )
 
                 
                     # Un pequeño delay de 2 segundos para el drama antes de la votación
                     await asyncio.sleep(2)
-                
-                    await abrir_votacion_zombie(grupo_chat_id, context)
-                else: 
+
+                    if not sesión_zombie["vivos"]:
+                        zombie_obj = next(j for j in sesión_zombie["jugadores"] if jj["id"] == sesión_zombie["zombies"][0])
+                        await context.bot.send_message(
+                            chat_id=grupo_chat_id,
+                            text=f"¡𝖸𝖺 𝗇𝗈 𝗊𝗎𝖾𝖽𝖺𝗇 𝗁𝗎𝗆𝖺𝗇𝗈𝗌!. {zombie_obj['name']} 𝗆𝗈𝗋𝖽𝗂𝗈 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗒 𝗀𝖺𝗇𝗈 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🧟"
+                        )
+                        sesión_zombie["activa"] = False
+                    else: 
+                        await abrir_votacion_zombie(grupo_chat_id, context)
+                else:
                     try:
                         await query.edit_message_caption(caption="𝖤𝗌𝗍𝖺 𝗏𝗂𝖼𝗍𝗂𝗆𝖺 𝗒𝖺 𝗇𝗈 𝖾𝗌𝗍𝖺 𝖽𝗂𝗌𝗉𝗈𝗇𝗂𝖻𝗅𝖾.")
                     except Exception:
@@ -862,6 +872,8 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     chat_id=chat_id,
                     text=f"{user.first_name} 𝖺𝖼𝖺𝖻𝖺 𝖽𝖾 𝖾𝗆𝗂𝗍𝗂𝗋 𝗌𝗎 𝗏𝗈𝗍𝗈 — {len(sesión_zombie['votos'])}/{len(sesión_zombie['jugadores'])} 𝗏𝗈𝗍𝗈𝗌 𝖾𝗆𝗂𝗍𝗂𝖽𝗈𝗌"
                 )
+                if len(sesión_zombie["votos"]) >= len(sesión_zombie["jugadores"]):
+                    await procesar_resultados_votacion(chat_id, context)
             else:
                 await query.answer("𝖴𝗉𝗌, 𝗍𝗎 𝗇𝗈 𝖾𝗌𝗍𝖺𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗇𝖽𝗈 𝖾𝗇 𝖾𝗌𝗍𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.", show_alert=True)
 
