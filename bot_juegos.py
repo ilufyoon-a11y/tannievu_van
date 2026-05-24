@@ -829,6 +829,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if sesión_zombie.get("activa", False) and sesión_zombie.get("fase") == "infeccion":
             if user.id in sesión_zombie.get("zombies", []):
                 if victima_id in sesión_zombie["vivos"]:
+                    victima_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == victima_id)
                     sesión_zombie["vivos"].remove(victima_id)
                     sesión_zombie["jugadores"] = [j for j in sesión_zombie["jugadores"] if j["id"] != victima_id]
                 
