@@ -74,6 +74,7 @@ sesión_zombie = {
     "fase": None,           
     "votos": {},            
     "mensaje_voto_id": None 
+    "ultimo_zombie_id": None
 }
 esperando_mordida = {}     
 
@@ -546,7 +547,10 @@ async def iniciar_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesión_zombie["fase"] = "infeccion"
     sesión_zombie["vivos"] = [j["id"] for j in sesión_zombie["jugadores"]]
     
-    paciente_cero_id = random.choice(sesión_zombie["vivos"])
+    ultimo_zombie = sesión_zombie.get("ultimo_zombie_id")
+    candidatos = [uid for uid in sesión_zombie["vivos"] if uid != ultimo_zombie]
+    paciente_cero_id = random.choice(candidatos if candidatos else sesión_zombie["vivos"])
+    sesión_zombie["ultimo_zombie_id"] = paciente_cero_id
     sesión_zombie["zombies"].append(paciente_cero_id)
     sesión_zombie["vivos"].remove(paciente_cero_id)
     
@@ -582,8 +586,7 @@ async def abrir_votacion_zombie(chat_id, context):
     
     botones_voto = []
     for jugador in sesión_zombie["jugadores"]:
-        if jugador["id"] in sesión_zombie["vivos"] or jugador["id"] in sesión_zombie["zombies"][:-1]:
-            botones_voto.append([InlineKeyboardButton(f"𝖤𝗑𝗉𝗎𝗅𝗌𝖺𝗋 𝖺 {jugador['name']}", callback_data=f"voto_z:{jugador['id']}")])
+        botones_voto.append([InlineKeyboardButton(f"𝖤𝗑𝗉𝗎𝗅𝗌𝖺𝗋 𝖺 {jugador['name']}", callback_data=f"voto_z:{jugador['id']}")])
     
     msg_voto = await context.bot.send_message(
         chat_id = chat_id,
@@ -959,7 +962,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             
             if "_" not in tablero.replace(" ", ""):
-                await update.message.reply_text(f"¡{user_name}𝗀𝖺𝗇𝗈 𝖾𝗌𝗍𝖺 𝗋𝗈𝗇𝖽𝖺!. Efectivamente, la palabra era: {datos['palabra_secreta'].upper()}")
+                await update.message.reply_text(f"¡{user_name} 𝗀𝖺𝗇𝗈 𝖾𝗌𝗍𝖺 𝗋𝗈𝗇𝖽𝖺!. Efectivamente, la palabra era: {datos['palabra_secreta'].upper()}")
                 datos["activa"] = False
             return
 
