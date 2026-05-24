@@ -104,22 +104,14 @@ def dibujar_pantalla_ahorcado(chat_id):
     return "".join(resultado).strip()
 
 def extraer_emojis(texto):
-    import re
-    patron = re.compile(
-        "[\U0001F600-\U0001F64F"
-        "\U0001F300-\U0001F5FF"
-        "\U0001F680-\U0001F6FF"
-        "\U0001F1E0-\U0001F1FF"
-        "\U00002600-\U000027BF"
-        "\U0001F900-\U0001F9FF"
-        "\U00002702-\U000027B0"
-        "\U000024C2-\U0001F251"
-        "\U0001FA00-\U0001FA6F"
-        "\U0001FA70-\U0001FAFF"
-        "]+",
-        flags=re.UNICODE
+    import regex
+    patron = regex.compile(
+        r'(?:\U0001F1E0-\U0001F1FF'
+        r'|(?:\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\p{Emoji_Modifier}?'
+        r'(?:\u200D(?:\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\p{Emoji_Modifier}?)*)'
     )
     return patron.findall(texto)
+
     
 # COMANDO START
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
