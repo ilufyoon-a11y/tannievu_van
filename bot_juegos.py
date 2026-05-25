@@ -1,7 +1,6 @@
 import random
 import os
 import asyncio
-from threading import Thread
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
@@ -739,6 +738,9 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         
         nuevo_id = int(query.data.replace("pasar_a_", ""))
+        if sesión_bomba.get("tarea_bomba"):
+            sesión_bomba["tarea_bomba"].cancel()
+
         sesión_bomba["bomba_en"] = nuevo_id
         
         nuevo_jugador = next(j for j in sesión_bomba["jugadores"] if j['id'] == nuevo_id)
