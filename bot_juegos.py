@@ -891,7 +891,10 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # =====================================================================
 # 10. MANEJADOR DE MENSAJES (TEXTO)
 # =====================================================================
+
 async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.effective_user:
+        return
     user_id = update.effective_user.id
     user_name = nombre_usuario(update.effective_user)
     chat_type = update.effective_chat.type
