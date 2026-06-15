@@ -104,13 +104,8 @@ def dibujar_pantalla_ahorcado(chat_id):
     return "".join(resultado).strip()
 
 def extraer_emojis(texto):
-    import regex
-    patron = regex.compile(
-        r'(?:\U0001F1E0-\U0001F1FF'
-        r'|(?:\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\p{Emoji_Modifier}?'
-        r'(?:\u200D(?:\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\p{Emoji_Modifier}?)*)'
-    )
-    return patron.findall(texto)
+    import emoji
+    return [c['emoji'] for c in emoji.emoji_list(texto)]
 
 def nombre_usuario(user):
     return f"@{user.username}" if user.username else user.first_name
