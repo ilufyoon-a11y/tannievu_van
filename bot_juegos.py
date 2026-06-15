@@ -594,7 +594,7 @@ async def abrir_votacion_zombie(chat_id, context):
     msg_voto = await context.bot.send_message(
         chat_id = chat_id,
         text = (
-            "¡𝗥𝗘𝗨𝗡𝗜𝗢𝗡 𝗗𝗘 𝗘𝗠𝗘𝗥𝗚𝗘𝗡𝗖𝗜𝗔ⵑ 𝖠𝗅𝗀𝗎𝗂𝖾𝗇 𝗒𝖺 𝖿𝗎𝖾 𝗆𝗈𝗋𝖽𝗂𝖽𝗈, 𝖺𝗌𝗂 𝗊𝗎𝖾 𝖽𝖾𝖻𝖾𝗇 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝗋 𝖺𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝗆𝗎𝖾𝗋𝖽𝖺 𝖺 𝗈𝗍𝗋𝖺 𝗉𝖾𝗋𝗌𝗈𝗇𝖺.\n\n𝖲𝗈𝗅𝗈 𝖼𝗎𝖾𝗇𝗍𝖺𝗇 𝖼𝗈𝗇 𝟥𝟢 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗉𝗈𝗇𝖾𝗋𝗌𝖾 𝖽𝖾 𝖺𝖼𝗎𝖾𝗋𝖽𝗈 𝗒 𝗏𝗈𝗍𝖺𝗋"
+            "¡𝗥𝗘𝗨𝗡𝗜𝗢𝗡 𝗗𝗘 𝗘𝗠𝗘𝗥𝗚𝗘𝗡𝗖𝗜𝗔ⵑ\n\n𝖠𝗅𝗀𝗎𝗂𝖾𝗇 𝗒𝖺 𝖿𝗎𝖾 𝗆𝗈𝗋𝖽𝗂𝖽𝗈, 𝖺𝗌𝗂 𝗊𝗎𝖾 𝖽𝖾𝖻𝖾𝗇 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝗋 𝖺𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝗆𝗎𝖾𝗋𝖽𝖺 𝖺 𝗈𝗍𝗋𝖺 𝗉𝖾𝗋𝗌𝗈𝗇𝖺.\n\n𝖲𝗈𝗅𝗈 𝖼𝗎𝖾𝗇𝗍𝖺𝗇 𝖼𝗈𝗇 𝟥𝟢 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗉𝗈𝗇𝖾𝗋𝗌𝖾 𝖽𝖾 𝖺𝖼𝗎𝖾𝗋𝖽𝗈 𝗒 𝗏𝗈𝗍𝖺𝗋"
         ),
 
         reply_markup = InlineKeyboardMarkup(botones_voto)
@@ -949,7 +949,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await context.bot.send_message(
             chat_id=gid,
-            text="¡𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗖𝗘𝗥𝗥𝗔𝗗𝗔ⵑ\n\nEnvia tus respuestas de uno en uno.\n𝖲𝗂 𝖼𝗈𝗂𝗇𝖼𝗂𝖽𝖾𝗌 𝖼𝗈𝗇 𝗎𝗇𝗈 𝗊𝗎𝖾 𝖾𝗌𝗍𝖺𝖻𝖺 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺, 𝗍𝖾 𝗅𝗅𝖾𝗏𝖺𝗌 𝟣 𝗉𝗎𝗇𝗍𝗈."
+            text="¡𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗖𝗘𝗥𝗥𝗔𝗗𝗔ⵑ\n\nEnvia tus respuestas de uno en uno.\n\n𝖲𝗂 𝖼𝗈𝗂𝗇𝖼𝗂𝖽𝖾𝗌 𝖼𝗈𝗇 𝗎𝗇𝗈 𝗊𝗎𝖾 𝖾𝗌𝗍𝖺𝖻𝖺 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺, 𝗍𝖾 𝗅𝗅𝖾𝗏𝖺𝗌 𝟣 𝗉𝗎𝗇𝗍𝗈."
         )
         return
         
@@ -957,7 +957,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chat_id in sesión and sesión[chat_id].get("activa") and "palabra_secreta" in sesión[chat_id]:
         if len(texto) == 1 and texto.isalpha():
             if user_id == sesión[chat_id].get("moderador_id"):
-                await update.message.reply_text("¡𝖮𝗒𝖾! 𝖳𝗎́ 𝖾𝗋𝖾𝗌 𝗅𝖺 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋𝖺, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗃𝗎𝗀𝖺𝗋 𝖾𝗌𝗍𝖺 𝗋𝗈𝗇𝖽𝖺.")
+                await update.message.reply_text("¡𝖮𝗒𝖾! 𝖳𝗎 𝖾𝗋𝖾𝗌 𝗅𝖺 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋𝖺, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗃𝗎𝗀𝖺𝗋 𝖾𝗌𝗍𝖺 𝗋𝗈𝗇𝖽𝖺.")
                 return
                 
             datos = sesión[chat_id]
@@ -991,43 +991,54 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chat_type != "private" and chat_id in sesión_jitb and sesión_jitb[chat_id].get("activa"):
         sesion = sesión_jitb[chat_id]
         emojis_enviados = extraer_emojis(texto)
-        texto_normalizado = emojis_enviados[0] if emojis_enviados else texto
-        if texto_normalizado in sesion.get("emojis_secretos", []) and texto_normalizado not in sesion.get("emojis_adivinados", []):
-            sesion["emojis_adivinados"].append(texto_normalizado)
 
-            sesion["puntajes"][user_id] = sesion["puntajes"].get(user_id, 0) + 1
-            
-            total_adivinados = len(sesion["emojis_adivinados"])
-            await update.message.reply_text(
-                f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}! 𝖤𝗅 𝗈𝖻𝗃𝖾𝗍𝗈 𝗌𝗂 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺\n"
-                f"𝖫𝗅𝖾𝗏𝖺𝗆𝗈𝗌 [{total_adivinados} - 6] 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈𝗌."
-            )
-            
-            if total_adivinados == 6:
-                sesion["activa"] = False
-                
-                # ─── RECUENTO DE PUNTAJES ───
-                tabla_posiciones = []
-                for uid, pts in sesion["puntajes"].items():
-                    jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid), None)
-                    nombre_pantalla = jugador_obj["name"] if jugador_obj else f"Jugador ID: {uid}"
-                    tabla_posiciones.append((nombre_pantalla, pts))
-                
-                tabla_posiciones.sort(key=lambda x: x[1], reverse=True)
-                
-                mensaje_recuento = "¡𝖱𝖮𝖭𝖣𝖠 𝖥𝖨𝖭𝖠𝖫𝖨𝖹𝖠𝖣𝖠! 𝖲𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗋𝗂𝖾𝗋𝗈𝗇 𝗍𝗈𝖽𝗈𝗌 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝗊𝗎𝖾 𝗁𝖺𝖻𝗂𝖺𝗇 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. \n\n"
-                mensaje_recuento += "𝖯𝗎𝗇𝗍𝗎𝖺𝖼𝗂𝗈𝗇 𝖿𝗂𝗇𝖺𝗅: \n"
-                
-                medallas = ["🥇", "🥈", "🥉"]
-                for index, (nombre, puntos) in enumerate(tabla_posiciones):
-                    decorador = medallas[index] if index < len(medallas) else "🔹"
-                    mensaje_recuento += f"{decorador} {nombre}: {puntos} pt(s)\n"
-                
-                await context.bot.send_message(
-                    chat_id=chat_id,
-                    text=mensaje_recuento,
-                )
+        if not emojis_enviados:
             return
+
+        emoji_enviado = emojis_enviados[0].replace('\uFE0F', '')
+        secretos_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_secretos", [])]
+        adivinados_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_adivinados", [])]
+
+        if emoji_enviado in adivinados_normalizados:
+            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗒𝖺 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌,{user_name}!")
+            return
+
+        if emoji_enviado not in secretos_normalizados:
+            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺, {user_name}!")
+            return
+
+        indice = secretos_normalizados.index(emoji_enviado)
+        emoji_original = sesion["emojis_secretos"][indice]
+        sesion["emojis_adivinados"].append(emoji_original)
+        sesion["puntajes"][user_id] = sesion["puntajes"].get(user_id, 0) + 1
+
+        total_adivinados = len(sesion["emojis_adivinados"])
+        await update.message.reply_text(
+            f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}! 𝖤𝗅 𝗈𝖻𝗃𝖾𝗍𝗈 𝗌𝗂 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺\n"
+            f"𝖫𝗅𝖾𝗏𝖺𝗆𝗈𝗌 [{total_adivinados} - 6] 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈𝗌."
+        )
+
+        if total_adivinados == 6:
+            sesion["activa"] = False
+
+            tabla_posiciones = []
+            for uid, pts in sesion["puntajes"].items():
+                jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid), None)
+                nombre_pantalla = jugador_obj["name"] if jugador_obj else f"Jugador ID: {uid}"
+                tabla_posiciones.append((nombre_pantalla, pts))
+
+            tabla_posiciones.sort(key=lambda x: x[1], reverse=True)
+
+            mensaje_recuento = "¡𝖱𝖮𝖭𝖣𝖠 𝖥𝖨𝖭𝖠𝖫𝖨𝖹𝖠𝖣𝖠! 𝖲𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗋𝗂𝖾𝗋𝗈𝗇 𝗍𝗈𝖽𝗈𝗌 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝗊𝗎𝖾 𝗁𝖺𝖻𝗂𝖺𝗇 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. \n\n"
+            mensaje_recuento += "𝖯𝗎𝗇𝗍𝗎𝖺𝖼𝗂𝗈𝗇 𝖿𝗂𝗇𝖺𝗅: \n"
+
+            medallas = ["🥇", "🥈", "🥉"]
+            for index, (nombre, puntos) in enumerate(tabla_posiciones):
+                decorador = medallas[index] if index < len(medallas) else "🔹"
+                mensaje_recuento += f"{decorador} {nombre}: {puntos} pt(s)\n"
+
+            await context.bot.send_message(chat_id=chat_id, text=mensaje_recuento)
+        return
 
     # Escucha de Ritmo A Go-Go
     if sesión_stop.get("activa") and texto and not update.message.text.startswith("/"):
