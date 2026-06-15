@@ -662,7 +662,7 @@ async def procesar_resultados_votacion(chat_id, context):
         sesión_zombie["activa"] = False
     elif len(sesión_zombie["vivos"]) <= 1:
         zombie_obj = next(j for j in sesión_zombie["jugadores"] if j["id"] == sesión_zombie["zombies"][0])
-        await context.bot.send_message(chat_id=chat_id, text=f"¡𝖸𝖺 𝗇𝗈 𝗊𝗎𝖾𝖽𝖺𝗇 𝗁𝗎𝗆𝖺𝗇𝗈𝗌!. {zombie_obj['name']} 𝗆𝗈𝗋𝖽𝗂𝗈 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗒 𝖼𝗈𝗇𝗏𝗂𝗋𝗍𝗂𝗈 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝖾𝗇 𝗈𝗍𝗋𝗈 𝖿𝗈𝖼𝗈 𝖽𝖾 𝗂𝗇𝖿𝖾𝖼𝖼𝗂𝗈𝗇")
+        await context.bot.send_message(chat_id=chat_id, text=f"¡𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦ⵑ. {zombie_obj['name']} 𝗆𝗈𝗋𝖽𝗂𝗈 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗒 𝖼𝗈𝗇𝗏𝗂𝗋𝗍𝗂𝗈 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝖾𝗇 𝗈𝗍𝗋𝗈 𝖿𝗈𝖼𝗈 𝖽𝖾 𝗂𝗇𝖿𝖾𝖼𝖼𝗂𝗈𝗇 🧟‍♂️")
         sesión_zombie["activa"] = False
     else:
         await pasar_a_siguiente_ataque(chat_id, context)
