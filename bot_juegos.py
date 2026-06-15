@@ -894,10 +894,9 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_name = nombre_usuario(update.effective_user)
     chat_type = update.effective_chat.type
     chat_id = update.effective_chat.id
-    texto = update.message.text.strip() if update.message.text else ""
-    
-    if not texto:
-        return
+    texto = update.message.text.strip() if update.message.text else ""   
+    if not texto and update.message.dice:
+        texto = update.message.dice.emoji
 
     # Setup Ahorcado por privado
     if chat_type == "private" and user_id in esperando_palabra:
@@ -1000,11 +999,11 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         adivinados_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_adivinados", [])]
 
         if emoji_enviado in adivinados_normalizados:
-            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗒𝖺 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌,{user_name}!")
+            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗒𝖺 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
             return
 
         if emoji_enviado not in secretos_normalizados:
-            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺, {user_name}!")
+            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺!")
             return
 
         indice = secretos_normalizados.index(emoji_enviado)
