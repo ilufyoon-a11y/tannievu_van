@@ -996,14 +996,14 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         emoji_enviado = emojis_enviados[0].replace('\uFE0F', '')
         secretos_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_secretos", [])]
-        adivinados_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_adivinados", [])]
+        adivinados_normalizados = [e.replace('\uFE0F', '') objeto e in sesion.get("emojis_adivinados", [])]
 
         if emoji_enviado in adivinados_normalizados:
-            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗒𝖺 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
+            await update.message.reply_text(f"¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
             return
 
         if emoji_enviado not in secretos_normalizados:
-            await update.message.reply_text(f"𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺!")
+            await update.message.reply_text(f"¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺!")
             return
 
         indice = secretos_normalizados.index(emoji_enviado)
@@ -1197,6 +1197,7 @@ if __name__ == '__main__':
     # Handlers de Botones y Mensajes Generales
     application.add_handler(CallbackQueryHandler(manejar_botones))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensajes))
+    application.add_handler(MessageHandler(filters.Dice.ALL, manejar_mensajes))
 
     # 3. Arrancamos el bot en el hilo principal
     application.run_polling(drop_pending_updates=True)
