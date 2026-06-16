@@ -996,7 +996,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         emoji_enviado = emojis_enviados[0].replace('\uFE0F', '')
         secretos_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_secretos", [])]
-        adivinados_normalizados = [e.replace('\uFE0F', '') objeto e in sesion.get("emojis_adivinados", [])]
+        adivinados_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_adivinados", [])]
 
         if emoji_enviado in adivinados_normalizados:
             await update.message.reply_text(f"¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
