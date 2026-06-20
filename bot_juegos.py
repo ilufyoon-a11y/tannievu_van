@@ -5,18 +5,16 @@ from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
 
-# =====================================================================
-# 1. DESPERTADOR PARA RENDER (FLASK)
-# =====================================================================
+# !!⠀⠀FLASK - PERMITE QUE RENDER HAGA FUNCIONAR EL BOT⠀ ───⠀ ⠀♥︎
+
 app_web = Flask('')
 
 @app_web.route('/')
 def home():
-    return "Juegos Activos"
+    return "Van fue encendido"
 
-# =====================================================================
-# 2. VARIABLES GLOBALES Y DICCIONARIOS
-# =====================================================================
+# !!⠀⠀VARIABLES DE IMAGENES⠀ ───⠀ ⠀♥︎
+
 GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg" 
 GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg" 
 GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg" 
@@ -33,37 +31,22 @@ GIF_LETRISTA   = "https://i.postimg.cc/Zndk78XB/Airbrush-IMAGE-ENHANCER-17793035
 GIF_RECHAZADO  = "https://i.postimg.cc/MTXZnXd8/1000005045.jpg"
 GIF_COMANDOS   = "https://i.postimg.cc/6qjQHnqv/1000005043-(1).jpg"
 
-sesión = {}            
-esperando_palabra = {} 
-esperando_elementos = {} 
+# !!⠀⠀DICCIONARIO DE CADA JUEGO⠀ ───⠀ ⠀♥︎
 
-sesión_bomba = {
+# AHORCADO 😵
+
+sesión_ahorcado = {
     "jugadores": [], 
-    "bomba_en": None, 
-    "bomba_emoji": None, 
-    "activa": False, 
-    "tarea_bomba": None, 
-    "mensaje_id": None
-}
+    "activa": False,     
+    "code": "",       
+    "codes_tries": [],   
+    "mensaje_juego_id": None, 
+    "turno_de": None
+    }
 
-sesión_ratones = {
-    "jugadores": [], 
-    "sobrevivientes": [], 
-    "esperando_click": [], 
-    "activa": False, 
-    "mensaje_id": None
-}
+esperando_code = {}
 
-sesión_stop = {
-    "jugadores": [],       
-    "sobrevivientes": [],  
-    "turno_index": 0,       
-    "palabras_dichas": [],  
-    "letra_actual": "",
-    "categoria_actual": "",
-    "activa": False,
-    "timer_task": None      
-}
+# ZOMBIE 🧟
 
 sesión_zombie = {
     "jugadores": [],        
@@ -74,94 +57,88 @@ sesión_zombie = {
     "votos": {},            
     "mensaje_voto_id": None,
     "ultimo_zombie_id": None
-}
+    }
+
 esperando_mordida = {}     
+
+# BOX 📦
 
 sesión_jitb = {}
 
-CATEGORIAS_STOP = ["𝗡𝗢𝗠𝗕𝗥𝗘", "𝗔𝗣𝗘𝗟𝗟𝗜𝗗𝗢", "𝗙𝗥𝗨𝗧𝗔 𝗢 𝗩𝗘𝗥𝗗𝗨𝗥𝗔", "𝗣𝗔𝗜𝗦 𝗢 𝗖𝗜𝗨𝗗𝗔𝗗", "𝗔𝗡𝗜𝗠𝗔𝗟", "𝗖𝗢𝗟𝗢𝗥", "𝗢𝗕𝗝𝗘𝗧𝗢", "𝗣𝗥𝗢𝗙𝗘𝗦𝗜𝗢́𝗡  𝗨 𝗢𝗙𝗜𝗖𝗜𝗢", "𝗖𝗔𝗡𝗧𝗔𝗡𝗧𝗘 𝗢 𝗕𝗔𝗡𝗗𝗔", "𝗖𝗢𝗠𝗜𝗗𝗔", "𝗣𝗘𝗟𝗜𝗖𝗨𝗟𝗔 𝗢 𝗦𝗘𝗥𝗜𝗘", "𝗙𝗔𝗠𝗢𝗦𝗢"]
-EMOJIS_BOMBA = ["🦊", "🥑", "🐱", "🐸", "🐼", "🌶️", "👻", "👽", "🤖", "🦄", "👑", "🍕", "🎈", "🔮", "🦈", "🐥", "🐻", "🦖"]
+# !!⠀⠀AUXILIARES⠀ ───⠀ ⠀♥︎
 
+# DIBUJAR EL MENU DE CODE - SE ACTUALIZA CADA QUE SE ADIVINA UN NUMERO 
 
-# =====================================================================
-# 3. AUXILIARES GENERALES
-# =====================================================================
-def dibujar_pantalla_ahorcado(chat_id):
+def dibujar_pantalla_code(chat_id):
     if chat_id not in sesión: return ""
     datos = sesión[chat_id]
-    palabra = datos.get("palabra_secreta", "")
-    adivinadas = datos.get("letras_adivinadas", [])
+    codigo = datos.get("codigo", "")
+    adivinadas = datos.get("numeros_adivinadas", []) 
     
     resultado = []
-    for letra in palabra:
-        if letra.lower() in adivinadas:
-            resultado.append(letra + " ")
-        elif letra == " ":
+    
+    for i in range(len(codigo)):
+        num = codigo[i]
+        identificador = f"{i}_{num}"
+        
+        if identificador in adivinadas:
+            resultado.append(num + " ")
+        elif num == " ":
             resultado.append("  ")
         else:
             resultado.append("_ ")
             
     return "".join(resultado).strip()
 
+# PERMITE QUE LOS EMOJIS DE BOX SEAN DETECTADOS 
+
 def extraer_emojis(texto):
     import emoji
     return [c['emoji'] for c in emoji.emoji_list(texto)]
 
+# EXTRAER EL ARROBA DE LOS USUARIOS - PERMITE QUE SEAN ARROBADOS EN LOS TEXTOS 
+
 def nombre_usuario(user):
     return f"@{user.username}" if user.username else user.first_name
     
-# COMANDO START
+# !!⠀⠀COMANDOS⠀ ───⠀ ⠀♥︎
+
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo = GIF_BIENVENIDA,
         caption = "\n\n🌸ㅤㅤ⪩⪩ㅤㅤ𝐁𝐢𝐞𝐧𝐯𝐞𝐧𝐢𝐝@ㅤㅤ!!ㅤㅤ☆ \n\n𝖵𝖺𝗇 𝖾𝗌 𝗎𝗇 𝖻𝗈𝗍 𝗊𝗎𝖾 𝗈𝖿𝗋𝖾𝖼𝖾 𝗎𝗇𝖺 𝗏𝖺𝗋𝗂𝖾𝖽𝖺𝖽 𝖽𝖾 𝗃𝗎𝖾𝗀𝗈𝗌, 𝖺𝗎𝗇 𝖾𝗌𝗍𝖺 𝖾𝗇 𝗉𝗋𝗈𝖼𝖾𝗌𝗈 𝖽𝖾 𝗉𝗋𝗎𝖾𝖻𝖺 𝖺𝗌𝗂 𝗊𝗎𝖾 𝗌𝗂𝖾𝗇𝗍𝖾𝗍𝖾 𝖾𝗇 𝗍𝗈𝗍𝖺𝗅 𝗅𝗂𝖻𝖾𝗋𝗍𝖺𝖽 𝖽𝖾 𝖼𝗈𝗆𝗎𝗇𝗂𝖼𝖺𝗋 𝖼𝗎𝖺𝗅𝗊𝗎𝗂𝖾𝗋 𝗊𝗎𝖾𝗃𝖺/𝗌𝗎𝗀𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝖾𝗇 𝖾𝗅 𝖼𝗁𝖺𝗍 𝖽𝖾𝗅 𝖼𝖺𝗇𝖺𝗅. \n\n𝖤𝗌𝗉𝖾𝗋𝖺𝗆𝗈𝗌 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗃𝗎𝖾𝗀𝗈𝗌 𝖼𝗈𝗇𝗍𝖾𝗇𝗂𝖽𝗈𝗌 𝗌𝖾𝖺𝗇 𝖽𝖾 𝗌𝗎 𝖺𝗀𝗋𝖺𝖽𝗈! 💕"
     )
 
-# INFO DE LOS JUEGOS 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
         photo = GIF_INFO,
         caption = ("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
             "𝒊. 𝐀𝐡𝐨𝐫𝐜𝐚𝐝𝐨\n\n"
             "𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝖼𝗅𝖺𝗌𝗂𝖼𝗈 𝗊𝗎𝖾 𝗍𝗈𝖽𝗈𝗌 𝖼𝗈𝗇𝗈𝖼𝖾𝗇\n\n"
-            "𝒊𝒊. 𝐒𝐧𝐨𝐰𝐛𝐚𝐥𝐥\n\n"
-            "𝖴𝗇𝖺 𝖻𝗈𝗅𝖺 𝖽𝖾 𝗇𝗂𝖾𝗏𝖾 𝖾𝗌𝗍𝖺 𝖻𝖺𝗃𝖺𝗇𝖽𝗈 𝖽𝖾𝗌𝖽𝖾 𝗎𝗇𝖺 𝖼𝗈𝗅𝗂𝗇𝖺 𝗒 𝗏𝖺 𝖽𝗂𝗋𝖾𝖼𝗍𝗈 𝗁𝖺𝖼𝗂𝖺 𝖺 𝗎𝗌𝗍𝖾𝖽𝖾𝗌. ¡𝖫𝖺𝗇𝗓𝖺𝗅𝖺 𝖺 𝗈𝗍𝗋𝗈 𝗈 𝗊𝗎𝖾𝖽𝖺 𝖺𝗉𝗅𝖺𝗌𝗍𝖺𝖽@!\n\n"
-            "𝒊𝒊. 𝐑𝐚𝐭𝐨𝐧𝐞𝐬\n\n"
-            "𝖴𝗇𝖺 𝗉𝗅𝖺𝗀𝖺 𝗌𝖾 𝗁𝖺 𝖽𝖾𝗌𝗁𝖺𝗍𝖺𝖽𝗈 𝗒 𝗅𝖺 𝗎𝗇𝗂𝖼𝖺 𝖿𝗈𝗋𝗆𝖺 𝖽𝖾 𝖽𝖾𝗌𝗁𝖺𝖼𝖾𝗋𝗌𝖾 𝖽𝖾 𝖾𝗅𝗅𝖺 𝖾𝗌 𝗀𝗈𝗅𝗉𝖾𝖺𝗇𝖽𝗈 𝖺 𝗅𝗈𝗌 𝗋𝖺𝗍𝗈𝗇𝖾𝗌\n\n"
-            "𝒊𝒗. 𝐑𝐢𝐭𝐦𝐨 𝐀𝐠𝐨 𝐆𝐨\n\n"
-            "𝖴𝗇𝖺 𝗏𝖺𝗋𝗂𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝗌𝗍𝗈𝗉, 𝖽𝗈𝗇𝖽𝖾 𝖼𝖺𝖽𝖺 𝗎𝗇𝗈 𝖽𝖾𝖻𝖾 𝖽𝖾𝖼𝗂𝗋 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗋𝖾𝗅𝖺𝖼𝗂𝗈𝗇𝖺𝖽𝖺𝗌 𝖺 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂𝖺 𝗌𝗂𝗇 𝗋𝖾𝗉𝖾𝗍𝗂𝗋 𝗅𝖺𝗌 𝖽𝗂𝖼𝗁𝖺𝗌 𝖺𝗇𝗍𝖾𝗋𝗂𝗈𝗋𝗆𝖾𝗇𝗍𝖾\n\n"
             "𝒗. 𝐖𝐡𝐚𝐭'𝐬 𝐢𝐧 𝐭𝐡𝐞 𝐛𝐨𝐱\n\n"
             "𝖨𝗇𝗌𝗉𝗂𝗋𝖺𝖽𝗈 𝖾𝗇 𝖵𝖺𝗋𝗂𝖾𝗍𝗒 𝖲𝗁𝗈𝗐𝗌 𝗈𝖿 𝖬𝖾𝗆𝗈𝗋𝗂𝖾𝗌: 𝖯𝖺𝗋𝗍 𝟣, 𝗍𝖾𝗇𝖽𝗋𝖺𝗇 𝗌𝗈𝗅𝗈 𝟧 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝗈𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!\n\n"
             "𝒗𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞\n\n"
-            "𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝖽𝖾𝖻𝖾𝗇 𝖾𝗌𝗉𝖾𝗋𝖺𝗋 𝗁𝖺𝗌𝗍𝖺 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗋𝖾𝗌𝖼𝖺𝗍𝖾𝗇, 𝗌𝗈𝗅𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾𝗇 𝗋𝖾𝗌𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝖾𝗇 𝗎𝗇 𝖺𝗎𝗍𝗈𝖻𝗎𝗌, 𝗉𝖾𝗋𝗈 𝗎𝗇 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝖾 𝖼𝗈𝗅𝗈 𝗒 𝖺𝗍𝖺𝖼𝖺 𝗉𝗈𝗋 𝗅𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌 𝖼𝗎𝖺𝗇𝖽𝗈 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝗌𝖾 𝖺𝗉𝖺𝗀𝖺𝗇 𝗉𝗈𝗋 𝗌𝖾𝗀𝗎𝗋𝗂𝖽𝖺𝖽 ¿𝖯𝗈𝖽𝗋𝖺𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?\n\n" 
+            "𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝖽𝖾𝖻𝖾𝗇 𝖾𝗌𝗉𝖾𝗋𝖺𝗋 𝗁𝖺𝗌𝗍𝖺 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗋𝖾𝗌𝖼𝖺𝗍𝖾𝗇, 𝗌𝗈𝗅𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾𝗇 𝗋𝖾𝗌𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝖾𝗇 𝗎𝗇 𝖺𝗎𝗍𝗈𝖻𝗎𝗌, 𝗉𝖾𝗋𝗈 𝗎𝗇 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝖾 𝖼𝗈𝗅𝗈 𝗒 𝖺𝗍𝖺𝖼𝖺 𝗉𝗈𝗋 𝗅𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌 𝖼𝗎𝖺𝗇𝖽𝗈 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝗌𝖾 𝖺𝗉𝖺𝗀𝖺𝗇 𝗉𝗈𝗋 𝗌𝖾𝗀𝗎𝗋𝗂𝖽𝖺𝖽 ¿𝖯𝗈𝖽𝗋𝖺𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?\n\n"
+                  )       
+        )
 
-        )        
-)
-
-# INFO DE LOS COMANDOS 
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo = GIF_COMANDOS,
         caption = ("🎡  𖹭𖹭 ㅤ𝗖𝗼𝗺𝗮𝗻𝗱𝗼𝘀 𝗱𝗶𝘀𝗽𝗼𝗻𝗶𝗯𝗹𝗲𝘀  ꒱꒱\n\n"
             "𝒊. 𝐀𝐡𝐨𝐫𝐜𝐚𝐝𝐨\n\n"
             "𝖢𝗈𝗆𝖺𝗇𝖽𝗈𝗌: /ahorcado, /start_ahorcado\n\n"
-            "𝒊𝒊. 𝐒𝐧𝐨𝐰𝐛𝐚𝐥𝐥\n\n"
-            "𝖢𝗈𝗆𝖺𝗇𝖽𝗈𝗌: /snowball, /start_snowball\n\n"
-            "𝒊𝒊. 𝐑𝐚𝐭𝐨𝐧𝐞𝐬\n\n"
-            "𝖢𝗈𝗆𝖺𝗇𝖽𝗈𝗌: /ratones, /start_ratones\n\n"
-            "𝒊𝒗. 𝐑𝐢𝐭𝐦𝐨 𝐀𝐠𝐨 𝐆𝐨\n\n"
-            "𝖢𝗈𝗆𝖺𝗇𝖽𝗈𝗌: /ritmo, /start_ritmo\n\n"
             "𝒗. 𝐖𝐡𝐚𝐭'𝐬 𝐢𝐧 𝐭𝐡𝐞 𝐛𝐨𝐱\n\n"
             "𝖢𝗈𝗆𝖺𝗇𝖽𝗈𝗌: /box, /start_box\n\n"
             "𝒗𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞\n\n"
             "𝖢𝗈𝗆𝖺𝗇𝖽𝗈𝗌: /zombie, /start_zombie\n\n" 
             "𝖠𝗇𝗍𝖾𝗌 𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝗇𝗎𝖾𝗏𝖺 𝗈 𝗁𝖺𝖻𝖾𝗋𝗌𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝗆𝖺𝗌 𝖽𝖾 𝗎𝗇𝖺 𝗉𝗈𝗋 𝖾𝗊𝗎𝗂𝗏𝗈𝖼𝖺𝖼𝗂𝗈𝗇, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗃𝖾𝖼𝗎𝗍𝖾 /off_van 𝗉𝖺𝗋𝖺 𝗋𝖾𝗌𝖾𝗍𝖾𝖺𝗋 𝖾𝗅 𝖼𝗈𝖽𝗂𝗀𝗈 𝗒 𝖾𝗏𝗂𝗍𝖺𝗋 𝖾𝗋𝗋𝗈𝗋𝖾𝗌"
-
-        )
+                  )
     )
 
-# JUEGO 1: AHORCADO 
-async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# !!⠀⠀CIPHER⠀ ───⠀ ⠀♥︎
+
+async def unirse_code(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if chat_id not in sesión: 
         sesión[chat_id] = {"jugadores": [], "activa": False}
@@ -172,7 +149,7 @@ async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_click")
     await update.message.reply_photo(
         photo = GIF_AHORCADO,
-        caption = "\n\n ៹ ࣪  📝 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖺𝗁𝗈𝗋𝖼𝖺𝖽𝗈! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃",
+        caption = "\n\n ៹ ࣪  📝 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 cipher! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
@@ -204,13 +181,13 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
     
     esperando_palabra[moderador["id"]] = chat_id
-    await update.message.reply_text(f"˒˓  ¡𝖬𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈!. 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝗊𝗎𝖾 𝗌𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗉𝖺𝗋𝖺 𝗉𝗈𝖽𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈  ᨦᨩ") 
+    await update.message.reply_text(f"˒˓  ¡𝖬𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈!. 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝗊𝗎𝖾 𝗌𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 el codigo 𝗉𝖺𝗋𝖺 𝗉𝗈𝖽𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈  ᨦᨩ") 
 
     try: 
         await context.bot.send_photo(
             chat_id = moderador["id"],
             photo = GIF_LETRISTA,
-            caption = "¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗊𝗎𝖾 𝖽𝖾𝗌𝗌𝖾𝗌 𝗌𝖾𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝖺"
+            caption = "¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂𝖺 el codigo 𝗊𝗎𝖾 𝖽𝖾𝗌𝗌𝖾𝗌 𝗌𝖾𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽o"
 
         )
 
