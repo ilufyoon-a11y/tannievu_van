@@ -1161,34 +1161,34 @@ if __name__ == '__main__':
     application = ApplicationBuilder().token(token_bot).build()
 
     # Comandos generales
-    application.add_handler(CommandHandler("start",    start_bienvenida))
-    application.add_handler(CommandHandler("info",     info))
-    application.add_handler(CommandHandler("cmds",     comandos))
-    application.add_handler(CommandHandler("off_van",  detener_juegos))
+    application.add_handler(CommandHandler("start",    start_bienvenida, prefix='.'))
+    application.add_handler(CommandHandler("info",     info, prefix='.'))
+    application.add_handler(CommandHandler("cmds",     comandos, prefix='.'))
+    application.add_handler(CommandHandler("off_van",  detener_juegos, prefix='.'))
 
     # Cipher
-    application.add_handler(CommandHandler("cipher",       unirse_cipher))
-    application.add_handler(CommandHandler("start_cipher", iniciar_cipher))
+    application.add_handler(CommandHandler("cipher",       unirse_cipher, prefix='.'))
+    application.add_handler(CommandHandler("start_cipher", iniciar_cipher, prefix='.'))
 
     # Zombie
-    application.add_handler(CommandHandler("zombie",       unirse_zombie))
-    application.add_handler(CommandHandler("start_zombie", iniciar_zombie))
+    application.add_handler(CommandHandler("zombie",       unirse_zombie, prefix='.'))
+    application.add_handler(CommandHandler("start_zombie", iniciar_zombie, prefix='.'))
 
     # Casería
-    application.add_handler(CommandHandler("caseria",       unirse_caseria))
-    application.add_handler(CommandHandler("start_caseria", iniciar_caseria))
+    application.add_handler(CommandHandler("caseria",       unirse_caseria, prefix='.'))
+    application.add_handler(CommandHandler("start_caseria", iniciar_caseria, prefix='.'))
 
     # Box
-    application.add_handler(CommandHandler("box",       unirse_box))
-    application.add_handler(CommandHandler("start_box", iniciar_box))
+    application.add_handler(CommandHandler("box",       unirse_box, prefix='.'))
+    application.add_handler(CommandHandler("start_box", iniciar_box, prefix='.'))
 
     # Charada
-    application.add_handler(CommandHandler("charada",       unirse_charada))
-    application.add_handler(CommandHandler("start_charada", iniciar_charada))
+    application.add_handler(CommandHandler("charada",       unirse_charada, prefix='.'))
+    application.add_handler(CommandHandler("start_charada", iniciar_charada, prefix='.'))
 
     # Pirata
-    application.add_handler(CommandHandler("pirata",       unirse_pirata))
-    application.add_handler(CommandHandler("start_pirata", iniciar_pirata))
+    application.add_handler(CommandHandler("pirata",       unirse_pirata, prefix='.'))
+    application.add_handler(CommandHandler("start_pirata", iniciar_pirata, prefix='.'))
 
     # Handlers generales
     application.add_handler(CallbackQueryHandler(manejar_botones))
