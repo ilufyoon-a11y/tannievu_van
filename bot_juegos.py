@@ -698,6 +698,85 @@ async def pasar_a_siguiente_ataque(chat_id, context):
         except: pass
     
     await context.bot.send_message(chat_id=chat_id, text="𝖫𝖺 𝗇𝗈𝖼𝗁𝖾 𝖼𝖺𝖾 𝗒 𝗌𝖾 𝖽𝖾𝖻𝖾𝗇 𝗉𝖺𝗀𝖺𝗋 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌... 𝖤𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖾𝗌𝗍𝖺 𝖺𝗅 𝖺𝖼𝖾𝖼𝗁𝗈")
+
+# CASERÍA 
+
+async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if sesion_caseria.get("activa") or sesion_caseria.get("fase_registro"):
+        await update.message.reply_text("¡Lo siento, amiko! Ya hay una cacería en curso o registrándose.")
+        return
+
+    sesion_caseria["jugadores"] = {}
+    sesion_caseria["tablero"] = []
+    sesion_caseria["fase_registro"] = True
+    sesion_caseria["activa"] = False
+
+    boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_caseria_click")
+    await update.message.reply_photo(
+        photo = GIF_INFO,  # Puedes usar tu GIF estético preferido
+        caption = "៹ ࣪ 🕵️‍♂️ **¡GRAN CACERÍA DE EMOJIS!** 🪐\n\n"
+                  "El bot generará un tablero gigante de botones en el grupo y les dará una misión secreta al privado.\n\n"
+                  "👉 ¡Únete al equipo de rastreo! Cuando estén listos, pongan `.start_caseria`.",
+        reply_markup=InlineKeyboardMarkup([[boton]])
+    )
+
+async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+
+    if not sesion_caseria.get("fase_registro"):
+        await update.message.reply_text("⚠️ No hay ninguna convocatoria abierta, chiki. Usa `.caseria` primero.")
+        return
+
+    if len(sesion_caseria["jugadores"]) < 2:
+        await update.message.reply_photo(
+            photo = GIF_ERROR,
+            caption = "Se necesitan mínimo 2 personas para empezar la cacería. ¡Invita a más causas!"
+        )
+        return
+
+    sesion_caseria["fase_registro"] = False
+    sesion_caseria["activa"] = True
+
+    # 1. Tu función automática genera 25 emojis frescos de internet
+    emojis_disponibles = generar_emojis_automaticos(100)
+    sesion_caseria["tablero"] = emojis_disponibles
+
+    # 2. Le repartimos a cada jugador 3 misiones secretas sacadas del mismo tablero
+    for user_id in sesion_caseria["jugadores"].keys():
+        mision_secreta = random.sample(emojis_disponibles, 5)
+        sesion_caseria["jugadores"][user_id] = {
+            "carton": mision_secreta,
+            "aciertos": []
+        }
+        
+        # Enviamos el cartón en privado usando tu estilo pulido
+        lista_mision = " ".join(mision_secreta)
+        try:
+            await context.bot.send_message(
+                chat_id = user_id,
+                text = f"🤫 **¡TU MISIÓN SECRETA DE CAZA!** 🤫\n\n"
+                       f"Objetivos asignados: [ {lista_mision} ]\n\n"
+                       f"¡Busca rápido estos 5 emojis en los botones del grupo antes que los demás! ⚡"
+            )
+        except Exception:
+            # Si no iniciaron el bot en privado, se avisa para que no jueguen a ciegas
+            pass
+
+    # 3. Construimos la botonera interactiva de 5x5 automáticamente
+    botones_tablero = []
+    for i in range(0, 100, 10):
+        fila = []
+        for em in emojis_disponibles[i:i+10]:
+            fila.append(InlineKeyboardButton(em, callback_data=f"hunt_{em}"))
+        botones_tablero.append(fila)
+
+    await context.bot.send_message(
+        chat_id = chat_id,
+        text = f"៹ ࣪ 🕵️‍♂️  **𝐂𝐀𝐂𝐄𝐑𝐈́𝐀 𝐃𝐄 𝐄𝐌𝐎𝐉𝐈𝐒**  🪐 𓂃\n\n"
+               f"¡El tablero ha sido desplegado en el chat general! Revisa tu privado para conocer tus objetivos secretos.\n\n"
+               f"¡El primero en cazar sus 5 objetivos gana la ronda! 🔥",
+        reply_markup = InlineKeyboardMarkup(botones_tablero)
+    )
         
 # !!⠀⠀⠀MANEJO DE CALLBACKS⠀- BOTONES ───⠀ ⠀♥︎
 
@@ -858,6 +937,69 @@ async def manejar_botones_charada(update: Update, context: ContextTypes.DEFAULT_
                     await procesar_resultados_votacion(chat_id, context)
             else:
                 await query.answer("𝖴𝗉𝗌, 𝗍𝗎 𝗇𝗈 𝖾𝗌𝗍𝖺𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗇𝖽𝗈 𝖾𝗇 𝖾𝗌𝗍𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.", show_alert=True)
+
+# CASERIA 
+
+    if query.data == "unirme_caseria_click":
+        await query.answer()
+        if sesion_caseria.get("activa", False):
+            await query.answer("¡Lo siento! El juego ya empezó, no te puedes meter.", show_alert=True)
+            return
+        if not sesion_caseria.get("fase_registro", False):
+            await query.answer("El registro ya cerró, amiko.", show_alert=True)
+            return
+            
+        if user.id not in sesion_caseria["jugadores"]:
+            # Usamos tu función nombre_usuario para meterlos con arroba
+            sesion_caseria["jugadores"][user.id] = {"carton": [], "aciertos": []}
+            await query.message.reply_text(f"🕵️‍♂️ ֹ {nombre_usuario(user)} se equipó para la cacería 𓂃")
+
+    elif query.data.startswith("hunt_"):
+        await query.answer()
+        
+        if not sesion_caseria.get("activa", False):
+            return
+
+        if user.id not in sesion_caseria["jugadores"]:
+            await query.answer("❌ No estás participando en esta ronda, chiki.", show_alert=True)
+            return
+
+        # Aplicamos tu genial técnica de normalización de cadenas del juego de box
+        emoji_presionado = query.data.split("_")[1].replace('\uFE0F', '')
+        datos_jugador = sesion_caseria["jugadores"][user.id]
+
+        carton_normalizado = [e.replace('\uFE0F', '') for e in datos_jugador["carton"]]
+        aciertos_normalizados = [e.replace('\uFE0F', '') for e in datos_jugador["aciertos"]]
+
+        if emoji_presionado in carton_normalizado:
+            if emoji_presionado not in aciertos_normalizados:
+                # Guardamos el acierto original
+                datos_jugador["aciertos"].append(query.data.split("_")[1])
+                faltan = len(datos_jugador["carton"]) - len(datos_jugador["aciertos"])
+                
+                await context.bot.send_message(
+                    chat_id = chat_id,
+                    text = f"🎯 **¡OBJETIVO ENCONTRADO!**\n"
+                           f"👤 {nombre_usuario(user)} cazó con éxito: {query.data.split('_')[1]}\n"
+                           f"📉 ¡Solo le faltan {faltan} objetivos!"
+                )
+
+                # Condición de Victoria: Completó sus 3 emojis secretos
+                if len(datos_jugador["aciertos"]) == 5:
+                    sesion_caseria["activa"] = False 
+                    carton_completo = " ".join(datos_jugador["carton"])
+                    
+                    await context.bot.send_message(
+                        chat_id = chat_id,
+                        text = f"🏆👑 **¡TENEMOS UN GANADOR SUPREMO!** 👑🏆\n\n"
+                               f"🥇 **Causa Ganador:** {nombre_usuario(user)}\n"
+                               f"🎯 **Misión Completada:** {carton_completo}\n\n"
+                               f"¡Destruyó el tablero por completo! El juego ha terminado. 🪐"
+                    )
+            else:
+                await query.answer("Ya habías atrapado este emoji antes, apurado. 🙄", show_alert=True)
+        else:
+            await query.answer("❌ Ese emoji no está en tu lista secreta. ¡Sigue buscando!", show_alert=True)
 
 # !!⠀⠀⠀MANEJO DE MENSAJES⠀ ───⠀ ⠀♥︎
 
@@ -1129,6 +1271,10 @@ if __name__ == '__main__':
     # Handlers JUEGO : Infección Zombie
     application.add_handler(CommandHandler("zombie", unirse_zombie))
     application.add_handler(CommandHandler("start_zombie", iniciar_zombie))
+
+    # Handlers JUEGO : CACERÍA DE EMOJIS
+    application.add_handler(CommandHandler("caseria", unirse_caseria, prefix='.'))
+    application.add_handler(CommandHandler("start_caseria", iniciar_caseria, prefix='.'))
 
     # Handlers de Botones y Mensajes Generales
     application.add_handler(CallbackQueryHandler(manejar_botones))
