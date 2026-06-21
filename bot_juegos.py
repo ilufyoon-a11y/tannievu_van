@@ -328,48 +328,175 @@ async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
     
+async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    
+    if sesion_charada.get("fase_registro") or sesion_charada.get("activa"):
+        await update.message.reply_text("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝗈 𝗎𝗇 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!")
+        return
+
+    # Limpieza total para la nueva partida
+    sesion_charada["jugadores"] = []
+    sesion_charada["equipo_rojo"] = []
+    sesion_charada["equipo_azul"] = []
+    sesion_charada["fase_registro"] = True
+    sesion_charada["activa"] = False
+
+    boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_charada_click")
+    
+    await update.message.reply_photo(
+        photo = GIF_CHARADA,  # Reemplázalo por tu variable de imagen
+        caption = "៹ ࣪ 🎭 **¡𝖦𝖱𝖠𝖭 𝖢𝖧𝖠𝖱𝖠𝖣𝖠 𝖯𝖮𝖱 𝖤𝖰𝖴𝖨𝖯𝖮𝖲!** 🎭\n\n"
+                  "Preparen sus mejores mímicas y emojis, causas. Se armarán dos bandos pasados de vueltas y jugaremos en modo contrarreloj.\n\n"
+                  "👉 ¡Apresúrate a unirte al elenco! Cuando estén listos, pongan `.iniciar_charada`.",
+        reply_markup=InlineKeyboardMarkup([[boton]])
+    )
+
 async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    if chat_id not in sesión or len(sesión[chat_id]["jugadores"]) < 2:
+    
+    if not sesion_charada.get("fase_registro"):
+        await update.message.reply_text("⚠️ No hay ninguna convocatoria abierta. Usa `.charada` primero.")
+        return
+
+    # 🛡️ Validación: Mínimo 4 personas (2 vs 2) para que tenga sentido el juego
+    if len(sesion_charada["jugadores"]) < 4:
         await update.message.reply_photo(
-            photo = GIF_ERROR,
-            caption = "𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋. 𝖣𝖾 𝗍𝗋𝖺𝗍𝖺𝗋𝗌𝖾 𝗎𝗇 𝖾𝗋𝗋𝗈𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗏𝗎𝖾𝗅𝗏𝖾 𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈."
+            photo = GIF_ERROR, # Reemplázalo por tu variable de error
+            caption = "𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟦 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗋𝗆𝖺𝗋 𝗅𝗈𝗌 𝖽𝗈𝗌 𝖾𝗊𝗎𝗂𝗉𝗈𝗌. ¡𝖨𝗇𝗏𝗂𝗍𝖺 𝖺 𝗆𝖺́𝗌 𝖼𝖺𝗎𝗌𝖺𝗌 𝗒 𝗏𝗎𝖾𝗅𝗏𝖾 𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋!"
         )        
         return 
 
+    sesion_charada["fase_registro"] = False
+
+    # 🔀 Mezcla aleatoria y división exacta a la mitad
+    lista_ids = [j["id"] for j in sesion_charada["jugadores"]]
+    random.shuffle(lista_ids)
+    mitad = len(lista_ids) // 2
+    sesion_charada["equipo_rojo"] = lista_ids[:mitad]
+    sesion_charada["equipo_azul"] = lista_ids[mitad:]
+
+    nombres_rojo = [next(j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid) for uid in sesion_charada["equipo_rojo"]]
+    nombres_azul = [next(j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid) for uid in sesion_charada["equipo_azul"]]
+
+    # Reset de los nombres base
+    sesion_charada["nombre_equipo_rojo"] = "Equipo Rojo 🔴"
+    sesion_charada["nombre_equipo_azul"] = "Equipo Azul 🔵"
+
+    # Seleccionar qué bando arranca y quién será su moderador
+    bando_inicial = random.choice(["rojo", "azul"])
+    sesion_charada["bando_actual"] = bando_inicial
+
+    if bando_inicial == "rojo":
+        id_moderador = random.choice(sesion_charada["equipo_rojo"])
+    else:
+        id_moderador = random.choice(sesion_charada["equipo_azul"])
+
+    nombre_moderador = next(j["name"] for j in sesion_charada["jugadores"] if j["id"] == id_moderador)
+
+    # Selección de los 10 retos aleatorios
     categoria = random.choice(list(DICCIONARIOS_CHARADA.keys()))
     palabras_elegidas = random.sample(DICCIONARIOS_CHARADA[categoria], 10)
 
     sesion_charada["palabras_ronda"] = {palabra: False for palabra in palabras_elegidas}
     sesion_charada["categoria_random"] = categoria
     sesion_charada["moderador_id"] = id_moderador
-    sesion_charada["activa"] = True
-    sesion_charada["respondio_turno"] = False
-    
-    lista_texto = "\n".join([f"🔹 {p.upper()}" for p in palabras_elegidas])
+    sesion_charada["nombre_recibido"] = False 
+
+    await context.bot.send_message(
+        chat_id = chat_id,
+        text = f"⚔️ **¡𝖤𝖰𝖴𝖨𝖯𝖮𝖲 𝖠𝖱𝖬𝖠𝖲𝖮𝖲 𝖠𝖫 𝖠𝖹𝖠𝖱!** ⚔️\n\n"
+               f"🔴 **𝖤𝖰𝖴𝖨𝖯𝖮 𝖱𝖮𝖩𝖮:** {', '.join(nombres_rojo)}\n"
+               f"🔵 **𝖤𝖰𝖴𝖨𝖯𝖮 𝖠𝖹𝖴𝖫:** {', '.join(nombres_azul)}\n\n"
+               f"📣 **𝖯𝖱𝖨𝖬𝖤𝖱𝖠 𝖱𝖮𝖭𝖣𝖠:** Juega el **𝖤𝖰𝖴𝖨𝖯𝖮 {bando_inicial.upper()}**.\n"
+               f"🎙️ **𝖬𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋:** {nombre_moderador}\n\n"
+               f"👀 ¡Atento al privado, causa! Tienes 15 segundos para darle un nombre personalizado a tu equipo."
+    )
+
+    # 🤫 Petición de nombre privado al Moderador
     try:
         await context.bot.send_message(
             chat_id = id_moderador,
-            text = f"🤫 **¡ERES EL MODERADOR!** 🤫\n\n"
-                   f"La categoría es: **{categoria.upper()}**\n"
-                   f"Haz que tu equipo adivine la mayor cantidad de estas 10 palabras en el grupo usando emojis o mímicas:\n\n{lista_texto}\n\n"
-                   f"¡No las vayas a soplar por texto en el grupo o quedas descalificado! 💀"
+            text = f"👑 **¡ERES EL MODERADOR DE TU EQUIPO!** 👑\n\n"
+                   f"Antes de darte las palabras, escribe aquí abajo el **NOMBRE PERSONALIZADO** que quieras para tu bando.\n\n"
+                   f"⏱️ ¡Tienes 15 segundos o el bot les pondrá un nombre random!"
         )
-        
     except Exception:
         await context.bot.send_message(
             chat_id = chat_id,
-            text = f"⚠️ ¡{nombre_moderador} debes iniciar el bot en privado para que te dé tus palabras secretas!"
+            text = f"⚠️ ¡{nombre_moderador} debes iniciar el bot en privado! Se canceló la partida."
         )
-        return 
+        return
 
+    # ⏱️ Espera activa de 15 segundos
+    espera = 15.0
+    while espera > 0 and not sesion_charada["nombre_recibido"]:
+        await asyncio.sleep(0.5)
+        espera -= 0.5
+
+    # Si se durmió, le asignamos uno chistoso por defecto
+    if not sesion_charada["nombre_recibido"]:
+        nombre_random = random.choice(["Los Sin Nombre 🦆", "Los Pasados de Frío ❄️", "Los Lentos de Van 🦥", "Mimos Anónimos 🎭"])
+        if bando_inicial == "rojo":
+            sesion_charada["nombre_equipo_rojo"] = f"{nombre_random} (Rojo)"
+        else:
+            sesion_charada["nombre_equipo_azul"] = f"{nombre_random} (Azul)"
+
+    # Se envían las 10 palabras secretas
+    lista_texto = "\n".join([f"🔹 {p.upper()}" for p in palabras_elegidas])
+    await context.bot.send_message(
+        chat_id = id_moderador,
+        text = f"🤫 **¡AQUÍ ESTÁN TUS PALABRAS SECRETAS!** 🤫\n\n"
+               f"🗂️ Categoria: **{categoria.upper()}**\n\n{lista_texto}\n\n"
+               f"¡Corre al grupo a meter mímicas y emojis! No escribas las palabras o quedas descalificado. 💀"
+    )
+
+    nombre_bando_jugando = sesion_charada["nombre_equipo_rojo"] if bando_inicial == "rojo" else sesion_charada["nombre_equipo_azul"]
+    sesion_charada["activa"] = True
+
+    # Arranque oficial en el grupo
     sesion_charada["mensaje_grupo_id"] = await context.bot.send_message(
         chat_id = chat_id,
-        text = f"🎮 **¡EMPIEZA EL JUEGO!** 🎮\n\n"
+        text = f"🎮 **¡EMPIEZA EL CONTRARRELOJ!** 🎮\n\n"
+               f"🔥 **Bando jugando:** ✨ {nombre_bando_jugando.upper()} ✨\n"
                f"🎙️ **Moderador:** {nombre_moderador}\n"
                f"🗂️ **Categoría:** {categoria.upper()}\n\n"
-               f"¡El moderador ya recibió sus 10 palabras secretas por privado! Tienen 60 segundos para adivinar la mayor cantidad. ¡Mete emojis, causa! 🔥"
+               f"¡Tienen 60 segundos para reventar el chat adivinando las 10 palabras! ¡Mete emojis, moderador! 🔥"
     )
+
+    asyncio.create_task(reloj_charada(chat_id, context))
+
+async def reloj_charada(chat_id, context):
+    segundos = 60
+    while segundos > 0 and sesion_charada["activa"]:
+        await asyncio.sleep(1)
+        segundos -= 1
+
+    if sesion_charada["activa"]:
+        sesion_charada["activa"] = False
+        
+        adivinadas = sum(1 for v in sesion_charada["palabras_ronda"].values() if v)
+        bando = sesion_charada["bando_actual"]
+        nombre_bando_jugando = sesion_charada["nombre_equipo_rojo"] if bando == "rojo" else sesion_charada["nombre_equipo_azul"]
+        
+        if bando == "rojo":
+            sesion_charada["puntos_rojo"] += adivinadas
+        else:
+            sesion_charada["puntos_azul"] += adivinadas
+
+        faltantes = [p.upper() for p, v in sesion_charada["palabras_ronda"].items() if not v]
+        texto_faltantes = ", ".join(faltantes) if faltantes else "¡Ninguna, las hicieron todas! 🔥"
+
+        await context.bot.send_message(
+            chat_id = chat_id,
+            text = f"⏱️ **¡TIEMPO AGOTADO!** ⏱️\n\n"
+                   f"El equipo **{nombre_bando_jugando.upper()}** logró adivinar **{adivinadas}/10** palabras.\n"
+                   f"❌ **Faltaron:** {texto_faltantes}\n\n"
+                   f"📊 **PUNTAJE GLOBAL:**\n"
+                   f"🔴 {sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} pts\n"
+                   f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} pts\n\n"
+                   f"¡Buen intento! El bot queda libre para otra ronda. 🎭"
+        )
 
 # !!⠀⠀⠀CODIGO DE ZOMBIE⠀ ───⠀ ⠀♥︎
 
@@ -605,6 +732,24 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = query.from_user
     chat_id = query.message.chat.id
 
+# CHARADA 
+async def manejar_botones_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    user = query.from_user
+
+    if query.data == "unirme_charada_click":
+        await query.answer()
+        if sesion_charada.get("activa", False):
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝖾𝗌𝗍𝖺́ 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖼𝗈𝗋𝗋𝗂𝖾𝗇𝖽𝗈!", show_alert=True)
+            return
+        if not sesion_charada.get("fase_registro", False):
+            await query.answer("¡El registro ya cerró, amiko!", show_alert=True)
+            return
+            
+        if not any(j['id'] == user.id for j in sesion_charada["jugadores"]):
+            sesion_charada["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
+            await query.message.reply_text(f"🎭 ֹ  {nombre_usuario(user)} se apuntó a las mímicas 𓂃")
+            
 # BOX 
 
     elif query.data == "unirme_box_click":
@@ -699,41 +844,67 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not texto and update.message.dice:
         texto = update.message.dice.emoji
 
+    # 🎭 PUENTES DIRECTOS PARA LA CHARADA 
+    if chat_type == "private":
+        await escuchar_charada_privado(update, context, user_id, texto)
+        return  # Cortamos el flujo en privados de la charada para que no interfiera
+
+    if chat_type in ["group", "supergroup"]:
+        await escuchar_charada_grupo(update, context, user_id, texto, chat_id)
+        # Aquí NO se pone return para que otros comandos/juegos del grupo sigan leyendo normal
+
 # CHARADA
 
-async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def escuchar_charada_privado(update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int, texto: str):
+    # Capturar el nombre del equipo enviado por el moderador en privado
+    if not sesion_charada.get("activa", False) and sesion_charada.get("moderador_id") == user_id and not sesion_charada.get("nombre_recibido", False):
+        if not texto:
+            return
+
+        if sesion_charada["bando_actual"] == "rojo":
+            sesion_charada["nombre_equipo_rojo"] = f"{texto} 🔴"
+        else:
+            sesion_charada["nombre_equipo_azul"] = f"{texto} 🔵"
+            
+        sesion_charada["nombre_recibido"] = True
+        await update.message.reply_text(f"✅ ¡Nombre registrado! Tu equipo se llamará: **{texto.upper()}**.")
+
+async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int, texto: str, chat_id: int):
     if not sesion_charada.get("activa", False):
         return
 
-    user = update.effective_user
-    chat_id = update.effective_chat.id
-    texto_usuario = update.message.text.lower().strip()
+    # El moderador no puede soplar en el chat general
+    if user_id == sesion_charada["moderador_id"]:
+        return
 
-    if user.id == sesion_charada["moderador_id"]:
+    if not texto:
         return
 
     bando_actual = sesion_charada["bando_actual"]
     lista_equipo_valido = sesion_charada["equipo_rojo"] if bando_actual == "rojo" else sesion_charada["equipo_azul"]
-    
-    if user.id not in lista_equipo_valido:
+    nombre_bando_jugando = sesion_charada["nombre_equipo_rojo"] if bando_actual == "rojo" else sesion_charada["nombre_equipo_azul"]
+
+    # Validamos que quien escriba sea del bando actual
+    if user_id not in lista_equipo_valido:
         return 
 
-    if texto_usuario in sesion_charada["palabras_ronda"]:
-        if not sesion_charada["palabras_ronda"][texto_usuario]:
-            # La marcamos como adivinada
-            sesion_charada["palabras_ronda"][texto_usuario] = True
-            
+    texto_limpio = texto.lower()
+
+    # El bot busca en toda la bolsa de 10 palabras (Acepta cualquier orden)
+    if texto_limpio in sesion_charada["palabras_ronda"]:
+        if not sesion_charada["palabras_ronda"][texto_limpio]:
+            sesion_charada["palabras_ronda"][texto_limpio] = True
             adivinadas_totales = sum(1 for v in sesion_charada["palabras_ronda"].values() if v)
             
             await update.message.reply_text(
-                f"🎉 ¡{user.first_name} ADIVINÓ! ✨\n"
-                f"✅ Palabra: **{texto_usuario.upper()}**\n"
-                f"📊 Van **{adivinadas_totales}/10** acertadas."
+                f"🎉 ¡{update.effective_user.first_name} ADIVINÓ! ✨\n"
+                f"✅ Palabra: **{texto_limpio.upper()}**\n"
+                f"📊 {nombre_bando_jugando}: **{adivinadas_totales}/10** acertadas."
             )
             
-            # Si rompen el récord y adivinan las 10 antes de los 60s
+            # Si se completan las 10 palabras antes del contrarreloj
             if adivinadas_totales == 10:
-                sesion_charada["activa"] = False # Frena el temporizador
+                sesion_charada["activa"] = False 
                 
                 if bando_actual == "rojo":
                     sesion_charada["puntos_rojo"] += 10
@@ -743,10 +914,10 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
                 await context.bot.send_message(
                     chat_id = chat_id,
                     text = f"🏆 **¡PUNTAJE PERFECTO!** 🏆\n\n"
-                           f"El **𝖤𝖰𝖴𝖨𝖯𝖮 {bando_actual.upper()}** destruyó el juego adivinando las 10 palabras completas antes del tiempo.\n\n"
+                           f"¡El equipo **{nombre_bando_jugando.upper()}** destruyó el juego adivinando las 10 palabras completas antes del tiempo!\n\n"
                            f"📊 **PUNTAJE GLOBAL:**\n"
-                           f"🔴 Equipo Rojo: {sesion_charada['puntos_rojo']} pts\n"
-                           f"🔵 Equipo Azul: {sesion_charada['puntos_azul']} pts"
+                           f"🔴 {sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} pts\n"
+                           f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} pts"
                 )
 
 # BOX
@@ -915,6 +1086,11 @@ if __name__ == '__main__':
 
 
     # Handlers JUEGO : PIRATA 
+    app.add_handler(CommandHandler("pirata", unirse_pirata, prefix='.'))
+    app.add_handler(CommandHandler("start_pirata", iniciar_pirata, prefix='.'))
+
+    # Handlers JUEGO : CHARADA 
+
     app.add_handler(CommandHandler("pirata", unirse_pirata, prefix='.'))
     app.add_handler(CommandHandler("start_pirata", iniciar_pirata, prefix='.'))
 
