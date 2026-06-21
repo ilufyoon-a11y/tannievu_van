@@ -321,15 +321,6 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_zombie_click")
-    await update.message.reply_photo(
-        photo = GIF_ZOMBIE, 
-        caption = "៹ ࣪  🧟 𝖫𝖺 𝗇𝗈𝖼𝗁𝖾 𝗁𝖺 𝗅𝗅𝖾𝗀𝖺𝖽𝗈 𝗒 𝗅𝗈𝗌 𝗓𝗈𝗆𝖻𝗂𝖾𝗌 𝖾𝗌𝗍𝖺𝗇 𝖾𝗆𝗉𝖾𝗓𝖺𝖽𝗈 𝖺 𝗌𝖺𝗅𝗂𝗋 ¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾 𝖺 𝗌𝗎𝖻𝗂𝗋𝗍𝖾 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌!  ֪",
-        reply_markup=InlineKeyboardMarkup([[boton]])
-    )
-    
-async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
     
     if sesion_charada.get("fase_registro") or sesion_charada.get("activa"):
         await update.message.reply_text("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝗈 𝗎𝗇 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!")
@@ -1091,8 +1082,8 @@ if __name__ == '__main__':
 
     # Handlers JUEGO : CHARADA 
 
-    app.add_handler(CommandHandler("pirata", unirse_pirata, prefix='.'))
-    app.add_handler(CommandHandler("start_pirata", iniciar_pirata, prefix='.'))
+    app.add_handler(CommandHandler("charada", unirse_charada, prefix='.'))
+    app.add_handler(CommandHandler("start_charada", iniciar_charada, prefix='.'))
 
     # Handlers JUEGO : BOX 
     application.add_handler(CommandHandler("box", unirse_box, prefix='.'))
