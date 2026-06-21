@@ -77,14 +77,25 @@ WIKI_CHARADA = {
         "mic drop", "idol", "run bts", "spring day", "permission to dance"]
 
 sesion_charada = {
-    "activa": False,
-    "equipo_actual": None,   
-    "moderador_id": None,    
-    "categoria_random": "",   
-    "palabras_ronda": {},   
-    "tiempo_restante": 60,
-    "mensaje_grupo_id": None
+    "activa": False,         
+    "fase_registro": False, 
+    "jugadores": [], 
+    
+    "equipo_hyung": [],    
+    "equipo_maknae": [],      
+    
+    "bando_actual": None,   
+    "moderador_id": None,     
+    "categoria_random": "",    
+    "palabras_ronda": {},    
+    "respondio_turno": False, 
+    "mensaje_grupo_id": None,
+    
+    "puntos_hyung": 0,
+    "puntos_maknae": 0
 }
+
+
     
 # !!⠀⠀AUXILIARES⠀ ───⠀ ⠀♥︎
 
@@ -306,7 +317,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"𝖴𝗉𝗌, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 @{encubridor.get('username', 'usuario')}. "
             f"𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈."))
 
-# !!⠀⠀⠀CODIGO DE BOX⠀ ───⠀ ⠀♥︎
+# !!⠀⠀⠀CODIGO DE CHARADA⠀ ───⠀ ⠀♥︎
 
 async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -317,8 +328,48 @@ async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
     
-async def iniciar_charada(
-    chat_id, context, chat_id, context, id_moderador, nombre_moderador):
+async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    if chat_id not in sesión or len(sesión[chat_id]["jugadores"]) < 2:
+        await update.message.reply_photo(
+            photo = GIF_ERROR,
+            caption = "𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋. 𝖣𝖾 𝗍𝗋𝖺𝗍𝖺𝗋𝗌𝖾 𝗎𝗇 𝖾𝗋𝗋𝗈𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗏𝗎𝖾𝗅𝗏𝖾 𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈."
+        )        
+        return 
+
+    categoria = random.choice(list(DICCIONARIOS_CHARADA.keys()))
+    palabras_elegidas = random.sample(DICCIONARIOS_CHARADA[categoria], 10)
+
+    sesion_charada["palabras_ronda"] = {palabra: False for palabra in palabras_elegidas}
+    sesion_charada["categoria_random"] = categoria
+    sesion_charada["moderador_id"] = id_moderador
+    sesion_charada["activa"] = True
+    sesion_charada["respondio_turno"] = False
+    
+    lista_texto = "\n".join([f"🔹 {p.upper()}" for p in palabras_elegidas])
+    try:
+        await context.bot.send_message(
+            chat_id = id_moderador,
+            text = f"🤫 **¡ERES EL MODERADOR!** 🤫\n\n"
+                   f"La categoría es: **{categoria.upper()}**\n"
+                   f"Haz que tu equipo adivine la mayor cantidad de estas 10 palabras en el grupo usando emojis o mímicas:\n\n{lista_texto}\n\n"
+                   f"¡No las vayas a soplar por texto en el grupo o quedas descalificado! 💀"
+        )
+        
+    except Exception:
+        await context.bot.send_message(
+            chat_id = chat_id,
+            text = f"⚠️ ¡{nombre_moderador} debes iniciar el bot en privado para que te dé tus palabras secretas!"
+        )
+        return 
+
+    sesion_charada["mensaje_grupo_id"] = await context.bot.send_message(
+        chat_id = chat_id,
+        text = f"🎮 **¡EMPIEZA EL JUEGO!** 🎮\n\n"
+               f"🎙️ **Moderador:** {nombre_moderador}\n"
+               f"🗂️ **Categoría:** {categoria.upper()}\n\n"
+               f"¡El moderador ya recibió sus 10 palabras secretas por privado! Tienen 60 segundos para adivinar la mayor cantidad. ¡Mete emojis, causa! 🔥"
+    )
 
 # !!⠀⠀⠀CODIGO DE ZOMBIE⠀ ───⠀ ⠀♥︎
 
@@ -648,6 +699,56 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not texto and update.message.dice:
         texto = update.message.dice.emoji
 
+# CHARADA
+
+async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not sesion_charada.get("activa", False):
+        return
+
+    user = update.effective_user
+    chat_id = update.effective_chat.id
+    texto_usuario = update.message.text.lower().strip()
+
+    if user.id == sesion_charada["moderador_id"]:
+        return
+
+    bando_actual = sesion_charada["bando_actual"]
+    lista_equipo_valido = sesion_charada["equipo_rojo"] if bando_actual == "rojo" else sesion_charada["equipo_azul"]
+    
+    if user.id not in lista_equipo_valido:
+        return 
+
+    if texto_usuario in sesion_charada["palabras_ronda"]:
+        if not sesion_charada["palabras_ronda"][texto_usuario]:
+            # La marcamos como adivinada
+            sesion_charada["palabras_ronda"][texto_usuario] = True
+            
+            adivinadas_totales = sum(1 for v in sesion_charada["palabras_ronda"].values() if v)
+            
+            await update.message.reply_text(
+                f"🎉 ¡{user.first_name} ADIVINÓ! ✨\n"
+                f"✅ Palabra: **{texto_usuario.upper()}**\n"
+                f"📊 Van **{adivinadas_totales}/10** acertadas."
+            )
+            
+            # Si rompen el récord y adivinan las 10 antes de los 60s
+            if adivinadas_totales == 10:
+                sesion_charada["activa"] = False # Frena el temporizador
+                
+                if bando_actual == "rojo":
+                    sesion_charada["puntos_rojo"] += 10
+                else:
+                    sesion_charada["puntos_azul"] += 10
+
+                await context.bot.send_message(
+                    chat_id = chat_id,
+                    text = f"🏆 **¡PUNTAJE PERFECTO!** 🏆\n\n"
+                           f"El **𝖤𝖰𝖴𝖨𝖯𝖮 {bando_actual.upper()}** destruyó el juego adivinando las 10 palabras completas antes del tiempo.\n\n"
+                           f"📊 **PUNTAJE GLOBAL:**\n"
+                           f"🔴 Equipo Rojo: {sesion_charada['puntos_rojo']} pts\n"
+                           f"🔵 Equipo Azul: {sesion_charada['puntos_azul']} pts"
+                )
+
 # BOX
 
     if chat_type == "private" and user_id in esperando_elementos:
@@ -658,10 +759,10 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("¡Alto ahi! Esos no son 6 elementos, por favor, vuelve a enviar")
             return      
         
-        sesión_jitb[gid].update({
-            "emojis_secretos": emojis_originales,      # Los 6 que deben adivinar
-            "emojis_adivinados": [],                  # AquÃ­ meteremos los que ya descubrieron
-            "puntajes": {},                           # GuardarÃ¡ {user_id: puntos}
+        sesion_box[gid].update({
+            "emojis_secretos": emojis_originales,    
+            "emojis_adivinados": [],               
+            "puntajes": {},                     
             "activa": True
         })
 
