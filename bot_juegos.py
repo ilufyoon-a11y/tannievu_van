@@ -33,7 +33,7 @@ GIF_COMANDOS   = "https://i.postimg.cc/6qjQHnqv/1000005043-(1).jpg"
 
 # !!⠀⠀DICCIONARIO DE CADA JUEGO⠀ ───⠀ ⠀♥︎
 
-# CIPHER 😵
+# CIPHER 👨‍💻
 
 sesión_ahorcado = {
     "jugadores": [], 
@@ -65,7 +65,7 @@ esperando_mordida = {}
 
 sesión_jitb = {}
 
-# CHARADA 
+# CHARADA 🔎
 
 WIKI_CHARADA = {
     "peliculas_animadas": ["Coraline y la Puerta Secreta", "Kung Fu Panda", "La era del hielo", "Ratatouille", "Monsters, Inc.", "Toy Story", "Up", "Intensamente", "Buscando a Nemo", "Shrek", 
@@ -95,9 +95,46 @@ sesion_charada = {
     "puntos_maknae": 0
 }
 
+# CASERÍA 🔎
 
+sesion_caseria = {
+    "activa": False,
+    "fase_registro": False,
+    "jugadores": {},
+    "tablero": [],         
+    "mensaje_grupo_id": None
+}
     
-# !!⠀⠀AUXILIARES⠀ ───⠀ ⠀♥︎
+# !!⠀⠀AUXILIARES⠀ ───⠀ ⠀
+
+# BIBUJA EL TABLERO DE CASERÍA 
+
+def generar_emojis_automaticos(cantidad=100):
+    emojis = set()
+    rangos = [
+        (0x1F600, 0x1F64F),  # Emoticonos (😀-🙏)
+        (0x1F90F, 0x1F9AD),  # Animales y comida extra (🦆-🦧)
+        (0x1F330, 0x1F37F),  # Plantas y comida (🌱-🍿)
+        (0x1F football, 0x1F⚽) # Solo para asegurar que entre de todo un poco
+    ]
+    
+    while len(emojis) < cantidad:
+        # Elegimos un bloque al azar y sacamos un emoji de ahí
+        rango_elegido = random.choice([
+            (0x1F600, 0x1F64F), 
+            (0x1F330, 0x1F37F), 
+            (0x1F400, 0x1F4D0), 
+            (0x1F910, 0x1F96B)
+        ])
+        emoji_char = chr(random.randint(rango_elegido[0], rango_elegido[1]))
+        
+        # Filtramos posibles caracteres raros o invisibles de esos rangos
+        if emoji_char.isprintable():
+            emojis.add(emoji_char)
+            
+    lista_final = list(emojis)
+    random.shuffle(lista_final)
+    return lista_final
 
 # DIBUJAR EL MENU DE CODE - SE ACTUALIZA CADA QUE SE ADIVINA UN NUMERO 
 
