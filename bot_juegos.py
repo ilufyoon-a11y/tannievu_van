@@ -1,4 +1,5 @@
 import random
+from telegram.ext import filters
 import os
 import asyncio
 from flask import Flask
@@ -14,6 +15,8 @@ def home():
     return "Van fue encendido"
 
 # !!⠀⠀VARIABLES DE IMAGENES⠀ ───⠀ ⠀♥︎
+
+PREFIX = filters.Regex(r'^[./]')
 
 GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg" 
 GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg" 
@@ -1160,35 +1163,35 @@ if __name__ == '__main__':
     print("🤖 Iniciando bot de Telegram con run_polling...")
     application = ApplicationBuilder().token(token_bot).build()
 
-    # Comandos generales
-    application.add_handler(CommandHandler("start",    start_bienvenida, prefix='.'))
-    application.add_handler(CommandHandler("info",     info, prefix='.'))
-    application.add_handler(CommandHandler("cmds",     comandos, prefix='.'))
-    application.add_handler(CommandHandler("off_van",  detener_juegos, prefix='.'))
+# Comandos generales
+application.add_handler(CommandHandler("start",    start_bienvenida, filters=PREFIX))
+application.add_handler(CommandHandler("info",     info,             filters=PREFIX))
+application.add_handler(CommandHandler("cmds",     comandos,         filters=PREFIX))
+application.add_handler(CommandHandler("off_van",  detener_juegos,   filters=PREFIX))
 
-    # Cipher
-    application.add_handler(CommandHandler("cipher",       unirse_cipher, prefix='.'))
-    application.add_handler(CommandHandler("start_cipher", iniciar_cipher, prefix='.'))
+# Cipher
+application.add_handler(CommandHandler("cipher",       unirse_cipher,  filters=PREFIX))
+application.add_handler(CommandHandler("start_cipher", iniciar_cipher, filters=PREFIX))
 
-    # Zombie
-    application.add_handler(CommandHandler("zombie",       unirse_zombie, prefix='.'))
-    application.add_handler(CommandHandler("start_zombie", iniciar_zombie, prefix='.'))
+# Zombie
+application.add_handler(CommandHandler("zombie",       unirse_zombie,  filters=PREFIX))
+application.add_handler(CommandHandler("start_zombie", iniciar_zombie, filters=PREFIX))
 
-    # Casería
-    application.add_handler(CommandHandler("caseria",       unirse_caseria, prefix='.'))
-    application.add_handler(CommandHandler("start_caseria", iniciar_caseria, prefix='.'))
+# Casería
+application.add_handler(CommandHandler("caseria",       unirse_caseria,  filters=PREFIX))
+application.add_handler(CommandHandler("start_caseria", iniciar_caseria, filters=PREFIX))
 
-    # Box
-    application.add_handler(CommandHandler("box",       unirse_box, prefix='.'))
-    application.add_handler(CommandHandler("start_box", iniciar_box, prefix='.'))
+# Box
+application.add_handler(CommandHandler("box",       unirse_box,  filters=PREFIX))
+application.add_handler(CommandHandler("start_box", iniciar_box, filters=PREFIX))
 
-    # Charada
-    application.add_handler(CommandHandler("charada",       unirse_charada, prefix='.'))
-    application.add_handler(CommandHandler("start_charada", iniciar_charada, prefix='.'))
+# Charada
+application.add_handler(CommandHandler("charada",       unirse_charada,  filters=PREFIX))
+application.add_handler(CommandHandler("start_charada", iniciar_charada, filters=PREFIX))
 
-    # Pirata
-    application.add_handler(CommandHandler("pirata",       unirse_pirata, prefix='.'))
-    application.add_handler(CommandHandler("start_pirata", iniciar_pirata, prefix='.'))
+# Pirata
+application.add_handler(CommandHandler("pirata",       unirse_pirata,  filters=PREFIX))
+application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX))
 
     # Handlers generales
     application.add_handler(CallbackQueryHandler(manejar_botones))
