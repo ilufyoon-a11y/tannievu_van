@@ -979,7 +979,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
         # BOX: adivinar emojis
-        if chat_id in sesion_box and sesion_box[chat_id].get("activa"):
+    if chat_id in sesion_box and sesion_box[chat_id].get("activa"):
             sesion = sesion_box[chat_id]
             emojis_enviados = extraer_emojis(texto)
             if not emojis_enviados:
