@@ -434,11 +434,11 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_caseria["fase_registro"] = False
     sesion_caseria["activa"] = True
 
-    # Generar pool de 25 emojis únicos
+    # Generar pool de 64 emojis únicos (Tablero de 8x8)
     pool = []
     rangos = [(0x1F600, 0x1F64F), (0x1F330, 0x1F37F), (0x1F400, 0x1F4D0), (0x1F910, 0x1F96B)]
     seen = set()
-    while len(pool) < 100:
+    while len(pool) < 64:
         rango = random.choice(rangos)
         c = chr(random.randint(rango[0], rango[1]))
         if c.isprintable() and c not in seen:
@@ -446,16 +446,15 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pool.append(c)
 
     sesion_caseria["tablero"] = pool
-    sesion_caseria["marcados"] = [False] * 100 # Ninguno marcado al inicio
+    sesion_caseria["marcados"] = [False] * 64 # Cambiado a 64
     sesion_caseria["jugadores"] = {uid: 0 for uid in sesion_caseria["jugadores"]}
 
-    # Crear la botonera interactiva 5x5
+    # Crear la botonera interactiva de 8x8
     botones = []
-    for i in range(0, 100, 10):
+    for i in range(0, 64, 8): # Avanza de 8 en 8
         fila = []
-        for j in range(i, i + 10):
+        for j in range(i, i + 8): # 8 columnas
             emoji_boton = pool[j]
-            # callback_data lleva el índice del botón en el tablero
             fila.append(InlineKeyboardButton(emoji_boton, callback_data=f"caseria_click_{j}"))
         botones.append(fila)
 
