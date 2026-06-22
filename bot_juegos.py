@@ -962,31 +962,21 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await escuchar_charada_privado(update, context, user_id, texto)
         return
 
-    # ── GRUPO: respuestas de juegos ──────────────────────────────────
-    if chat_type in ["group", "supergroup"]:
-        # CHARADA (no bloquea el resto)
-        await escuchar_charada_grupo(update, context, user_id, texto, chat_id)
-
-        # CIPHER: adivinar número del código
+# CIPHER: adivinar número del código en el grupo
     if sesion_cipher.get("activa") and texto.isdigit():
-            codigo = sesion_cipher.get("codigo", "")
-            
-            # 1. Validamos que el intento tenga la misma cantidad de dígitos que el código secreto
-            if len(texto) != len(codigo):
-                await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
-                return
+    codigo = sesion_cipher.get("codigo", "")
 
-            # 2. Comparamos el código secreto con el intento del usuario
-            pantalla = dibujar_pantalla_code(codigo, texto)
-            
-            # 3. Mandamos el resultado (ej: __3___)
-            await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`")
-            
-            # 4. Si ya no hay guiones bajos, ¡ganó!
-            if "_" not in pantalla:
-                sesion_cipher["activa"] = False
-                await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: `{codigo}`")
-            return
+    if len(texto) != len(codigo):
+        await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
+        return
+
+    pantalla = dibujar_pantalla_code(codigo, texto)
+    await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`")
+
+    if "_" not in pantalla:
+        sesion_cipher["activa"] = False
+        await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: `{codigo}`")
+    return
 
         # BOX: adivinar emojis
         if chat_id in sesion_box and sesion_box[chat_id].get("activa"):
