@@ -428,17 +428,17 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if len(sesion_caseria["jugadores"]) < 2:
         await update.message.reply_photo(photo=GIF_ERROR,
-            caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
+            caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌ิ𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
         return
 
     sesion_caseria["fase_registro"] = False
     sesion_caseria["activa"] = True
 
-    # Generar tablero de emojis
+    # Generar pool de 25 emojis únicos
     pool = []
     rangos = [(0x1F600, 0x1F64F), (0x1F330, 0x1F37F), (0x1F400, 0x1F4D0), (0x1F910, 0x1F96B)]
     seen = set()
-    while len(pool) < 25:
+    while len(pool) < 100:
         rango = random.choice(rangos)
         c = chr(random.randint(rango[0], rango[1]))
         if c.isprintable() and c not in seen:
@@ -446,14 +446,23 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pool.append(c)
 
     sesion_caseria["tablero"] = pool
+    sesion_caseria["marcados"] = [False] * 100 # Ninguno marcado al inicio
     sesion_caseria["jugadores"] = {uid: 0 for uid in sesion_caseria["jugadores"]}
 
-    filas = [pool[i:i+5] for i in range(0, 25, 5)]
-    tablero_txt = "\n".join("  ".join(fila) for fila in filas)
+    # Crear la botonera interactiva 5x5
+    botones = []
+    for i in range(0, 100, 10):
+        fila = []
+        for j in range(i, i + 10):
+            emoji_boton = pool[j]
+            # callback_data lleva el índice del botón en el tablero
+            fila.append(InlineKeyboardButton(emoji_boton, callback_data=f"caseria_click_{j}"))
+        botones.append(fila)
 
     msg = await context.bot.send_message(
         chat_id=chat_id,
-        text=f"🔎 **¡CASERÍA INICIADA!**\n\nEncuentra los emojis que el bot irá pidiendo. ¡El primero en responder gana el punto!\n\n{tablero_txt}"
+        text="🔎 **¡CASERÍA INICIADA!**\n\nBusca en tu cartilla el emoji que el bot vaya pidiendo. ¡El primero en presionarlo se lleva el punto!",
+        reply_markup=InlineKeyboardMarkup(botones)
     )
     sesion_caseria["mensaje_grupo_id"] = msg.message_id
 
@@ -461,7 +470,7 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ronda_caseria(chat_id, context):
     tablero = sesion_caseria["tablero"]
-    objetivos = random.sample(tablero, min(5, len(tablero)))
+    objetivos = random.sample(tablero, min(10, len(tablero)))
 
     for objetivo in objetivos:
         if not sesion_caseria["activa"]:
