@@ -141,14 +141,13 @@ def dibujar_pantalla_code(codigo_secreto, intento_usuario):
         return " ".join(["_" for _ in codigo_secreto])
         
     resultado = []
-    
     for num_secreto, num_intento in zip(codigo_secreto, intento_usuario):
         if num_secreto == " ":
-            resultado.append(" ") 
+            resultado.append(" ")
         elif num_secreto == num_intento:
-            resultado.append(num_secreto) 
+            resultado.append(num_secreto)
         else:
-            resultado.append("_") 
+            resultado.append("_")
             
     return " ".join(resultado)
     
@@ -953,7 +952,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         })
         del esperando_code[user_id]
         await update.message.reply_text("¡𝖢𝗈́𝖽𝗂𝗀𝗈 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝗈! El juego comienza.")
-        pantalla = dibujar_pantalla_code(chat_id)
+        pantalla_inicial = dibujar_pantalla_code(texto, "")
         await context.bot.send_message(chat_id=gid,
             text=f"📝 **¡CIPHER INICIADO!**\n\nAdivina el código.\n\n`{pantalla}`")
         return
@@ -998,20 +997,25 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await escuchar_charada_grupo(update, context, user_id, texto, chat_id)
 
         # CIPHER: adivinar número del código
-        if sesion_cipher.get("activa") and texto.isdigit():
+    if sesion_cipher.get("activa") and texto.isdigit():
             codigo = sesion_cipher.get("codigo", "")
-            adivinadas = sesion_cipher.get("numeros_adivinadas", [])
-            for i, num in enumerate(codigo):
-                identificador = f"{i}_{num}"
-                if num == texto and identificador not in adivinadas:
-                    adivinadas.append(identificador)
-                    sesion_cipher["numeros_adivinadas"] = adivinadas
-                    pantalla = dibujar_pantalla_code(chat_id)
-                    await update.message.reply_text(f"✅ ¡{user_name} acertó un número!\n\n`{pantalla}`")
-                    if "_" not in pantalla:
-                        sesion_cipher["activa"] = False
-                        await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: `{codigo}`")
-                    return
+            
+            # 1. Validamos que el intento tenga la misma cantidad de dígitos que el código secreto
+            if len(texto) != len(codigo):
+                await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
+                return
+
+            # 2. Comparamos el código secreto con el intento del usuario
+            pantalla = dibujar_pantalla_code(codigo, texto)
+            
+            # 3. Mandamos el resultado (ej: __3___)
+            await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`")
+            
+            # 4. Si ya no hay guiones bajos, ¡ganó!
+            if "_" not in pantalla:
+                sesion_cipher["activa"] = False
+                await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: `{codigo}`")
+            return
 
         # BOX: adivinar emojis
         if chat_id in sesion_box and sesion_box[chat_id].get("activa"):
