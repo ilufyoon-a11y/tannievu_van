@@ -469,21 +469,56 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ronda_caseria(chat_id, context):
     tablero = sesion_caseria["tablero"]
-    objetivos = random.sample(tablero, min(10, len(tablero)))
+    
+    # Elegimos 5 emojis al azar de los 64 que tiene el tablero para las rondas
+    objetivos_indices = random.sample(range(64), 5)
 
-    for objetivo in objetivos:
+    for indice_objetivo in objetivos_indices:
         if not sesion_caseria["activa"]:
             break
-        sesion_caseria["objetivo_actual"] = objetivo
+            
+        sesion_caseria["indice_objetivo_actual"] = indice_objective
         sesion_caseria["respondio_turno"] = False
+        objetivo_emoji = tablero[indice_objetivo]
 
-        await context.bot.send_message(chat_id=chat_id,
-            text=f"🎯 ¡Encuentra este emoji en el tablero y mándalo! → {objetivo}")
+        msg_objetivo = await context.bot.send_message(
+            chat_id=chat_id,
+            text=f"🎯 ¡Encuentra este emoji en la cartilla de abajo y dale click! → {objetivo_emoji}"
+        )
 
+        # Espera de 15 segundos por ronda
         espera = 15.0
         while espera > 0 and not sesion_caseria.get("respondio_turno", False):
             await asyncio.sleep(0.5)
             espera -= 0.5
+
+        if not sesion_caseria.get("respondio_turno", False):
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=f"⏱️ ¡Tiempo! Nadie encontró el emoji {objetivo_emoji}."
+            )
+        
+        try:
+            await context.bot.delete_message(chat_id=chat_id, message_id=msg_objetivo.message_id)
+        except:
+            pass
+
+        await asyncio.sleep(1.5)
+
+    # Fin del juego y recuento de puntos
+    if sesion_caseria["activa"]:
+        sesion_caseria["activa"] = False
+        puntajes = sesion_caseria["jugadores"]
+        ranking = sorted(puntajes.items(), key=lambda x: x[1], reverse=True)
+        texto = "🏁 **¡CASERÍA TERMINADA!**\n\n📊 Puntaje final:\n"
+        medallas = ["🥇", "🥈", "🥉"]
+        
+        for i, (uid, pts) in enumerate(ranking):
+            dec = medallas[i] if i < 3 else "🔹"
+            texto += f"{dec} Usuario ({uid}): {pts} pt(s)\n"
+            
+        await context.bot.send_message(chat_id=chat_id, text=texto)
+
 
 # =====================================================================
 # BOX 📦
