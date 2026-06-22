@@ -841,53 +841,61 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await query.answer("𝖴𝗉𝗌, 𝗍𝗎́ 𝗇𝗈 𝖾𝗌𝗍𝖺́𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗇𝖽𝗈.", show_alert=True)
 
-    # ── CASERÍA ──────────────────────────────────────────────────────
-
+# ── CASERÍA BINGO (Click en el tablero/cartilla) ────────────────────────
     elif query.data.startswith("caseria_click_"):
         await query.answer()
         if not sesion_caseria.get("activa"):
             return
 
-        # Verificar si el usuario está registrado en la partida actual
-        if user.id not in sesion_caseria["jugadores"]:
+        uid = user.id
+        # 1. Verificar si el usuario realmente se registró y está participando
+        if uid not in sesion_caseria["jugadores"]:
             await query.answer("❌ No estás participando en esta partida.", show_alert=True)
             return
 
         indice_click = int(query.data.split("_")[2])
+        cartilla_jugador = sesion_caseria["jugadores"][uid]
 
-        # Verificar si le dio al emoji que el bot está pidiendo
-        if indice_click != sesion_caseria.get("indice_objetivo_actual"):
-            await query.answer("❌ ¡Ese no es el emoji correcto! Sigue buscando.", show_alert=True)
+        # Evitar errores si el índice está fuera del rango de su cartilla (son solo 5 emojis)
+        if indice_click >= len(cartilla_jugador):
             return
 
-        # Evitar que procese doble click si dos usuarios tocan casi al mismo milisegundo
-        if sesion_caseria.get("respondio_turno"):
+        emoji_pulsado = cartilla_jugador[indice_click]
+
+        # 2. Si el botón ya era un check, no hace falta procesar nada
+        if emoji_pulsado == "✅":
+            await query.answer("¡Este emoji ya lo marcaste!", show_alert=True)
             return
 
-        # Registrar acierto
-        sesion_caseria["respondio_turno"] = True
-        sesion_caseria["marcados"][indice_click] = True
-        sesion_caseria["jugadores"][user.id] += 1
+        # 3. Verificar si el emoji que pulsó ya fue cantado por el bot
+        if emoji_pulsado not in sesion_caseria["emojis_cantados"]:
+            await query.answer("❌ ¡Ese emoji aún no ha sido cantado! No hagas trampa.", show_alert=True)
+            return
 
-        await query.message.reply_text(f"✅ ¡{nombre_usuario(user)} encontró el emoji correcto! +1 punto 🎉")
+        # 4. Reemplazar el emoji por un check en la cartilla del jugador
+        cartilla_jugador[indice_click] = "✅"
+        await query.answer("¡Marcado correctamente! ✨", show_alert=True)
 
-        # Volver a armar la botonera de 8x8 reflejando los cambios con "✅"
-        pool = sesion_caseria["tablero"]
-        marcados = sesion_caseria["marcados"]
-        
+        # 5. Comprobar si el jugador ya completó TODOS sus emojis (si todos son "✅")
+        if all(e == "✅" for e in cartilla_jugador):
+            sesion_caseria["activa"] = False # Detiene el juego de inmediato
+            
+            await query.message.reply_text(
+                f"🎉 ֹ **¡BINGO! ¡TENEMOS UN GANADOR!** 𓂃\n\n"
+                f"🏆 {nombre_usuario(user)} cantó victoria primero y completó toda su cartilla."
+            )
+            return
+
+        # 6. Si no ha ganado todavía, rediseñar la botonera SOLO para este mensaje del usuario
         nuevos_botones = []
-        for i in range(0, 64, 8): # Avanza de 8 en 8 para mantener las filas estables
-            fila = []
-            for j in range(i, i + 8): # Crea las 8 columnas de la fila
-                texto_boton = "✅" if marcados[j] else pool[j]
-                fila.append(InlineKeyboardButton(texto_boton, callback_data=f"caseria_click_{j}"))
-            nuevos_botones.append(fila)
+        fila = []
+        for idx, e in enumerate(cartilla_jugador):
+            fila.append(InlineKeyboardButton(e, callback_data=f"caseria_click_{idx}"))
+        nuevos_botones.append(fila)
 
-        # Actualizar la cartilla visualmente en el grupo
+        # Actualizamos la botonera del mensaje actual (la cartilla individual que presionó)
         try:
-            await context.bot.edit_message_reply_markup(
-                chat_id=chat_id,
-                message_id=sesion_caseria["mensaje_grupo_id"],
+            await query.edit_message_reply_markup(
                 reply_markup=InlineKeyboardMarkup(nuevos_botones)
             )
         except Exception:
@@ -903,7 +911,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         if not any(j["id"] == user.id for j in sesion_box[chat_id]["jugadores"]):
             sesion_box[chat_id]["jugadores"].append({"id": user.id, "name": nombre_usuario(user), "username": user.username})
-            await query.message.reply_text(f"📦 ֹ  {nombre_usuario(user)} se unió 𓂃")
+            await query.message.reply_text(f"📦  {nombre_usuario(user)} se unió 𓂃")
 
     # ── CHARADA ──────────────────────────────────────────────────────
     elif query.data == "unirme_charada_click":
