@@ -136,21 +136,22 @@ def extraer_emojis(texto):
 def nombre_usuario(user):
     return f"@{user.username}" if user.username else user.first_name
 
-def dibujar_pantalla_code(chat_id):
-    datos = sesion_cipher
-    codigo = datos.get("codigo", "")
-    adivinadas = datos.get("numeros_adivinadas", [])
+def dibujar_pantalla_code(codigo_secreto, intento_usuario):
+    if not intento_usuario:
+        return " ".join(["_" for _ in codigo_secreto])
+        
     resultado = []
-    for i, num in enumerate(codigo):
-        identificador = f"{i}_{num}"
-        if identificador in adivinadas:
-            resultado.append(num + " ")
-        elif num == " ":
-            resultado.append("  ")
+    
+    for num_secreto, num_intento in zip(codigo_secreto, intento_usuario):
+        if num_secreto == " ":
+            resultado.append(" ") 
+        elif num_secreto == num_intento:
+            resultado.append(num_secreto) 
         else:
-            resultado.append("_ ")
-    return "".join(resultado).strip()
-
+            resultado.append("_") 
+            
+    return " ".join(resultado)
+    
 # !!⠀⠀COMANDOS GENERALES⠀ ───⠀ ⠀♥︎
 
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -942,7 +943,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("¡𝖢𝗈́𝖽𝗂𝗀𝗈 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝗈! El juego comienza.")
         pantalla = dibujar_pantalla_code(chat_id)
         await context.bot.send_message(chat_id=gid,
-            text=f"📝 **¡CIPHER INICIADO!**\n\nAdivina el código número a número.\n\n`{pantalla}`")
+            text=f"📝 **¡CIPHER INICIADO!**\n\nAdivina el código.\n\n`{pantalla}`")
         return
 
     # ── PRIVADO: encubridor box envía emojis ────────────────────────
