@@ -105,14 +105,13 @@ sesion_charada = {
     "puntos_azul": 0,
 }
 
-# CASERÍA 🔎
-
+# CASERÍA TIPO BINGO 🎰
 sesion_caseria = {
     "activa": False,
     "fase_registro": False,
-    "jugadores": {},
-    "tablero": [],
-    "mensaje_grupo_id": None,
+    "jugadores": {},           # user_id -> lista de emojis en su cartilla
+    "emojis_cantados": set(),  # Emojis que el bot ya va lanzando
+    "pool_total": [],          # El universo de emojis posibles en esta partida
 }
 
 # PIRATA 🏴‍☠️
