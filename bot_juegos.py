@@ -964,7 +964,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # CIPHER: adivinar número del código en el grupo
     if sesion_cipher.get("activa") and texto.isdigit():
-    codigo = sesion_cipher.get("codigo", "")
+        codigo = sesion_cipher.get("codigo", "")
 
     if len(texto) != len(codigo):
         await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
