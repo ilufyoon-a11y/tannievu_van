@@ -1018,14 +1018,13 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_message(chat_id=chat_id, text=msg)
 
         # CASERÍA: responder emoji objetivo
-        if sesion_caseria.get("activa") and sesion_caseria.get("objetivo_actual"):
+    if sesion_caseria.get("activa") and sesion_caseria.get("objetivo_actual"):
             objetivo = sesion_caseria["objetivo_actual"]
             emojis_env = extraer_emojis(texto)
             if objetivo in emojis_env and not sesion_caseria.get("respondio_turno"):
                 sesion_caseria["respondio_turno"] = True
                 sesion_caseria["jugadores"][user_id] = sesion_caseria["jugadores"].get(user_id, 0) + 1
                 await update.message.reply_text(f"✅ ¡{user_name} encontró el {objetivo}! +1 punto 🎉")
-
 # ──────────────────────────────────────────────────────────────────────
 
 async def escuchar_charada_privado(update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int, texto: str):
