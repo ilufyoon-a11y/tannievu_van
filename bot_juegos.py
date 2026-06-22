@@ -432,91 +432,69 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     sesion_caseria["fase_registro"] = False
     sesion_caseria["activa"] = True
+    sesion_caseria["emojis_cantados"] = set()
 
-    # Generar pool de 64 emojis únicos (Tablero de 8x8)
+    # 1. Crear un pool de 30 emojis disponibles para esta partida
     pool = []
     rangos = [(0x1F600, 0x1F64F), (0x1F330, 0x1F37F), (0x1F400, 0x1F4D0), (0x1F910, 0x1F96B)]
     seen = set()
-    while len(pool) < 64:
+    while len(pool) < 30:
         rango = random.choice(rangos)
         c = chr(random.randint(rango[0], rango[1]))
         if c.isprintable() and c not in seen:
             seen.add(c)
             pool.append(c)
+    sesion_caseria["pool_total"] = pool
 
-    sesion_caseria["tablero"] = pool
-    sesion_caseria["marcados"] = [False] * 64 # Cambiado a 64
-    sesion_caseria["jugadores"] = {uid: 0 for uid in sesion_caseria["jugadores"]}
+    # 2. Asignar a cada jugador una cartilla de 5 emojis aleatorios de ese pool
+    texto_cartillas = "🎰 **CARTILLAS ASIGNADAS** 🎰\n\n"
+    for uid in list(sesion_caseria["jugadores"].keys()):
+        # Se le dan 5 emojis únicos de los 30 del pool
+        cartilla_usuario = random.sample(pool, 5)
+        sesion_caseria["jugadores"][uid] = cartilla_usuario
+        
+        # Formateamos bonito para mostrar en el grupo
+        emojis_texto = "\n".join([f"🔹 {e}" for e in cartilla_usuario])
+        texto_cartillas += f"👤 Usuario `{uid}`:\n{emojis_texto}\n\n"
 
-    # Crear la botonera interactiva de 8x8
-    botones = []
-    for i in range(0, 64, 8): # Avanza de 8 en 8
-        fila = []
-        for j in range(i, i + 8): # 8 columnas
-            emoji_boton = pool[j]
-            fila.append(InlineKeyboardButton(emoji_boton, callback_data=f"caseria_click_{j}"))
-        botones.append(fila)
+    await context.bot.send_message(chat_id=chat_id, text=texto_cartillas, parse_mode="Markdown")
 
-    msg = await context.bot.send_message(
-        chat_id=chat_id,
-        text="🔎 **¡CASERÍA INICIADA!**\n\nBusca en tu cartilla el emoji que el bot vaya pidiendo. ¡El primero en presionarlo se lleva el punto!",
-        reply_markup=InlineKeyboardMarkup(botones)
-    )
-    sesion_caseria["mensaje_grupo_id"] = msg.message_id
-
-    asyncio.create_task(ronda_caseria(chat_id, context))
-
-async def ronda_caseria(chat_id, context):
-    tablero = sesion_caseria["tablero"]
+    # 3. Mandar el botón de reclamo que estará activo durante todo el juego
+    boton_ganar = [[InlineKeyboardButton("¡COMPLETÉ MI CARTILLA! 🎰", callback_data="caseria_bingo_ganar")]]
     
-    # Elegimos 5 emojis al azar de los 64 que tiene el tablero para las rondas
-    objetivos_indices = random.sample(range(64), 5)
+    await context.bot.send_message(
+        chat_id=chat_id,
+        text="📢 **¡Empieza la Casería!**\nEl bot irá cantando emojis. Mantén un ojo en tu cartilla. ¡Si el bot canta tus 5 emojis, dale al botón de abajo al toque!",
+        reply_markup=InlineKeyboardMarkup(boton_ganar)
+    )
 
-    for indice_objetivo in objetivos_indices:
+    # Arrancar el juego en segundo plano
+    asyncio.create_task(ronda_caseria(chat_id, context))
+    
+async def ronda_caseria(chat_id, context):
+    pool = list(sesion_caseria["pool_total"])
+    random.shuffle(pool)  # Desordenar para ir cantándolos en orden aleatorio
+
+    for emoji in pool:
         if not sesion_caseria["activa"]:
             break
-            
-        sesion_caseria["indice_objetivo_actual"] = indice_objective
-        sesion_caseria["respondio_turno"] = False
-        objetivo_emoji = tablero[indice_objetivo]
 
-        msg_objetivo = await context.bot.send_message(
+        # Agregar el emoji a la lista de cantados
+        sesion_caseria["emojis_cantados"].add(emoji)
+
+        # Cantar el emoji en el grupo
+        await context.bot.send_message(
             chat_id=chat_id,
-            text=f"🎯 ¡Encuentra este emoji en la cartilla de abajo y dale click! → {objetivo_emoji}"
+            text=f"🔮 **¡CANTADO!** → {emoji}\n\n_¡Revisa tu cartilla!_"
         )
 
-        # Espera de 15 segundos por ronda
-        espera = 15.0
-        while espera > 0 and not sesion_caseria.get("respondio_turno", False):
-            await asyncio.sleep(0.5)
-            espera -= 0.5
+        # Esperar 5 segundos antes de tirar el siguiente
+        await asyncio.sleep(5.0)
 
-        if not sesion_caseria.get("respondio_turno", False):
-            await context.bot.send_message(
-                chat_id=chat_id,
-                text=f"⏱️ ¡Tiempo! Nadie encontró el emoji {objetivo_emoji}."
-            )
-        
-        try:
-            await context.bot.delete_message(chat_id=chat_id, message_id=msg_objetivo.message_id)
-        except:
-            pass
-
-        await asyncio.sleep(1.5)
-
-    # Fin del juego y recuento de puntos
+    # Si se acaban los emojis y nadie ganó
     if sesion_caseria["activa"]:
         sesion_caseria["activa"] = False
-        puntajes = sesion_caseria["jugadores"]
-        ranking = sorted(puntajes.items(), key=lambda x: x[1], reverse=True)
-        texto = "🏁 **¡CASERÍA TERMINADA!**\n\n📊 Puntaje final:\n"
-        medallas = ["🥇", "🥈", "🥉"]
-        
-        for i, (uid, pts) in enumerate(ranking):
-            dec = medallas[i] if i < 3 else "🔹"
-            texto += f"{dec} Usuario ({uid}): {pts} pt(s)\n"
-            
-        await context.bot.send_message(chat_id=chat_id, text=texto)
+        await context.bot.send_message(chat_id=chat_id, text="📭 Se terminaron los emojis y nadie completó su cartilla. ¡Empate!")
 
 
 # =====================================================================
