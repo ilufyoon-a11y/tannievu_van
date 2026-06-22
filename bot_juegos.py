@@ -830,15 +830,56 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await query.answer("𝖴𝗉𝗌, 𝗍𝗎́ 𝗇𝗈 𝖾𝗌𝗍𝖺́𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗇𝖽𝗈.", show_alert=True)
 
     # ── CASERÍA ──────────────────────────────────────────────────────
-    elif query.data == "unirme_caseria_click":
+
+    elif query.data.startswith("caseria_click_"):
         await query.answer()
-        if sesion_caseria.get("activa"):
-            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+        if not sesion_caseria.get("activa"):
             return
-        uid = user.id
-        if uid not in sesion_caseria["jugadores"]:
-            sesion_caseria["jugadores"][uid] = 0
-            await query.message.reply_text(f"🔎 ֹ  {nombre_usuario(user)} se unió 𓂃")
+
+        # Verificar si el usuario está registrado en la partida actual
+        if user.id not in sesion_caseria["jugadores"]:
+            await query.answer("❌ No estás participando en esta partida.", show_alert=True)
+            return
+
+        indice_click = int(query.data.split("_")[2])
+
+        # Verificar si le dio al emoji que el bot está pidiendo
+        if indice_click != sesion_caseria.get("indice_objetivo_actual"):
+            await query.answer("❌ ¡Ese no es el emoji correcto! Sigue buscando.", show_alert=True)
+            return
+
+        # Evitar que procese doble click si dos usuarios tocan casi al mismo milisegundo
+        if sesion_caseria.get("respondio_turno"):
+            return
+
+        # Registrar acierto
+        sesion_caseria["respondio_turno"] = True
+        sesion_caseria["marcados"][indice_click] = True
+        sesion_caseria["jugadores"][user.id] += 1
+
+        await query.message.reply_text(f"✅ ¡{nombre_usuario(user)} encontró el emoji correcto! +1 punto 🎉")
+
+        # Volver a armar la botonera de 8x8 reflejando los cambios con "✅"
+        pool = sesion_caseria["tablero"]
+        marcados = sesion_caseria["marcados"]
+        
+        nuevos_botones = []
+        for i in range(0, 64, 8): # Avanza de 8 en 8 para mantener las filas estables
+            fila = []
+            for j in range(i, i + 8): # Crea las 8 columnas de la fila
+                texto_boton = "✅" if marcados[j] else pool[j]
+                fila.append(InlineKeyboardButton(texto_boton, callback_data=f"caseria_click_{j}"))
+            nuevos_botones.append(fila)
+
+        # Actualizar la cartilla visualmente en el grupo
+        try:
+            await context.bot.edit_message_reply_markup(
+                chat_id=chat_id,
+                message_id=sesion_caseria["mensaje_grupo_id"],
+                reply_markup=InlineKeyboardMarkup(nuevos_botones)
+            )
+        except Exception:
+            pass
 
     # ── BOX ──────────────────────────────────────────────────────────
     elif query.data == "unirme_box_click":
