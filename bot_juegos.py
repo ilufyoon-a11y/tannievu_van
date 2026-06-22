@@ -727,13 +727,14 @@ async def enviar_turno_pirata(chat_id, context):
 
     actual_id = sesion_pirata["sobrevivientes"][sesion_pirata["turno_actual"]]
     nombre_actual = next(j["name"] for j in sesion_pirata["jugadores"] if j["id"] == actual_id)
-
+    
     todos_los_botones = [
         InlineKeyboardButton(
-            f"{'🗡️' if i in sesion_pirata['agujerosave'] else '🕳️'}", 
+            # Quitamos la " {i}" del final para borrar los números
+            "🗡️" if i in sesion_pirata["agujerosave"] else "🕳️", 
             callback_data=f"ranura_ya_usada_{i}" if i in sesion_pirata["agujerosave"] else f"pirata_clic_{i}_{actual_id}"
         )
-        for i in range(1, 26)  
+        for i in range(1, 26)  # Sigue funcionando internamente del 1 al 25
     ]
     
     botones = [todos_los_botones[i:i + 5] for i in range(0, len(todos_los_botones), 5)]
