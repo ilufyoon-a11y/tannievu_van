@@ -730,7 +730,7 @@ async def enviar_turno_pirata(chat_id, context):
 
     todos_los_botones = [
         InlineKeyboardButton(
-            f"{'🗡️' if i in sesion_pirata['agujerosave'] else '🕳️'} {i}", # Simplificado el texto para que quepa bien en pantalla móvil
+            f"{'🗡️' if i in sesion_pirata['agujerosave'] else '🕳️'}", 
             callback_data=f"ranura_ya_usada_{i}" if i in sesion_pirata["agujerosave"] else f"pirata_clic_{i}_{actual_id}"
         )
         for i in range(1, 26)  
