@@ -477,35 +477,6 @@ async def ronda_caseria(chat_id, context):
             await asyncio.sleep(0.5)
             espera -= 0.5
 
-        if sesion_cipher.get("activa") and texto.isdigit():
-            codigo = sesion_cipher.get("codigo", "")
-            
-            if len(texto) != len(codigo):
-                await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
-                return
-            
-            pantalla = dibujar_pantalla_code(codigo, texto)
-            await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`")
-            
-            if "_" not in pantalla:
-                sesion_cipher["activa"] = False
-                await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: `{codigo}`")
-            return
-
-
-        await asyncio.sleep(2)
-
-    if sesion_caseria["activa"]:
-        sesion_caseria["activa"] = False
-        puntajes = sesion_caseria["jugadores"]
-        ranking = sorted(puntajes.items(), key=lambda x: x[1], reverse=True)
-        texto = "🏁 **¡CASERÍA TERMINADA!**\n\n📊 Puntaje final:\n"
-        medallas = ["🥇", "🥈", "🥉"]
-        for i, (uid, pts) in enumerate(ranking):
-            dec = medallas[i] if i < 3 else "🔹"
-            texto += f"{dec} ID {uid}: {pts} pt(s)\n"
-        await context.bot.send_message(chat_id=chat_id, text=texto)
-
 # =====================================================================
 # BOX 📦
 # =====================================================================
