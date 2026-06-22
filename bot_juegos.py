@@ -925,7 +925,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("¡𝖢𝗈́𝖽𝗂𝗀𝗈 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝗈! El juego comienza.")
         pantalla_inicial = dibujar_pantalla_code(texto, "")
         await context.bot.send_message(chat_id=gid,
-            text=f"📝 **¡CIPHER INICIADO!**\n\nAdivina el código.\n\n`{pantalla}`")
+            text=f"📝 **¡CIPHER INICIADO!**\n\nAdivina el código.\n\n`{pantalla_inicial}`")
         return
 
     # ── PRIVADO: encubridor box envía emojis ────────────────────────
