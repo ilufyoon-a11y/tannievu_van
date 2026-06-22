@@ -728,19 +728,19 @@ async def enviar_turno_pirata(chat_id, context):
     actual_id = sesion_pirata["sobrevivientes"][sesion_pirata["turno_actual"]]
     nombre_actual = next(j["name"] for j in sesion_pirata["jugadores"] if j["id"] == actual_id)
 
-    ranuras_disponibles = [i for i in range(1, 7) if i not in sesion_pirata["agujerosave"]]
-    botones = [
-        [InlineKeyboardButton(
-            f"{'✅' if i in sesion_pirata['agujerosave'] else '🗡️'} Ranura {i}",
+    todos_los_botones = [
+        InlineKeyboardButton(
+            f"{'🗡️' if i in sesion_pirata['agujerosave'] else '🕳️'} {i}", # Simplificado el texto para que quepa bien en pantalla móvil
             callback_data=f"ranura_ya_usada_{i}" if i in sesion_pirata["agujerosave"] else f"pirata_clic_{i}_{actual_id}"
-        )]
-        for i in range(1, 7)
+        )
+        for i in range(1, 26)  
     ]
+    
+    botones = [todos_los_botones[i:i + 5] for i in range(0, len(todos_los_botones), 5)]
 
     await context.bot.send_message(chat_id=chat_id,
         text=f"🗡️ Turno de **{nombre_actual}** — ¡elige una ranura!",
         reply_markup=InlineKeyboardMarkup(botones))
-
 # =====================================================================
 # MANEJO DE BOTONES (CallbackQuery)
 # =====================================================================
