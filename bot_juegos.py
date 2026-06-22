@@ -237,7 +237,7 @@ async def iniciar_cipher(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_photo(
             chat_id=moderador["id"],
             photo=GIF_LETRISTA,
-            caption="¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂́𝖺 𝖾𝗅 𝖼𝗈́𝖽𝗂𝗀𝗈 𝗊𝗎𝖾 𝖽𝖾𝗌𝖾𝖾𝗌 𝗊𝗎𝖾 𝖺𝖽𝗂𝗏𝗂𝗇𝖾𝗇."
+            caption="¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋! 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂́𝖺 𝖾𝗅 𝖼𝗈́𝖽𝗂𝗀𝗈 de 4 digitos 𝗊𝗎𝖾 𝖽𝖾𝗌𝖾𝖾𝗌 𝗊𝗎𝖾 𝖺𝖽𝗂𝗏𝗂𝗇𝖾𝗇."
         )
     except Exception:
         await context.bot.send_photo(
@@ -975,7 +975,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if "_" not in pantalla:
         sesion_cipher["activa"] = False
-        await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: `{codigo}`")
+        await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: {codigo}")
     return
 
         # BOX: adivinar emojis
