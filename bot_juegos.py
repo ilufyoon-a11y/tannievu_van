@@ -2,6 +2,7 @@ import random
 import os
 import asyncio
 import threading
+import guessong
 
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -1288,7 +1289,10 @@ if __name__ == '__main__':
 
     # Pirata
     application.add_handler(CommandHandler("pirata",       unirse_pirata,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX))
+    application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX)
+
+    application.add_handler(CommandHandler("adivina", guessong.iniciar_adivina, filters=PREFIX))
+    application.add_handler(CallbackQueryHandler(guessong.verificar_respuesta_musica, pattern=r"^mu_"))
 
     # Handlers generales
     application.add_handler(CallbackQueryHandler(manejar_botones))
