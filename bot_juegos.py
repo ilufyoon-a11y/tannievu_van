@@ -1291,10 +1291,18 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("pirata",       unirse_pirata,  filters=PREFIX))
     application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX))
 
-    application.add_handler(CommandHandler("adivina", guessong.iniciar_adivina, filters=PREFIX))
+    # ==================== ADIVINA LA CANCIÓN ====================
+    # Abre la sala estética
+    application.add_handler(CommandHandler("adivina", guessong.unirse_adivina, filters=PREFIX))
+    application.add_handler(CommandHandler("start_adivina", guessong.iniciar_adivina_juego, filters=PREFIX))
+    
+    # Captura el botón interactivo de "UNIRME"
+    application.add_handler(CallbackQueryHandler(guessong.manejar_boton_unirse, pattern=r"^unirme_adivina_click$"))
+    # Captura las respuestas de las opciones musicales
     application.add_handler(CallbackQueryHandler(guessong.verificar_respuesta_musica, pattern=r"^mu_"))
 
-    # Handlers generales
+    # ==================== HANDLERS GENERALES ====================
+    # Estos SIEMPRE van al final de toda la lista
     application.add_handler(CallbackQueryHandler(manejar_botones))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensajes))
     application.add_handler(MessageHandler(filters.Dice.ALL, manejar_mensajes))
