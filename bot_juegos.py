@@ -89,10 +89,22 @@ sesion_zombie = {
 sesion_caseria = {
     "activa": False,
     "fase_registro": False,
-    "jugadores": {},
-    "emojis_cantados": set(),
-    "pool_total": [],
+    "jugadores": {},        # user_id -> {"cartilla": [emoji,...], "marcados": set()}
+    "tablero": [],          # lista de 25 emojis del tablero compartido
+    "tablero_msg_id": None, # message_id del tablero en el grupo
+    "chat_id": None,
 }
+
+POOL_EMOJIS_CASERIA = [
+    "😀","😂","😍","🥰","😎","🤩","😜","🥳","😇","🤯",
+    "👻","💀","🤖","👾","🎃","🐶","🐱","🐭","🐹","🐰",
+    "🦊","🐻","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵",
+    "🌸","🌺","🌻","🌹","🍀","🍁","🌴","🌵","🎄","🌊",
+    "🍎","🍊","🍋","🍇","🍓","🍒","🍑","🥝","🍕","🍔",
+    "🍦","🎂","🍩","🍪","🍭","🎮","🎯","🎲","🎸","🎺",
+    "⚽","🏀","🎾","🏆","🥇","🚀","✈️","🚂","🚢","🎡",
+    "💎","🔮","🧲","🪄","🎭","🌈","⭐","🌙","☀️","❄️",
+]
 
 # BOX 📦
 sesion_box = {}
@@ -413,12 +425,28 @@ async def pasar_a_siguiente_ataque(chat_id, context):
 # CASERÍA 🔎
 # =====================================================================
 
+def construir_teclado_tablero(tablero: list, marcados_global: set) -> InlineKeyboardMarkup:
+    """Genera el teclado 5x5 del tablero compartido."""
+    botones = []
+    for fila in range(5):
+        row = []
+        for col in range(5):
+            idx = fila * 5 + col
+            emoji = tablero[idx]
+            if emoji in marcados_global:
+                row.append(InlineKeyboardButton("✅", callback_data=f"caseria_tablero_ya_{idx}"))
+            else:
+                row.append(InlineKeyboardButton(emoji, callback_data=f"caseria_tablero_{idx}"))
+        botones.append(row)
+    return InlineKeyboardMarkup(botones)
+
 async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_caseria["jugadores"] = {}
     sesion_caseria["tablero"] = []
+    sesion_caseria["tablero_msg_id"] = None
     sesion_caseria["activa"] = False
     sesion_caseria["fase_registro"] = True
-    sesion_caseria["mensaje_grupo_id"] = None
+    sesion_caseria["chat_id"] = None
 
     boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_caseria_click")
     await update.message.reply_photo(
@@ -429,61 +457,64 @@ async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
     if len(sesion_caseria["jugadores"]) < 2:
         await update.message.reply_photo(photo=GIF_ERROR,
-            caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌ิ𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
+            caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
+        return
+
+    n_jugadores = len(sesion_caseria["jugadores"])
+    emojis_necesarios = 25 + n_jugadores * 5   # tablero 5x5 + cartillas únicas
+    if emojis_necesarios > len(POOL_EMOJIS_CASERIA):
+        await update.message.reply_text("⚠️ Hay demasiados jugadores para este pool de emojis. Máximo ~10 jugadores.")
         return
 
     sesion_caseria["fase_registro"] = False
     sesion_caseria["activa"] = True
-    sesion_caseria["emojis_cantados"] = set()
+    sesion_caseria["chat_id"] = chat_id
 
-    pool = []
-    rangos = [(0x1F600, 0x1F64F), (0x1F330, 0x1F37F), (0x1F400, 0x1F4D0), (0x1F910, 0x1F96B)]
-    seen = set()
-    while len(pool) < 30:
-        rango = random.choice(rangos)
-        c = chr(random.randint(rango[0], rango[1]))
-        if c.isprintable() and c not in seen:
-            seen.add(c)
-            pool.append(c)
-    sesion_caseria["pool_total"] = pool
+    # Mezclar pool y tomar emojis únicos para todos
+    pool = random.sample(POOL_EMOJIS_CASERIA, emojis_necesarios)
+    tablero = pool[:25]
+    sesion_caseria["tablero"] = tablero
 
-    texto_cartillas = "🎰 **CARTILLAS ASIGNADAS** 🎰\n\n"
-    for uid in list(sesion_caseria["jugadores"].keys()):
-        cartilla_usuario = random.sample(pool, 5)
-        sesion_caseria["jugadores"][uid] = cartilla_usuario
-        emojis_texto = "\n".join([f"🔹 {e}" for e in cartilla_usuario])
-        texto_cartillas += f"👤 Usuario `{uid}`:\n{emojis_texto}\n\n"
+    # Emojis extra para cartillas (fuera del tablero NO, tienen que estar en el tablero)
+    # Cada cartilla: 5 emojis tomados del tablero, distintos entre jugadores en lo posible
+    indices_disponibles = list(range(25))
+    random.shuffle(indices_disponibles)
 
-    await context.bot.send_message(chat_id=chat_id, text=texto_cartillas, parse_mode="Markdown")
+    uid_list = list(sesion_caseria["jugadores"].keys())
+    for i, uid in enumerate(uid_list):
+        # Dar 5 índices únicos del tablero a cada jugador (repartidos, pueden solaparse si hay muchos jugadores)
+        cartilla_indices = [(indices_disponibles[(i * 5 + j) % 25]) for j in range(5)]
+        cartilla_emojis = [tablero[idx] for idx in cartilla_indices]
+        sesion_caseria["jugadores"][uid] = {
+            "cartilla": cartilla_emojis,
+            "marcados": set(),
+            "nombre": sesion_caseria["jugadores"][uid].get("nombre", f"ID{uid}"),
+        }
 
-    boton_ganar = [[InlineKeyboardButton("¡COMPLETÉ MI CARTILLA! 🎰", callback_data="caseria_bingo_ganar")]]
-    await context.bot.send_message(
+    # Enviar cartillas privadas
+    for uid, datos in sesion_caseria["jugadores"].items():
+        cartilla_texto = "  ".join(datos["cartilla"])
+        try:
+            await context.bot.send_message(
+                chat_id=uid,
+                text=f"🎴 **TU CARTILLA:**\n\n{cartilla_texto}\n\n"
+                     f"Encuentra estos 5 emojis en el tablero del grupo y ¡presiónalos! El primero en completarla gana. 🏆"
+            )
+        except Exception:
+            pass
+
+    # Publicar tablero compartido en el grupo
+    marcados_global = set()
+    markup = construir_teclado_tablero(tablero, marcados_global)
+    msg = await context.bot.send_message(
         chat_id=chat_id,
-        text="📢 **¡Empieza la Casería!**\nEl bot irá cantando emojis. Mantén un ojo en tu cartilla. ¡Si el bot canta tus 5 emojis, dale al botón de abajo al toque!",
-        reply_markup=InlineKeyboardMarkup(boton_ganar)
+        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los emojis de tu cartilla y presiónalos aquí. ¡El primero en marcar sus 5 gana! 🏆",
+        reply_markup=markup
     )
-
-    asyncio.create_task(ronda_caseria(chat_id, context))
-
-async def ronda_caseria(chat_id, context):
-    pool = list(sesion_caseria["pool_total"])
-    random.shuffle(pool)
-
-    for emoji in pool:
-        if not sesion_caseria["activa"]:
-            break
-        sesion_caseria["emojis_cantados"].add(emoji)
-        await context.bot.send_message(
-            chat_id=chat_id,
-            text=f"🔮 **¡CANTADO!** → {emoji}\n\n_¡Revisa tu cartilla!_"
-        )
-        await asyncio.sleep(5.0)
-
-    if sesion_caseria["activa"]:
-        sesion_caseria["activa"] = False
-        await context.bot.send_message(chat_id=chat_id, text="📭 Se terminaron los emojis y nadie completó su cartilla. ¡Empate!")
+    sesion_caseria["tablero_msg_id"] = msg.message_id
 
 # =====================================================================
 # BOX 📦
@@ -839,46 +870,64 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if uid in sesion_caseria["jugadores"]:
             await query.answer("¡Ya estás dentro de la lista de espera, amiko! 😎", show_alert=True)
             return
-        sesion_caseria["jugadores"][uid] = []
+        sesion_caseria["jugadores"][uid] = {"nombre": nombre_usuario(user)}
         await query.message.reply_text(f"🎰 ֹ  {nombre_usuario(user)} se unió a la Casería, ¡suerte! 𓂃")
 
-    # ── CASERÍA (Click en cartilla) ──────────────────────────────────
-    elif query.data.startswith("caseria_click_"):
-        await query.answer()
+    # ── CASERÍA (Click en el tablero compartido) ─────────────────────
+    elif query.data.startswith("caseria_tablero_"):
         if not sesion_caseria.get("activa"):
+            await query.answer("No hay partida activa.", show_alert=True)
             return
+
+        if query.data.startswith("caseria_tablero_ya_"):
+            await query.answer("¡Este emoji ya fue marcado por alguien! 👀", show_alert=True)
+            return
+
         uid = user.id
         if uid not in sesion_caseria["jugadores"]:
             await query.answer("❌ No estás participando en esta partida.", show_alert=True)
             return
-        indice_click = int(query.data.split("_")[2])
-        cartilla_jugador = sesion_caseria["jugadores"][uid]
-        if indice_click >= len(cartilla_jugador):
+
+        idx = int(query.data.split("_")[2])
+        tablero = sesion_caseria["tablero"]
+        emoji_pulsado = tablero[idx]
+        datos_jugador = sesion_caseria["jugadores"][uid]
+        cartilla = datos_jugador["cartilla"]
+        marcados = datos_jugador["marcados"]
+
+        if emoji_pulsado not in cartilla:
+            await query.answer("❌ Ese emoji no está en tu cartilla.", show_alert=True)
             return
-        emoji_pulsado = cartilla_jugador[indice_click]
-        if emoji_pulsado == "✅":
-            await query.answer("¡Este emoji ya lo marcaste!", show_alert=True)
+
+        if emoji_pulsado in marcados:
+            await query.answer("¡Ya marcaste ese emoji antes!", show_alert=True)
             return
-        if emoji_pulsado not in sesion_caseria["emojis_cantados"]:
-            await query.answer("❌ ¡Ese emoji aún no ha sido cantado! No hagas trampa.", show_alert=True)
-            return
-        cartilla_jugador[indice_click] = "✅"
-        await query.answer("¡Marcado correctamente! ✨", show_alert=True)
-        if all(e == "✅" for e in cartilla_jugador):
-            sesion_caseria["activa"] = False
-            await query.message.reply_text(
-                f"🎉 ֹ **¡BINGO! ¡TENEMOS UN GANADOR!** 𓂃\n\n"
-                f"🏆 {nombre_usuario(user)} cantó victoria primero y completó toda su cartilla."
-            )
-            return
-        nuevos_botones = [[
-            InlineKeyboardButton(e, callback_data=f"caseria_click_{idx}")
-            for idx, e in enumerate(cartilla_jugador)
-        ]]
+
+        marcados.add(emoji_pulsado)
+        await query.answer(f"✅ ¡Marcaste {emoji_pulsado}! ({len(marcados)}/5)", show_alert=False)
+
+        # Actualizar tablero visual (marcar globalmente para que todos vean)
+        marcados_global = set()
+        for d in sesion_caseria["jugadores"].values():
+            if isinstance(d, dict) and "marcados" in d:
+                marcados_global |= d["marcados"]
+
         try:
-            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(nuevos_botones))
+            await query.edit_message_reply_markup(
+                reply_markup=construir_teclado_tablero(tablero, marcados_global)
+            )
         except Exception:
             pass
+
+        # Verificar si completó la cartilla
+        if len(marcados) == 5:
+            sesion_caseria["activa"] = False
+            gc = sesion_caseria["chat_id"]
+            await context.bot.send_message(
+                chat_id=gc,
+                text=f"🎉 **¡BINGO! ¡TENEMOS GANADOR/A!** 🏆\n\n"
+                     f"✨ **{nombre_usuario(user)}** completó su cartilla primero. ¡Felicidades!"
+            )
 
     # ── BOX ──────────────────────────────────────────────────────────
     elif query.data == "unirme_box_click":
