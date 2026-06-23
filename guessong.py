@@ -20,8 +20,9 @@ sesion_song = {
 }
 
 # Recursos visuales (Puedes cambiarlos por tus variables globales si prefieres)
-GIF_ADIVINA = "https://i.postimg.cc/kX87fHz7/guess-music.gif" 
-GIF_ERROR = "https://i.postimg.cc/85zX7Mh0/van-error.jpg"
+# Reemplaza estas dos líneas en tu guessong.py:
+GIF_ADIVINA = "https://i.pinimg.com/originals/77/82/32/7782329e46a7888718991448b2660d5b.gif" 
+GIF_ERROR = "https://i.pinimg.com/originals/f3/d8/51/f3d851e36f06a72477382d6032dae6df.jpg"
 
 # ================= MOTOR DE AUDIO (iTunes & Pydub) =================
 
