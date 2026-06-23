@@ -426,12 +426,12 @@ async def pasar_a_siguiente_ataque(chat_id, context):
 # =====================================================================
 
 def construir_teclado_tablero(tablero: list, marcados_global: set) -> InlineKeyboardMarkup:
-    """Genera el teclado 5x5 del tablero compartido."""
+    """Genera el teclado 8x8 del tablero compartido."""
     botones = []
-    for fila in range(5):
+    for fila in range(8):
         row = []
-        for col in range(5):
-            idx = fila * 5 + col
+        for col in range(8):
+            idx = fila * 8 + col
             emoji = tablero[idx]
             if emoji in marcados_global:
                 row.append(InlineKeyboardButton("✅", callback_data=f"caseria_tablero_ya_{idx}"))
@@ -439,6 +439,17 @@ def construir_teclado_tablero(tablero: list, marcados_global: set) -> InlineKeyb
                 row.append(InlineKeyboardButton(emoji, callback_data=f"caseria_tablero_{idx}"))
         botones.append(row)
     return InlineKeyboardMarkup(botones)
+
+
+def construir_texto_cartilla(cartilla: list, marcados: set) -> str:
+    """Genera el texto de la cartilla con checks al lado de los emojis encontrados."""
+    lineas = []
+    for emoji in cartilla:
+        if emoji in marcados:
+            lineas.append(f"{emoji} ✅")
+        else:
+            lineas.append(f"{emoji} ⬜")
+    return "\n".join(lineas)
 
 async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_caseria["jugadores"] = {}
@@ -464,54 +475,73 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     n_jugadores = len(sesion_caseria["jugadores"])
-    emojis_necesarios = 25 + n_jugadores * 5   # tablero 5x5 + cartillas únicas
+    TAMANIO_TABLERO = 64   # tablero 8x8
+    TAMANIO_CARTILLA = 8   # cada jugador busca 8 emojis
+    emojis_necesarios = TAMANIO_TABLERO
     if emojis_necesarios > len(POOL_EMOJIS_CASERIA):
-        await update.message.reply_text("⚠️ Hay demasiados jugadores para este pool de emojis. Máximo ~10 jugadores.")
+        await update.message.reply_text("⚠️ El pool de emojis no es suficiente para un tablero 8x8.")
         return
 
     sesion_caseria["fase_registro"] = False
     sesion_caseria["activa"] = True
     sesion_caseria["chat_id"] = chat_id
 
-    # Mezclar pool y tomar emojis únicos para todos
+    # Mezclar pool y armar tablero 8x8
     pool = random.sample(POOL_EMOJIS_CASERIA, emojis_necesarios)
-    tablero = pool[:25]
+    tablero = pool[:TAMANIO_TABLERO]
     sesion_caseria["tablero"] = tablero
 
-    # Emojis extra para cartillas (fuera del tablero NO, tienen que estar en el tablero)
-    # Cada cartilla: 5 emojis tomados del tablero, distintos entre jugadores en lo posible
-    indices_disponibles = list(range(25))
-    random.shuffle(indices_disponibles)
-
+    # Cartillas estilo bingo:
+    # - 2 emojis FIJOS que aparecen en TODAS las cartillas (el "comodín" del bingo)
+    # - 6 emojis únicos por jugador sacados del resto del tablero
+    # Así siempre hay al menos 2 en común entre cualquier par de jugadores.
     uid_list = list(sesion_caseria["jugadores"].keys())
+    n = len(uid_list)
+
+    todos_indices = list(range(TAMANIO_TABLERO))
+    random.shuffle(todos_indices)
+
+    FIJOS = 2            # emojis que van en TODAS las cartillas
+    PROPIOS = TAMANIO_CARTILLA - FIJOS   # 6 emojis únicos por jugador
+
+    indices_fijos = todos_indices[:FIJOS]          # los 2 compartidos por todos
+    pool_unico = todos_indices[FIJOS:]             # los 62 restantes para repartir
+    random.shuffle(pool_unico)
+
+    cartillas_asignadas = []
+    for i in range(n):
+        inicio = (i * PROPIOS) % len(pool_unico)
+        propios = [pool_unico[(inicio + j) % len(pool_unico)] for j in range(PROPIOS)]
+        elegidos = indices_fijos + propios
+        random.shuffle(elegidos)
+        cartillas_asignadas.append(elegidos)
+
     for i, uid in enumerate(uid_list):
-        # Dar 5 índices únicos del tablero a cada jugador (repartidos, pueden solaparse si hay muchos jugadores)
-        cartilla_indices = [(indices_disponibles[(i * 5 + j) % 25]) for j in range(5)]
-        cartilla_emojis = [tablero[idx] for idx in cartilla_indices]
+        cartilla_emojis = [tablero[idx] for idx in cartillas_asignadas[i]]
         sesion_caseria["jugadores"][uid] = {
             "cartilla": cartilla_emojis,
             "marcados": set(),
             "nombre": sesion_caseria["jugadores"][uid].get("nombre", f"ID{uid}"),
+            "cartilla_msg_id": None,
         }
 
-    # Enviar cartillas privadas
+    # Enviar cartillas en el grupo (con checks iniciales en blanco)
     for uid, datos in sesion_caseria["jugadores"].items():
-        cartilla_texto = "  ".join(datos["cartilla"])
-        try:
-            await context.bot.send_message(
-                chat_id=uid,
-                text=f"🎴 **TU CARTILLA:**\n\n{cartilla_texto}\n\n"
-                     f"Encuentra estos 5 emojis en el tablero del grupo y ¡presiónalos! El primero en completarla gana. 🏆"
-            )
-        except Exception:
-            pass
+        texto_cartilla = construir_texto_cartilla(datos["cartilla"], datos["marcados"])
+        nombre = datos.get("nombre", f"ID{uid}")
+        msg_cartilla = await context.bot.send_message(
+            chat_id=chat_id,
+            text=f"🎴 **Cartilla de {nombre}:**\n\n{texto_cartilla}",
+            parse_mode="Markdown"
+        )
+        datos["cartilla_msg_id"] = msg_cartilla.message_id
 
     # Publicar tablero compartido en el grupo
     marcados_global = set()
     markup = construir_teclado_tablero(tablero, marcados_global)
     msg = await context.bot.send_message(
         chat_id=chat_id,
-        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los emojis de tu cartilla y presiónalos aquí. ¡El primero en marcar sus 5 gana! 🏆",
+        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los 8 emojis de tu cartilla y ¡presiónalos! El primero en completarla gana. 🏆",
         reply_markup=markup
     )
     sesion_caseria["tablero_msg_id"] = msg.message_id
@@ -904,7 +934,23 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         marcados.add(emoji_pulsado)
-        await query.answer(f"✅ ¡Marcaste {emoji_pulsado}! ({len(marcados)}/5)", show_alert=False)
+        await query.answer(f"✅ ¡Marcaste {emoji_pulsado}! ({len(marcados)}/8)", show_alert=False)
+
+        # Actualizar cartilla en el grupo con el check al lado
+        texto_cartilla = construir_texto_cartilla(cartilla, marcados)
+        msg_cartilla_id = datos_jugador.get("cartilla_msg_id")
+        gc = sesion_caseria["chat_id"]
+        nombre_jug = datos_jugador.get("nombre", nombre_usuario(user))
+        if msg_cartilla_id and gc:
+            try:
+                await context.bot.edit_message_text(
+                    chat_id=gc,
+                    message_id=msg_cartilla_id,
+                    text=f"🎴 **Cartilla de {nombre_jug}:**\n\n{texto_cartilla}",
+                    parse_mode="Markdown"
+                )
+            except Exception:
+                pass
 
         # Actualizar tablero visual (marcar globalmente para que todos vean)
         marcados_global = set()
@@ -920,7 +966,7 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
         # Verificar si completó la cartilla
-        if len(marcados) == 5:
+        if len(marcados) == 8:
             sesion_caseria["activa"] = False
             gc = sesion_caseria["chat_id"]
             await context.bot.send_message(
