@@ -1,12 +1,16 @@
 import random
-from telegram.ext import filters
 import os
 import asyncio
+import threading
+
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
+from telegram.ext import (
+    ApplicationBuilder, CommandHandler, MessageHandler,
+    CallbackQueryHandler, filters, ContextTypes,
+)
 
-# !!⠀⠀FLASK - PERMITE QUE RENDER HAGA FUNCIONAR EL BOT⠀ ───⠀ ⠀♥︎
+# !!  FLASK - PERMITE QUE RENDER HAGA FUNCIONAR EL BOT  ───  ♥︎
 
 app_web = Flask('')
 
@@ -14,48 +18,51 @@ app_web = Flask('')
 def home():
     return "Van fue encendido"
 
-# !!⠀⠀VARIABLES DE IMAGENES⠀ ───⠀ ⠀♥︎
+# !!  VARIABLES DE IMAGENES  ───  ♥︎
 
 PREFIX = filters.Regex(r'^[./]')
 
-GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg" 
-GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg" 
-GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg"   # usado por cipher
-GIF_SNOWBALL   = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg" 
-GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg" 
-GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg" 
-GIF_ERROR      = "https://i.postimg.cc/G38XXrMW/Airbrush-IMAGE-ENHANCER-1779170852039-1779170852039.jpg" 
-GIF_OFFVAN     = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg" 
-GIF_JITB       = "https://i.postimg.cc/fLqYbX2s/Airbrush-IMAGE-ENHANCER-1779302294635-1779302294635.jpg" 
-GIF_ZOMBIE     = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg" 
+GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg"
+GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg"
+GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg"
+GIF_SNOWBALL   = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
+GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg"
+GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg"
+GIF_ERROR      = "https://i.postimg.cc/G38XXrMW/Airbrush-IMAGE-ENHANCER-1779170852039-1779170852039.jpg"
+GIF_OFFVAN     = "https://i.postimg.cc/mZ7k066k/upscalemedia-transformed-(2).jpg"
+GIF_JITB       = "https://i.postimg.cc/fLqYbX2s/Airbrush-IMAGE-ENHANCER-1779302294635-1779302294635.jpg"
+GIF_ZOMBIE     = "https://i.postimg.cc/8PWQJWM1/1000004869.jpg"
 GIF_ENCUBRIDOR = "https://i.postimg.cc/QMmj1qZm/8a87226444e22cdd01aaff0060557a2b-(1).jpg"
 GIF_CERO       = "https://i.postimg.cc/vH5TDfDZ/763aa3f517ca4e8b1b1ae10f55dfb556-(1).jpg"
 GIF_LETRISTA   = "https://i.postimg.cc/Zndk78XB/Airbrush-IMAGE-ENHANCER-1779303536547-1779303536547.jpg"
 GIF_RECHAZADO  = "https://i.postimg.cc/MTXZnXd8/1000005045.jpg"
 GIF_COMANDOS   = "https://i.postimg.cc/6qjQHnqv/1000005043-(1).jpg"
-GIF_CHARADA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"   # ← reemplaza con tu imagen real
-GIF_CASERIA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"   # ← reemplaza con tu imagen real
-GIF_PIRATA     = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"   # ← reemplaza con tu imagen real
+GIF_CHARADA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"   # reemplaza con tu imagen real
+GIF_CASERIA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"   # reemplaza con tu imagen real
+GIF_PIRATA     = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"   # reemplaza con tu imagen real
 
-# !!⠀⠀DICCIONARIOS DE JUEGOS⠀ ───⠀ ⠀♥︎
-
-# CHARADA 🎭
+# !!  DICCIONARIOS DE JUEGOS  ───  ♥︎
 
 DICCIONARIOS_CHARADA = {
-    "peliculas_animadas": ["Coraline y la Puerta Secreta", "Kung Fu Panda", "La era del hielo", "Ratatouille",
-                           "Monsters, Inc.", "Toy Story", "Up", "Intensamente", "Buscando a Nemo", "Shrek",
-                           "Mi villano favorito", "Hotel Transylvania", "Rio", "Coco", "El rey león", "Enredados", "Frozen"],
-    "personajes": ["Mickey Mouse", "Bugs Bunny", "Bob Esponja", "Pato Donald", "Pikachu", "Pedro Picapiedra",
-                   "Las Chicas Superpoderosas", "La Pantera Rosa", "Dora la Exploradora", "Peppa Pig",
-                   "Hello Kitty", "El Grinch"],
-    "kpop": ["dynamite", "butter", "boy with luv", "fake love", "dna",
-             "mic drop", "idol", "run bts", "spring day", "permission to dance"]
+    "peliculas_animadas": [
+        "Coraline y la Puerta Secreta", "Kung Fu Panda", "La era del hielo", "Ratatouille",
+        "Monsters, Inc.", "Toy Story", "Up", "Intensamente", "Buscando a Nemo", "Shrek",
+        "Mi villano favorito", "Hotel Transylvania", "Rio", "Coco", "El rey león", "Enredados", "Frozen",
+    ],
+    "personajes": [
+        "Mickey Mouse", "Bugs Bunny", "Bob Esponja", "Pato Donald", "Pikachu", "Pedro Picapiedra",
+        "Las Chicas Superpoderosas", "La Pantera Rosa", "Dora la Exploradora", "Peppa Pig",
+        "Hello Kitty", "El Grinch",
+    ],
+    "kpop": [
+        "dynamite", "butter", "boy with luv", "fake love", "dna",
+        "mic drop", "idol", "run bts", "spring day", "permission to dance",
+    ],
 }
 
-# !!⠀⠀SESIONES DE CADA JUEGO⠀ ───⠀ ⠀♥︎
+# !!  SESIONES DE CADA JUEGO  ───  ♥︎
 
 # CIPHER 👨‍💻
-
 sesion_cipher = {
     "jugadores": [],
     "activa": False,
@@ -64,11 +71,9 @@ sesion_cipher = {
     "moderador_id": None,
     "ultimo_moderador_id": None,
 }
-
-esperando_code = {}   # user_id -> chat_id  (moderador esperando enviar código)
+esperando_code = {}   # user_id -> chat_id
 
 # ZOMBIE 🧟
-
 sesion_zombie = {
     "jugadores": [],
     "activa": False,
@@ -80,13 +85,20 @@ sesion_zombie = {
     "ultimo_zombie_id": None,
 }
 
-# BOX 📦
+# CASERÍA 🔎
+sesion_caseria = {
+    "activa": False,
+    "fase_registro": False,
+    "jugadores": {},
+    "emojis_cantados": set(),
+    "pool_total": [],
+}
 
-sesion_box = {}           # chat_id -> datos de la partida
-esperando_elementos = {}  # user_id -> chat_id  (encubridor esperando enviar emojis)
+# BOX 📦
+sesion_box = {}
+esperando_elementos = {}  # user_id -> chat_id
 
 # CHARADA 🎭
-
 sesion_charada = {
     "activa": False,
     "fase_registro": False,
@@ -105,17 +117,7 @@ sesion_charada = {
     "puntos_azul": 0,
 }
 
-# CASERÍA TIPO BINGO 🎰
-sesion_caseria = {
-    "activa": False,
-    "fase_registro": False,
-    "jugadores": {},           # user_id -> lista de emojis en su cartilla
-    "emojis_cantados": set(),  # Emojis que el bot ya va lanzando
-    "pool_total": [],          # El universo de emojis posibles en esta partida
-}
-
 # PIRATA 🏴‍☠️
-
 sesion_pirata = {
     "jugadores": [],
     "activa": False,
@@ -126,7 +128,7 @@ sesion_pirata = {
     "respondio_turno": False,
 }
 
-# !!⠀⠀AUXILIARES⠀ ───⠀ ⠀♥︎
+# !!  AUXILIARES  ───  ♥︎
 
 def extraer_emojis(texto):
     import emoji
@@ -138,7 +140,6 @@ def nombre_usuario(user):
 def dibujar_pantalla_code(codigo_secreto, intento_usuario):
     if not intento_usuario:
         return " ".join(["_" for _ in codigo_secreto])
-        
     resultado = []
     for num_secreto, num_intento in zip(codigo_secreto, intento_usuario):
         if num_secreto == " ":
@@ -147,10 +148,11 @@ def dibujar_pantalla_code(codigo_secreto, intento_usuario):
             resultado.append(num_secreto)
         else:
             resultado.append("_")
-            
     return " ".join(resultado)
-    
-# !!⠀⠀COMANDOS GENERALES⠀ ───⠀ ⠀♥︎
+
+# =====================================================================
+# COMANDOS GENERALES
+# =====================================================================
 
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -392,8 +394,10 @@ async def pasar_a_siguiente_ataque(chat_id, context):
     sesion_zombie["fase"] = "infeccion"
     for z_id in sesion_zombie["zombies"]:
         botones_ataque = [
-            [InlineKeyboardButton(f"𝖬𝗈𝗋𝖽𝖾𝗋 𝖺 {next(j for j in sesion_zombie['jugadores'] if j['id'] == humano_id)['name']}",
-                                  callback_data=f"morder:{humano_id}:{chat_id}")]
+            [InlineKeyboardButton(
+                f"𝖬𝗈𝗋𝖽𝖾𝗋 𝖺 {next(j for j in sesion_zombie['jugadores'] if j['id'] == humano_id)['name']}",
+                callback_data=f"morder:{humano_id}:{chat_id}"
+            )]
             for humano_id in sesion_zombie["vivos"]
         ]
         try:
@@ -434,7 +438,6 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_caseria["activa"] = True
     sesion_caseria["emojis_cantados"] = set()
 
-    # 1. Crear un pool de 30 emojis disponibles para esta partida
     pool = []
     rangos = [(0x1F600, 0x1F64F), (0x1F330, 0x1F37F), (0x1F400, 0x1F4D0), (0x1F910, 0x1F96B)]
     seen = set()
@@ -446,56 +449,41 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pool.append(c)
     sesion_caseria["pool_total"] = pool
 
-    # 2. Asignar a cada jugador una cartilla de 5 emojis aleatorios de ese pool
     texto_cartillas = "🎰 **CARTILLAS ASIGNADAS** 🎰\n\n"
     for uid in list(sesion_caseria["jugadores"].keys()):
-        # Se le dan 5 emojis únicos de los 30 del pool
         cartilla_usuario = random.sample(pool, 5)
         sesion_caseria["jugadores"][uid] = cartilla_usuario
-        
-        # Formateamos bonito para mostrar en el grupo
         emojis_texto = "\n".join([f"🔹 {e}" for e in cartilla_usuario])
         texto_cartillas += f"👤 Usuario `{uid}`:\n{emojis_texto}\n\n"
 
     await context.bot.send_message(chat_id=chat_id, text=texto_cartillas, parse_mode="Markdown")
 
-    # 3. Mandar el botón de reclamo que estará activo durante todo el juego
     boton_ganar = [[InlineKeyboardButton("¡COMPLETÉ MI CARTILLA! 🎰", callback_data="caseria_bingo_ganar")]]
-    
     await context.bot.send_message(
         chat_id=chat_id,
         text="📢 **¡Empieza la Casería!**\nEl bot irá cantando emojis. Mantén un ojo en tu cartilla. ¡Si el bot canta tus 5 emojis, dale al botón de abajo al toque!",
         reply_markup=InlineKeyboardMarkup(boton_ganar)
     )
 
-    # Arrancar el juego en segundo plano
     asyncio.create_task(ronda_caseria(chat_id, context))
-    
+
 async def ronda_caseria(chat_id, context):
     pool = list(sesion_caseria["pool_total"])
-    random.shuffle(pool)  # Desordenar para ir cantándolos en orden aleatorio
+    random.shuffle(pool)
 
     for emoji in pool:
         if not sesion_caseria["activa"]:
             break
-
-        # Agregar el emoji a la lista de cantados
         sesion_caseria["emojis_cantados"].add(emoji)
-
-        # Cantar el emoji en el grupo
         await context.bot.send_message(
             chat_id=chat_id,
             text=f"🔮 **¡CANTADO!** → {emoji}\n\n_¡Revisa tu cartilla!_"
         )
-
-        # Esperar 5 segundos antes de tirar el siguiente
         await asyncio.sleep(5.0)
 
-    # Si se acaban los emojis y nadie ganó
     if sesion_caseria["activa"]:
         sesion_caseria["activa"] = False
         await context.bot.send_message(chat_id=chat_id, text="📭 Se terminaron los emojis y nadie completó su cartilla. ¡Empate!")
-
 
 # =====================================================================
 # BOX 📦
@@ -747,21 +735,21 @@ async def enviar_turno_pirata(chat_id, context):
 
     actual_id = sesion_pirata["sobrevivientes"][sesion_pirata["turno_actual"]]
     nombre_actual = next(j["name"] for j in sesion_pirata["jugadores"] if j["id"] == actual_id)
-    
+
     todos_los_botones = [
         InlineKeyboardButton(
-            # Quitamos la " {i}" del final para borrar los números
-            "🗡️" if i in sesion_pirata["agujerosave"] else "🕳️", 
+            "🗡️" if i in sesion_pirata["agujerosave"] else "🕳️",
             callback_data=f"ranura_ya_usada_{i}" if i in sesion_pirata["agujerosave"] else f"pirata_clic_{i}_{actual_id}"
         )
-        for i in range(1, 26)  # Sigue funcionando internamente del 1 al 25
+        for i in range(1, 26)
     ]
-    
+
     botones = [todos_los_botones[i:i + 5] for i in range(0, len(todos_los_botones), 5)]
 
     await context.bot.send_message(chat_id=chat_id,
         text=f"🗡️ Turno de **{nombre_actual}** — ¡elige una ranura!",
         reply_markup=InlineKeyboardMarkup(botones))
+
 # =====================================================================
 # MANEJO DE BOTONES (CallbackQuery)
 # =====================================================================
@@ -839,62 +827,43 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if len(sesion_zombie["votos"]) >= len(sesion_zombie["jugadores"]):
                     await procesar_resultados_votacion(chat_id, context)
             else:
-                await query.answer("𝖴𝗉𝗌, 𝗍𝗎́ 𝗇𝗈 𝖾𝗌𝗍𝖺́𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗇𝖽𝗈.", show_alert=True))
+                await query.answer("𝖴𝗉𝗌, 𝗍𝗎́ 𝗇𝗈 𝖾𝗌𝗍𝖺́𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗇𝖽𝗈.", show_alert=True)
 
-
-    # ── CASERÍA BINGO (Unirse a la partida) ───────────────────────────
-    if query.data == "unirme_caseria_click":
-        await query.answer() # Esto le quita el relojito de carga al botón en Telegram
-        
-        # Si el juego ya empezó, ya no entra nadie
+    # ── CASERÍA (Unirse) ─────────────────────────────────────────────
+    elif query.data == "unirme_caseria_click":
+        await query.answer()
         if sesion_caseria.get("activa"):
             await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
-            
         uid = user.id
-        # Verificar si ya está adentro para no duplicarlo
         if uid in sesion_caseria["jugadores"]:
             await query.answer("¡Ya estás dentro de la lista de espera, amiko! 😎", show_alert=True)
             return
-
-        # Lo registramos con su lista vacía para llenarla luego al iniciar
         sesion_caseria["jugadores"][uid] = []
-        
-        # Mensaje de confirmación en el grupo
         await query.message.reply_text(f"🎰 ֹ  {nombre_usuario(user)} se unió a la Casería, ¡suerte! 𓂃")
 
-    # ── CASERÍA BINGO (Click en los emojis de su cartilla) ────────────
+    # ── CASERÍA (Click en cartilla) ──────────────────────────────────
     elif query.data.startswith("caseria_click_"):
         await query.answer()
         if not sesion_caseria.get("activa"):
             return
-
         uid = user.id
         if uid not in sesion_caseria["jugadores"]:
             await query.answer("❌ No estás participando en esta partida.", show_alert=True)
             return
-
         indice_click = int(query.data.split("_")[2])
         cartilla_jugador = sesion_caseria["jugadores"][uid]
-
         if indice_click >= len(cartilla_jugador):
             return
-
         emoji_pulsado = cartilla_jugador[indice_click]
-
         if emoji_pulsado == "✅":
             await query.answer("¡Este emoji ya lo marcaste!", show_alert=True)
             return
-
         if emoji_pulsado not in sesion_caseria["emojis_cantados"]:
             await query.answer("❌ ¡Ese emoji aún no ha sido cantado! No hagas trampa.", show_alert=True)
             return
-
-        # Todo legal, mutamos el emoji a check
         cartilla_jugador[indice_click] = "✅"
         await query.answer("¡Marcado correctamente! ✨", show_alert=True)
-
-        # Comprobar si ganó
         if all(e == "✅" for e in cartilla_jugador):
             sesion_caseria["activa"] = False
             await query.message.reply_text(
@@ -902,14 +871,10 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"🏆 {nombre_usuario(user)} cantó victoria primero y completó toda su cartilla."
             )
             return
-
-        # Actualizar la botonera de su propio mensaje
-        nuevos_botones = []
-        fila = []
-        for idx, e in enumerate(cartilla_jugador):
-            fila.append(InlineKeyboardButton(e, callback_data=f"caseria_click_{idx}"))
-        nuevos_botones.append(fila)
-
+        nuevos_botones = [[
+            InlineKeyboardButton(e, callback_data=f"caseria_click_{idx}")
+            for idx, e in enumerate(cartilla_jugador)
+        ]]
         try:
             await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(nuevos_botones))
         except Exception:
@@ -1001,10 +966,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ── PRIVADO: moderador cipher envía código ──────────────────────
     if chat_type == "private" and user_id in esperando_code:
         gid = esperando_code[user_id]
-        sesion_cipher.update({
-            "codigo": texto,
-            "numeros_adivinadas": [],
-        })
+        sesion_cipher.update({"codigo": texto, "numeros_adivinadas": []})
         del esperando_code[user_id]
         await update.message.reply_text("¡𝖢𝗈́𝖽𝗂𝗀𝗈 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝗈! El juego comienza.")
         pantalla_inicial = dibujar_pantalla_code(texto, "")
@@ -1019,7 +981,6 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if len(emojis_originales) != 6:
             await update.message.reply_text("¡Alto ahí! Esos no son 6 emojis, por favor vuelve a enviar.")
             return
-
         sesion_box[gid].update({
             "emojis_secretos": emojis_originales,
             "emojis_adivinados": [],
@@ -1028,7 +989,6 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         })
         del esperando_elementos[user_id]
         await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝗈𝗌 𝟨 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗀𝗎𝖺𝗋𝖽𝖺𝖽𝗈𝗌!")
-
         lista_visual = " ".join(emojis_originales)
         mensaje_flash = await context.bot.send_message(chat_id=gid,
             text=f"¡𝗟𝗔 𝗖𝗔𝗝𝗔 𝗦𝗘𝗥𝗔 𝗔𝗕𝗜𝗘𝗥𝗧𝗔ⵑ\n\nMemoriza los elementos, desaparecerán en 5 segundos:\n\n{lista_visual}")
@@ -1046,70 +1006,69 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await escuchar_charada_privado(update, context, user_id, texto)
         return
 
-# CIPHER: adivinar número del código en el grupo
+    # ── CIPHER: adivinar código en el grupo ─────────────────────────
     if sesion_cipher.get("activa") and texto.isdigit():
         codigo = sesion_cipher.get("codigo", "")
-
-    if len(texto) != len(codigo):
-        await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
+        if len(texto) != len(codigo):
+            await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
+            return
+        pantalla = dibujar_pantalla_code(codigo, texto)
+        await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`")
+        if "_" not in pantalla:
+            sesion_cipher["activa"] = False
+            await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: {codigo}")
         return
 
-    pantalla = dibujar_pantalla_code(codigo, texto)
-    await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`")
-
-    if "_" not in pantalla:
-        sesion_cipher["activa"] = False
-        await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: {codigo}")
-    return
-
-        # BOX: adivinar emojis
+    # ── BOX: adivinar emojis ─────────────────────────────────────────
     if chat_id in sesion_box and sesion_box[chat_id].get("activa"):
-            sesion = sesion_box[chat_id]
-            emojis_enviados = extraer_emojis(texto)
-            if not emojis_enviados:
-                return
-            emoji_enviado = emojis_enviados[0].replace('\uFE0F', '')
-            secretos_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_secretos", [])]
-            adivinados_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_adivinados", [])]
+        sesion = sesion_box[chat_id]
+        emojis_enviados = extraer_emojis(texto)
+        if not emojis_enviados:
+            return
+        emoji_enviado = emojis_enviados[0].replace('\uFE0F', '')
+        secretos_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_secretos", [])]
+        adivinados_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_adivinados", [])]
 
-            if emoji_enviado in adivinados_normalizados:
-                await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
-                return
-            if emoji_enviado not in secretos_normalizados:
-                await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺!")
-                return
+        if emoji_enviado in adivinados_normalizados:
+            await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
+            return
+        if emoji_enviado not in secretos_normalizados:
+            await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺!")
+            return
 
-            indice = secretos_normalizados.index(emoji_enviado)
-            emoji_original = sesion["emojis_secretos"][indice]
-            sesion["emojis_adivinados"].append(emoji_original)
-            sesion["puntajes"][user_id] = sesion["puntajes"].get(user_id, 0) + 1
-            total = len(sesion["emojis_adivinados"])
+        indice = secretos_normalizados.index(emoji_enviado)
+        emoji_original = sesion["emojis_secretos"][indice]
+        sesion["emojis_adivinados"].append(emoji_original)
+        sesion["puntajes"][user_id] = sesion["puntajes"].get(user_id, 0) + 1
+        total = len(sesion["emojis_adivinados"])
 
-            await update.message.reply_text(
-                f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}! El objeto sí estaba en la caja.\n"
-                f"Llevamos [{total}/6] objetos descubiertos.")
+        await update.message.reply_text(
+            f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}! El objeto sí estaba en la caja.\n"
+            f"Llevamos [{total}/6] objetos descubiertos.")
 
-            if total == 6:
-                sesion["activa"] = False
-                tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
-                medallas = ["🥇", "🥈", "🥉"]
-                msg = "¡𝖱𝖮𝖭𝖣𝖠 𝖥𝖨𝖭𝖠𝖫𝖨𝖹𝖠𝖣𝖠! Se descubrieron todos los objetos.\n\nPuntuación final:\n"
-                for i, (uid, pts) in enumerate(tabla):
-                    jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid), None)
-                    nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid}"
-                    dec = medallas[i] if i < 3 else "🔹"
-                    msg += f"{dec} {nombre_p}: {pts} pt(s)\n"
-                await context.bot.send_message(chat_id=chat_id, text=msg)
+        if total == 6:
+            sesion["activa"] = False
+            tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
+            medallas = ["🥇", "🥈", "🥉"]
+            msg = "¡𝖱𝖮𝖭𝖣𝖠 𝖥𝖨𝖭𝖠𝖫𝖨𝖹𝖠𝖣𝖠! Se descubrieron todos los objetos.\n\nPuntuación final:\n"
+            for i, (uid, pts) in enumerate(tabla):
+                jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid), None)
+                nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid}"
+                dec = medallas[i] if i < 3 else "🔹"
+                msg += f"{dec} {nombre_p}: {pts} pt(s)\n"
+            await context.bot.send_message(chat_id=chat_id, text=msg)
 
-        # CASERÍA: responder emoji objetivo
+    # ── CASERÍA: responder emoji objetivo ────────────────────────────
     if sesion_caseria.get("activa") and sesion_caseria.get("objetivo_actual"):
-            objetivo = sesion_caseria["objetivo_actual"]
-            emojis_env = extraer_emojis(texto)
-            if objetivo in emojis_env and not sesion_caseria.get("respondio_turno"):
-                sesion_caseria["respondio_turno"] = True
-                sesion_caseria["jugadores"][user_id] = sesion_caseria["jugadores"].get(user_id, 0) + 1
-                await update.message.reply_text(f"✅ ¡{user_name} encontró el {objetivo}! +1 punto 🎉")
-# ──────────────────────────────────────────────────────────────────────
+        objetivo = sesion_caseria["objetivo_actual"]
+        emojis_env = extraer_emojis(texto)
+        if objetivo in emojis_env and not sesion_caseria.get("respondio_turno"):
+            sesion_caseria["respondio_turno"] = True
+            sesion_caseria["jugadores"][user_id] = sesion_caseria["jugadores"].get(user_id, 0) + 1
+            await update.message.reply_text(f"✅ ¡{user_name} encontró el {objetivo}! +1 punto 🎉")
+
+    # ── CHARADA: adivinar palabras en el grupo ───────────────────────
+    await escuchar_charada_grupo(update, context, user_id, texto, chat_id)
 
 async def escuchar_charada_privado(update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int, texto: str):
     if (not sesion_charada.get("activa") and
@@ -1167,33 +1126,27 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
 # =====================================================================
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Cipher
     sesion_cipher["activa"] = False
     sesion_cipher["jugadores"] = []
 
-    # Zombie
     sesion_zombie["activa"] = False
     sesion_zombie["jugadores"] = []
     sesion_zombie["zombies"] = []
     sesion_zombie["vivos"] = []
     sesion_zombie["fase"] = None
 
-    # Casería
     sesion_caseria["activa"] = False
     sesion_caseria["jugadores"] = {}
 
-    # Box
     chat_id = update.effective_chat.id
     if chat_id in sesion_box:
         sesion_box[chat_id]["activa"] = False
         sesion_box[chat_id]["jugadores"] = []
 
-    # Charada
     sesion_charada["activa"] = False
     sesion_charada["fase_registro"] = False
     sesion_charada["jugadores"] = []
 
-    # Pirata
     sesion_pirata["activa"] = False
     sesion_pirata["jugadores"] = []
 
@@ -1211,8 +1164,6 @@ def run_flask():
     app_web.run(host='0.0.0.0', port=port, use_reloader=False)
 
 if __name__ == '__main__':
-    import threading
-
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.daemon = True
     flask_thread.start()
