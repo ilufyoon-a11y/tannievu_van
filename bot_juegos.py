@@ -491,28 +491,18 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tablero = pool[:TAMANIO_TABLERO]
     sesion_caseria["tablero"] = tablero
 
-    # Cartillas estilo bingo:
-    # - 2 emojis FIJOS que aparecen en TODAS las cartillas (el "comodín" del bingo)
-    # - 6 emojis únicos por jugador sacados del resto del tablero
-    # Así siempre hay al menos 2 en común entre cualquier par de jugadores.
+    # Cartillas sin solapamiento: cada jugador recibe 8 emojis únicos del tablero.
+    # Con 64 casillas y 8 por cartilla caben hasta 8 jugadores sin repetir nada.
     uid_list = list(sesion_caseria["jugadores"].keys())
     n = len(uid_list)
 
     todos_indices = list(range(TAMANIO_TABLERO))
     random.shuffle(todos_indices)
 
-    FIJOS = 2            # emojis que van en TODAS las cartillas
-    PROPIOS = TAMANIO_CARTILLA - FIJOS   # 6 emojis únicos por jugador
-
-    indices_fijos = todos_indices[:FIJOS]          # los 2 compartidos por todos
-    pool_unico = todos_indices[FIJOS:]             # los 62 restantes para repartir
-    random.shuffle(pool_unico)
-
     cartillas_asignadas = []
     for i in range(n):
-        inicio = (i * PROPIOS) % len(pool_unico)
-        propios = [pool_unico[(inicio + j) % len(pool_unico)] for j in range(PROPIOS)]
-        elegidos = indices_fijos + propios
+        inicio = (i * TAMANIO_CARTILLA) % TAMANIO_TABLERO
+        elegidos = [todos_indices[(inicio + j) % TAMANIO_TABLERO] for j in range(TAMANIO_CARTILLA)]
         random.shuffle(elegidos)
         cartillas_asignadas.append(elegidos)
 
@@ -525,7 +515,17 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "cartilla_msg_id": None,
         }
 
-    # Enviar cartillas en el grupo (con checks iniciales en blanco)
+    # Publicar tablero compartido primero
+    marcados_global = set()
+    markup = construir_teclado_tablero(tablero, marcados_global)
+    msg = await context.bot.send_message(
+        chat_id=chat_id,
+        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los 8 emojis de tu cartilla y ¡presiónalos! El primero en completarla gana. 🏆",
+        reply_markup=markup
+    )
+    sesion_caseria["tablero_msg_id"] = msg.message_id
+
+    # Luego enviar las cartillas de cada jugador en el grupo
     for uid, datos in sesion_caseria["jugadores"].items():
         texto_cartilla = construir_texto_cartilla(datos["cartilla"], datos["marcados"])
         nombre = datos.get("nombre", f"ID{uid}")
@@ -535,16 +535,6 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown"
         )
         datos["cartilla_msg_id"] = msg_cartilla.message_id
-
-    # Publicar tablero compartido en el grupo
-    marcados_global = set()
-    markup = construir_teclado_tablero(tablero, marcados_global)
-    msg = await context.bot.send_message(
-        chat_id=chat_id,
-        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los 8 emojis de tu cartilla y ¡presiónalos! El primero en completarla gana. 🏆",
-        reply_markup=markup
-    )
-    sesion_caseria["tablero_msg_id"] = msg.message_id
 
 # =====================================================================
 # BOX 📦
