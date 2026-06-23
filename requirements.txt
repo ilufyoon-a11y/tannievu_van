@@ -4,4 +4,4 @@ regex
 emoji
 requests
 pydub
-pyaudioop
+audioop-lts
