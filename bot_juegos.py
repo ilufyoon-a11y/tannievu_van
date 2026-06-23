@@ -1289,7 +1289,7 @@ if __name__ == '__main__':
 
     # Pirata
     application.add_handler(CommandHandler("pirata",       unirse_pirata,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX)
+    application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX))
 
     application.add_handler(CommandHandler("adivina", guessong.iniciar_adivina, filters=PREFIX))
     application.add_handler(CallbackQueryHandler(guessong.verificar_respuesta_musica, pattern=r"^mu_"))
