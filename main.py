@@ -1,4 +1,4 @@
-# main.py — Punto de entrada del bot Van 🤖
+
 # Aquí solo se importa todo y se registran los handlers.
 # Cada juego vive en su propio archivo.
 
