@@ -2,7 +2,6 @@ import random
 import os
 import asyncio
 import threading
-import guessong
 
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -141,6 +140,24 @@ sesion_pirata = {
     "respondio_turno": False,
 }
 
+# SISTEMA DE ROBUX 💰
+ADMIN_IDS = set()   # llena con tus IDs: {123456789, 987654321}
+
+sesion_puntos = {
+    "activa": False,
+    "jugadores": {},
+    "premio_actual": {},
+}
+
+def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
+    if not sesion_puntos["activa"] or cantidad <= 0:
+        return
+    if user_id not in sesion_puntos["jugadores"]:
+        sesion_puntos["jugadores"][user_id] = {"nombre": nombre, "robux": 0, "detalle": []}
+    sesion_puntos["jugadores"][user_id]["robux"] += cantidad
+    sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad} 🟥")
+    sesion_puntos["jugadores"][user_id]["nombre"] = nombre
+
 # !!  AUXILIARES  ───  ♥︎
 
 def extraer_emojis(texto):
@@ -224,6 +241,14 @@ async def unirse_cipher(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_cipher(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    args = context.args or []
+    if args:
+        try:
+            sesion_puntos["premio_actual"]["cipher"] = int(args[0])
+        except ValueError:
+            pass
+
     if len(sesion_cipher["jugadores"]) < 2:
         await update.message.reply_photo(photo=GIF_ERROR,
             caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
@@ -281,6 +306,20 @@ async def unirse_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    # Parsear premios: /start_zombie 5 15
+    args = context.args or []
+    if len(args) >= 2:
+        try:
+            sesion_puntos["premio_actual"]["zombie_surv"] = int(args[0])
+            sesion_puntos["premio_actual"]["zombie_zombie"] = int(args[1])
+        except ValueError:
+            pass
+    elif len(args) == 1:
+        try:
+            sesion_puntos["premio_actual"]["zombie_surv"] = int(args[0])
+        except ValueError:
+            pass
 
     if sesion_zombie["activa"]:
         await update.message.reply_text("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!")
@@ -391,14 +430,22 @@ async def procesar_resultados_votacion(chat_id, context):
             text=f"{eliminado_obj['name']} obtuvo {max_votos} votos y fue expulsado... Era un humano perfectamente sano. 😬")
 
     if not sesion_zombie["zombies"]:
-        ganadores = [j["name"] for j in sesion_zombie["jugadores"] if j["id"] in sesion_zombie["vivos"]]
+        ganadores_obj = [j for j in sesion_zombie["jugadores"] if j["id"] in sesion_zombie["vivos"]]
+        ganadores = [j["name"] for j in ganadores_obj]
+        premio_surv = sesion_puntos.get("premio_actual", {}).get("zombie_surv", 0)
+        for j in ganadores_obj:
+            sumar_robux(j["id"], j["name"], premio_surv, "Zombie sobreviviente 🧟")
+        extra_surv = f" (+{premio_surv} Robux 🟥 c/u)" if premio_surv else ""
         await context.bot.send_message(chat_id=chat_id,
-            text=f"¡𝖲𝖮𝖡𝖱𝖤𝖵𝖨𝖵𝖨𝖤𝖱𝖮𝖭! El infectado fue expulsado y {', '.join(ganadores)} pueden volver a casa. 🏠")
+            text=f"¡𝖲𝖮𝖡𝖱𝖤𝖵𝖨𝖵𝖨𝖤𝖱𝖮𝖭! El infectado fue expulsado y {', '.join(ganadores)} pueden volver a casa. 🏠{extra_surv}")
         sesion_zombie["activa"] = False
     elif len(sesion_zombie["vivos"]) <= 1:
         zombie_obj = next(j for j in sesion_zombie["jugadores"] if j["id"] == sesion_zombie["zombies"][0])
+        premio_z2 = sesion_puntos.get("premio_actual", {}).get("zombie_zombie", 0)
+        sumar_robux(zombie_obj["id"], zombie_obj["name"], premio_z2, "Zombie ganador 🧟")
+        extra_z2 = f" (+{premio_z2} Robux 🟥)" if premio_z2 else ""
         await context.bot.send_message(chat_id=chat_id,
-            text=f"¡𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦ⵑ {zombie_obj['name']} mordió a todos 🧟‍♂️")
+            text=f"¡𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦ⵑ {zombie_obj['name']} mordió a todos 🧟‍♂️{extra_z2}")
         sesion_zombie["activa"] = False
     else:
         await pasar_a_siguiente_ataque(chat_id, context)
@@ -469,6 +516,13 @@ async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    args = context.args or []
+    if args:
+        try:
+            sesion_puntos["premio_actual"]["caseria"] = int(args[0])
+        except ValueError:
+            pass
 
     if len(sesion_caseria["jugadores"]) < 2:
         await update.message.reply_photo(photo=GIF_ERROR,
@@ -559,6 +613,14 @@ async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    args = context.args or []
+    if args:
+        try:
+            sesion_puntos["premio_actual"]["box"] = int(args[0])
+        except ValueError:
+            pass
+
     if chat_id not in sesion_box or len(sesion_box[chat_id]["jugadores"]) < 2:
         await update.message.reply_photo(photo=GIF_ERROR,
             caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
@@ -763,6 +825,14 @@ async def unirse_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    args = context.args or []
+    if args:
+        try:
+            sesion_puntos["premio_actual"]["pirata"] = int(args[0])
+        except ValueError:
+            pass
+
     if len(sesion_pirata["jugadores"]) < 2:
         await update.message.reply_photo(photo=GIF_ERROR,
             caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
@@ -855,8 +925,11 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                     if len(sesion_zombie["vivos"]) <= 1:
                         zombie_obj = next(j for j in sesion_zombie["jugadores"] if j["id"] == sesion_zombie["zombies"][0])
+                        premio_z = sesion_puntos.get("premio_actual", {}).get("zombie_zombie", 0)
+                        sumar_robux(zombie_obj["id"], zombie_obj["name"], premio_z, "Zombie ganador 🧟")
+                        extra_z = f" (+{premio_z} Robux 🟥)" if premio_z else ""
                         await context.bot.send_message(chat_id=grupo_chat_id,
-                            text=f"¡𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦ⵑ {zombie_obj['name']} mordió a todos y ganó la partida 🧟")
+                            text=f"¡𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦ⵑ {zombie_obj['name']} mordió a todos y ganó la partida 🧟{extra_z}")
                         sesion_zombie["activa"] = False
                     else:
                         await abrir_votacion_zombie(grupo_chat_id, context)
@@ -960,10 +1033,13 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if len(marcados) == 8:
             sesion_caseria["activa"] = False
             gc = sesion_caseria["chat_id"]
+            premio_cas = sesion_puntos.get("premio_actual", {}).get("caseria", 0)
+            sumar_robux(uid, nombre_usuario(user), premio_cas, "Casería 🔎")
+            extra_cas = f"\n\n+{premio_cas} Robux 🟥" if premio_cas else ""
             await context.bot.send_message(
                 chat_id=gc,
                 text=f"🎉 **¡BINGO! ¡TENEMOS GANADOR/A!** 🏆\n\n"
-                     f"✨ **{nombre_usuario(user)}** completó su cartilla primero. ¡Felicidades!"
+                     f"✨ **{nombre_usuario(user)}** completó su cartilla primero. ¡Felicidades!{extra_cas}"
             )
 
     # ── BOX ──────────────────────────────────────────────────────────
@@ -1020,9 +1096,16 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ganadores = [next(j["name"] for j in sesion_pirata["jugadores"] if j["id"] == uid)
                          for uid in sesion_pirata["sobrevivientes"] if uid != autor_id]
             texto_ganadores = f"✨ {', '.join(ganadores)} ✨" if ganadores else "¡Nadie! El pirata se quedó solo en el mar. 🌊"
+            premio_p = sesion_puntos.get("premio_actual", {}).get("pirata", 0)
+            if premio_p:
+                for uid_p in sesion_pirata["sobrevivientes"]:
+                    if uid_p != autor_id:
+                        nom_p = next((j["name"] for j in sesion_pirata["jugadores"] if j["id"] == uid_p), f"ID{uid_p}")
+                        sumar_robux(uid_p, nom_p, premio_p, "Pirata sobreviviente 🏴‍☠️")
+            extra_p = f"\n+{premio_p} Robux 🟥 c/u" if premio_p else ""
             await context.bot.send_message(chat_id=chat_id,
                 text=f"💥 ¡¡ZAZZZ!! 🚀\n\n**{nombre_usuario(user)}** metió la espada en la ranura {num_ranura}... ¡Y EL PIRATA SALTÓ! 💀\n\n"
-                     f"🏆 **¡GANADORES!:** {texto_ganadores}")
+                     f"🏆 **¡GANADORES!:** {texto_ganadores}{extra_p}")
         else:
             sesion_pirata["agujerosave"].append(num_ranura)
             await context.bot.send_message(chat_id=chat_id,
@@ -1102,7 +1185,10 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`")
         if "_" not in pantalla:
             sesion_cipher["activa"] = False
-            await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: {codigo}")
+            premio_c = sesion_puntos.get("premio_actual", {}).get("cipher", 0)
+            sumar_robux(user_id, user_name, premio_c, "Cipher 👨‍💻")
+            extra_c = f" (+{premio_c} Robux 🟥)" if premio_c else ""
+            await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: {codigo}{extra_c}")
         return
 
     # ── BOX: adivinar emojis ─────────────────────────────────────────
@@ -1208,6 +1294,73 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
                      f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} pts")
 
 # =====================================================================
+# SISTEMA DE ROBUX 💰
+# =====================================================================
+
+async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if sesion_puntos["activa"]:
+        await update.message.reply_text("⚠️ Ya hay una sesión activa. Usa /reset antes de abrir una nueva.")
+        return
+    sesion_puntos["activa"] = True
+    sesion_puntos["jugadores"] = {}
+    sesion_puntos["premio_actual"] = {}
+    await update.message.reply_text(
+        "\u2705 **\u00a1Sesi\u00f3n iniciada!** \U0001f7e5\n\n"
+        "Los Robux ganados a partir de ahora se ir\u00e1n acumulando.\n"
+        "Recuerda poner el premio al iniciar cada juego:\n\n"
+        "`.start_zombie 5 15` \u2192 5 sobrevivientes / 15 zombie\n"
+        "`.start_caseria 10` \u2192 10 al ganador\n"
+        "`.start_cipher 8` \u2192 8 al ganador\n"
+        "`.start_box 6` \u2192 6 al ganador\n"
+        "`.start_pirata 5` \u2192 5 a los sobrevivientes",
+        parse_mode="Markdown"
+    )
+
+async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("No hay ninguna sesión activa aún. Pide a un admin que use /new_session.")
+        return
+    uid = update.effective_user.id
+    datos = sesion_puntos["jugadores"].get(uid)
+    if not datos or datos["robux"] == 0:
+        await update.message.reply_text("👛 Aún no tienes Robux acumulados en esta sesión. ¡A jugar!")
+        return
+    detalle = "\n".join(datos["detalle"])
+    await update.message.reply_text(
+        f"\U0001f45b **Tu cartera, {nombre_usuario(update.effective_user)}:**\n\n"
+        f"{detalle}\n\n"
+        f"**Total: {datos['robux']} Robux \U0001f7e5**",
+        parse_mode="Markdown"
+    )
+
+async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_chat.type != "private":
+        await update.message.reply_text("\u26d4 Este comando solo funciona en privado.")
+        return
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("No hay ninguna sesi\u00f3n activa.")
+        return
+    if not sesion_puntos["jugadores"]:
+        await update.message.reply_text("Nadie ha ganado Robux todav\u00eda en esta sesi\u00f3n.")
+        return
+    tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
+    medallas = ["\U0001f947", "\U0001f948", "\U0001f949"]
+    msg = "\U0001f4b0 **Resumen de la sesi\u00f3n:**\n\n"
+    total = 0
+    for i, (uid, datos) in enumerate(tabla):
+        dec = medallas[i] if i < 3 else "\U0001f539"
+        msg += f"{dec} {datos['nombre']}: **{datos['robux']} Robux**\n"
+        total += datos["robux"]
+    msg += f"\n**Total a pagar: {total} Robux \U0001f7e5**"
+    await update.message.reply_text(msg, parse_mode="Markdown")
+
+async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    sesion_puntos["activa"] = False
+    sesion_puntos["jugadores"] = {}
+    sesion_puntos["premio_actual"] = {}
+    await update.message.reply_text("🗑️ Sesión reseteada. Los datos han sido borrados.")
+
+# =====================================================================
 # COMANDO DE CIERRE GENERAL
 # =====================================================================
 
@@ -1291,18 +1444,13 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("pirata",       unirse_pirata,  filters=PREFIX))
     application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX))
 
-    # ==================== ADIVINA LA CANCIÓN ====================
-    # Abre la sala estética
-    application.add_handler(CommandHandler("adivina", guessong.unirse_adivina, filters=PREFIX))
-    application.add_handler(CommandHandler("start_adivina", guessong.iniciar_adivina_juego, filters=PREFIX))
-    
-    # Captura el botón interactivo de "UNIRME"
-    application.add_handler(CallbackQueryHandler(guessong.manejar_boton_unirse, pattern=r"^unirme_adivina_click$"))
-    # Captura las respuestas de las opciones musicales
-    application.add_handler(CallbackQueryHandler(guessong.verificar_respuesta_musica, pattern=r"^mu_"))
+    # Handlers generales
+    # Robux / Wallet
+    application.add_handler(CommandHandler("new_session", cmd_new_session, filters=PREFIX))
+    application.add_handler(CommandHandler("wallet",      cmd_wallet,      filters=PREFIX))
+    application.add_handler(CommandHandler("spent",       cmd_spent,       filters=PREFIX))
+    application.add_handler(CommandHandler("reset",       cmd_reset,       filters=PREFIX))
 
-    # ==================== HANDLERS GENERALES ====================
-    # Estos SIEMPRE van al final de toda la lista
     application.add_handler(CallbackQueryHandler(manejar_botones))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensajes))
     application.add_handler(MessageHandler(filters.Dice.ALL, manejar_mensajes))
