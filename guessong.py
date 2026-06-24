@@ -5,6 +5,8 @@ from pydub import AudioSegment
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
+from utils import sesion_puntos, sumar_robux, nombre_usuario
+
 # ================= DICCIONARIOS Y CONFIG =================
 
 lovers = ["BTS", "RM", "Agust D", "j-hope", "Jimin", "V", "Jung Kook", "Jin"]
