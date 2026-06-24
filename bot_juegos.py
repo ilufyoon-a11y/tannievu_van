@@ -5,10 +5,7 @@ import threading
 
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import (
-    ApplicationBuilder, CommandHandler, MessageHandler,
-    CallbackQueryHandler, filters, ContextTypes,
-)
+from telegram.ext import (ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes,)
 
 # !!  FLASK - PERMITE QUE RENDER HAGA FUNCIONAR EL BOT  ───  ♥︎
 
@@ -986,55 +983,6 @@ async def manejar_botones(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not any(j["id"] == user.id for j in sesion_charada["jugadores"]):
             sesion_charada["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
             await query.message.reply_text(f"🎭 ֹ  {nombre_usuario(user)} se apuntó a las mímicas 𓂃")
-
-    # ── PIRATA ───────────────────────────────────────────────────────
-    elif query.data == "unirme_pirata_click":
-        await query.answer()
-        if sesion_pirata.get("activa"):
-            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
-            return
-        if not any(j["id"] == user.id for j in sesion_pirata["jugadores"]):
-            sesion_pirata["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-            await query.message.reply_text(f"🏴‍☠️ ֹ  {nombre_usuario(user)} se unió al barco 𓂃")
-
-    elif query.data.startswith("pirata_clic_"):
-        await query.answer()
-        if not sesion_pirata.get("activa"):
-            return
-        partes = query.data.split("_")
-        num_ranura = int(partes[2])
-        autor_id = int(partes[3])
-
-        actual_id = sesion_pirata["sobrevivientes"][sesion_pirata["turno_actual"]]
-        if user.id != actual_id or user.id != autor_id:
-            return
-
-        sesion_pirata["respondio_turno"] = True
-
-        if num_ranura == sesion_pirata["agujerofake"]:
-            sesion_pirata["activa"] = False
-            ganadores = [next(j["name"] for j in sesion_pirata["jugadores"] if j["id"] == uid)
-                         for uid in sesion_pirata["sobrevivientes"] if uid != autor_id]
-            texto_ganadores = f"✨ {', '.join(ganadores)} ✨" if ganadores else "¡Nadie! El pirata se quedó solo en el mar. 🌊"
-            premio_p = sesion_puntos.get("premio_actual", {}).get("pirata", 0)
-            if premio_p:
-                for uid_p in sesion_pirata["sobrevivientes"]:
-                    if uid_p != autor_id:
-                        nom_p = next((j["name"] for j in sesion_pirata["jugadores"] if j["id"] == uid_p), f"ID{uid_p}")
-                        sumar_robux(uid_p, nom_p, premio_p, "Pirata sobreviviente 🏴‍☠️")
-            extra_p = f"\n+{premio_p} Robux 🟥 c/u" if premio_p else ""
-            await context.bot.send_message(chat_id=chat_id,
-                text=f"💥 ¡¡ZAZZZ!! 🚀\n\n**{nombre_usuario(user)}** metió la espada en la ranura {num_ranura}... ¡Y EL PIRATA SALTÓ! 💀\n\n"
-                     f"🏆 **¡GANADORES!:** {texto_ganadores}{extra_p}")
-        else:
-            sesion_pirata["agujerosave"].append(num_ranura)
-            await context.bot.send_message(chat_id=chat_id,
-                text=f"🗡️ ¡*Click*! Ranura {num_ranura} a salvo. **{nombre_usuario(user)}** sobrevivió. 😮‍💨")
-            sesion_pirata["turno_actual"] = (sesion_pirata["turno_actual"] + 1) % len(sesion_pirata["sobrevivientes"])
-            await enviar_turno_pirata(chat_id, context)
-
-    elif query.data.startswith("ranura_ya_usada_"):
-        await query.answer("¡Esa ranura ya tiene una espada clavada, busca otra! 🗡️", show_alert=True)
 
 # =====================================================================
 # MANEJO DE MENSAJES
