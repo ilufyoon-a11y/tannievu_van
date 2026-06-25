@@ -31,11 +31,12 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     args = context.args or []
-    if args:
-        try:
-            sesion_puntos["premio_actual"]["box"] = int(args[0])
-        except ValueError:
-            pass
+    try:
+        sesion_puntos["premio_actual"]["box_1"] = int(args[0]) if len(args) > 0 else 0
+        sesion_puntos["premio_actual"]["box_2"] = int(args[1]) if len(args) > 1 else 0
+        sesion_puntos["premio_actual"]["box_3"] = int(args[2]) if len(args) > 2 else 0
+    except ValueError:
+        pass
 
     if chat_id not in sesion_box or len(sesion_box[chat_id]["jugadores"]) < 2:
         await update.message.reply_photo(photo=GIF_ERROR,
@@ -139,17 +140,20 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
         medallas = ["🥇", "🥈", "🥉"]
         msg = "¡𝖱𝖮𝖭𝖣𝖠 𝖥𝖨𝖭𝖠𝖫𝖨𝖹𝖠𝖣𝖠! Se descubrieron todos los objetos.\n\nPuntuación final:\n"
-        premio_box = sesion_puntos.get("premio_actual", {}).get("box", 0)
+        premios_box = [
+            sesion_puntos.get("premio_actual", {}).get("box_1", 0),
+            sesion_puntos.get("premio_actual", {}).get("box_2", 0),
+            sesion_puntos.get("premio_actual", {}).get("box_3", 0),
+        ]
         for i, (uid_b, pts) in enumerate(tabla):
             jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_b), None)
             nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_b}"
             dec = medallas[i] if i < 3 else "🔹"
-            msg += f"{dec} {nombre_p}: {pts} pt(s)\n"
-        if tabla and premio_box:
-            gan = next((j for j in sesion["jugadores"] if j["id"] == tabla[0][0]), None)
-            if gan:
-                sumar_robux(gan["id"], gan["name"], premio_box, "Box 📦")
-                msg += f"\n+{premio_box} Robux 🟥 para {gan['name']}"
+            robux_p = premios_box[i] if i < 3 else 0
+            extra = f" — +{robux_p} Robux 🟥" if robux_p else ""
+            msg += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
+            if robux_p and jugador_obj:
+                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"Box puesto {i+1} 📦")
         await context.bot.send_message(chat_id=chat_id, text=msg)
 
 # ================= MANEJO DE BOTONES =================
