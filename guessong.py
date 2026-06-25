@@ -170,6 +170,11 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text("🛑 ¡𝖲𝖺𝖼𝖺 𝗅𝖺 𝗆𝖺𝗇𝗈 𝖽𝖾 𝖺𝗁𝗂́! 𝖲𝗈 ولو 𝖾𝗅 𝖼𝗋𝖾𝖺𝖽𝗈𝗋 𝖽𝖾 𝗅𝖺 𝗌𝖺𝗅𝖺 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈.")
         return
 
+    # Parsear premio opcional: /start_adivina 10
+    args = context.args or []
+    premio = int(args[0]) if args and args[0].isdigit() else 0
+    sesion_puntos["premio_actual"]["adivina"] = premio
+
     sesion_song["fase_registro"] = False
     sesion_song["activa"] = True
     
@@ -203,6 +208,12 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
     if cancion_elegida == cancion_correcta:
         await query.answer(f"🎉 ¡Acertaste, {user_name}!")
         sesion_song["jugadores"][user_name] += 1
+
+        # Guardar robux por ronda acertada
+        premio_ronda = sesion_puntos.get("premio_actual", {}).get("adivina", 0)
+        if premio_ronda > 0:
+            uid = user.id
+            sumar_robux(uid, user_name, premio_ronda, f"Adivina la canción 🎧 ronda {sesion_song['ronda']}")
         
         texto_resultado = f"🎉 **𝖯𝖴𝖭𝖳𝖮 𝖯𝖠𝖱加 {user_name.upper()}!** 🌸\n𝖠𝖼𝖾𝗋𝗍𝗈́: `{cancion_correcta.title()}`"
         await query.edit_message_caption(caption=texto_resultado, parse_mode="Markdown")
