@@ -23,6 +23,7 @@ GIF_COMANDOS   = "https://i.postimg.cc/6qjQHnqv/1000005043-(1).jpg"
 GIF_CHARADA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 GIF_CASERIA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 GIF_PIRATA     = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
+GIF_MAYOROMENOR = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 
 # !!  SISTEMA DE ROBUX 💰  ───  ♥︎
 
