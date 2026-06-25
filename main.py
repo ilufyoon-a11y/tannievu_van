@@ -55,6 +55,14 @@ from guessong import (
     unirse_adivina, iniciar_adivina_juego,
     verificar_respuesta_musica, manejar_boton_unirse,
 )
+from mayoromenor import (
+    cmd_mayoromenor,
+    manejar_botones_mayoromenor,
+)
+from carrera import (
+    cmd_carrera, cmd_apostar_carrera,
+    cmd_start_carrera, cmd_cancelar_carrera,
+)
 
 # =====================================================================
 # FLASK — mantiene el bot vivo en Render
@@ -206,6 +214,8 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
         await manejar_boton_unirse(update, context)
     elif data.startswith("mu_"):
         await verificar_respuesta_musica(update, context)
+    elif data.startswith("mom_"):
+        await manejar_botones_mayoromenor(update, context)
 
 # =====================================================================
 # ARRANQUE
@@ -261,6 +271,15 @@ if __name__ == '__main__':
     # Adivina la canción
     application.add_handler(CommandHandler("adivina",       unirse_adivina,        filters=PREFIX))
     application.add_handler(CommandHandler("start_adivina", iniciar_adivina_juego, filters=PREFIX))
+
+    # Mayor o Menor 🃏
+    application.add_handler(CommandHandler("mayoromenor", cmd_mayoromenor, filters=PREFIX))
+
+    # Carrera BTS 🏇
+    application.add_handler(CommandHandler("carrera",          cmd_carrera,          filters=PREFIX))
+    application.add_handler(CommandHandler("apostar_carrera",  cmd_apostar_carrera,  filters=PREFIX))
+    application.add_handler(CommandHandler("start_carrera",    cmd_start_carrera,    filters=PREFIX))
+    application.add_handler(CommandHandler("cancelar_carrera", cmd_cancelar_carrera, filters=PREFIX))
 
     # Robux / Wallet
     application.add_handler(CommandHandler("new_session", cmd_new_session, filters=PREFIX))
