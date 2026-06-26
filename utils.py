@@ -1,5 +1,7 @@
 # utils.py — Variables y funciones compartidas entre todos los juegos
 
+import json
+import os
 from telegram import Update
 from telegram.ext import ContextTypes
 
@@ -27,15 +29,43 @@ GIF_MAYOROMENOR = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 
 # !!  SISTEMA DE ROBUX 💰  ───  ♥︎
 
-ADMIN_IDS = set()   # pon tus IDs aquí: {123456789}
+ADMIN_IDS = set()
+SESION_FILE = "sesion_puntos.json"
 
-sesion_puntos = {
-    "activa": False,
-    "jugadores": {},     # user_id -> {"nombre": str, "robux": int, "detalle": [...]}
-    "premio_actual": {}, # se llena al hacer start_X con los premios de esa ronda
-}
+def _sesion_default():
+    return {
+        "activa": False,
+        "jugadores": {},
+        "premio_actual": {},
+    }
 
-def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
+def _cargar_sesion():
+    """Carga la sesión desde el archivo JSON si existe."""
+    if os.path.exists(SESION_FILE):
+        try:
+            with open(SESION_FILE, "r", encoding="utf-8") as f:
+                datos = json.load(f)
+                # Las keys de jugadores vienen como string en JSON, las convertimos a int
+                datos["jugadores"] = {int(k): v for k, v in datos.get("jugadores", {}).items()}
+                return datos
+        except Exception:
+            pass
+    return _sesion_default()
+
+def _guardar_sesion():
+    """Guarda la sesión actual en el archivo JSON."""
+    try:
+        with open(SESION_FILE, "w", encoding="utf-8") as f:
+            json.dump(sesion_puntos, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"⚠️ Error guardando sesión: {e}")
+
+# Cargar sesión al arrancar
+sesion_puntos = _cargar_sesion()
+
+def guardar_sesion():
+    """Wrapper público para guardar la sesión desde otros módulos."""
+    _guardar_sesion()
     """Suma robux al jugador si hay sesión activa."""
     if not sesion_puntos["activa"] or cantidad <= 0:
         return
@@ -44,6 +74,7 @@ def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
     sesion_puntos["jugadores"][user_id]["robux"] += cantidad
     sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad} \U0001f7e5")
     sesion_puntos["jugadores"][user_id]["nombre"] = nombre
+    _guardar_sesion()
 
 # !!  AUXILIARES  ───  ♥︎
 
@@ -86,6 +117,7 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["activa"] = True
     sesion_puntos["jugadores"] = {}
     sesion_puntos["premio_actual"] = {}
+    _guardar_sesion()
     await update.message.reply_text(
         "✅ **¡Sesión iniciada!** 🟥\n\n"
         "Los Robux ganados a partir de ahora se irán acumulando.\n"
@@ -140,6 +172,7 @@ async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["activa"] = False
     sesion_puntos["jugadores"] = {}
     sesion_puntos["premio_actual"] = {}
+    _guardar_sesion()
     await update.message.reply_text("🗑️ Sesión reseteada. Los datos han sido borrados.")
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
