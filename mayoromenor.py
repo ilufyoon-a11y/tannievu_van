@@ -1,7 +1,7 @@
 import random
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_MAYOROMENOR
+from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
 # =====================================================================
 # DECK BTS 💜
@@ -180,6 +180,7 @@ async def manejar_botones_mayoromenor(update: Update, context: ContextTypes.DEFA
         if dueno_id in sesion_puntos["jugadores"]:
             sesion_puntos["jugadores"][dueno_id]["robux"] -= apuesta
             sesion_puntos["jugadores"][dueno_id]["detalle"].append(f"Mayor o Menor 🃏: -{apuesta} 🟥")
+            guardar_sesion()
         resultado_txt = (
             f"💀 **¡FALLASTE, {nombre.upper()}!**\n\n"
             f"🃏 Carta anterior: **{carta_anterior['nombre']}** (valor {carta_anterior['valor']})\n"
