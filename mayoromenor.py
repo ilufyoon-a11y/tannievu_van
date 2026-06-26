@@ -8,19 +8,18 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 # =====================================================================
 
 DECK = [
-    {"valor": 1,  "nombre": "RM",          "imagen": "https://i.postimg.cc/placeholder_rm.jpg"},
-    {"valor": 2,  "nombre": "Jin",         "imagen": "https://i.postimg.cc/placeholder_jin.jpg"},
-    {"valor": 3,  "nombre": "Suga",        "imagen": "https://i.postimg.cc/placeholder_suga.jpg"},
-    {"valor": 4,  "nombre": "J-Hope",      "imagen": "https://i.postimg.cc/placeholder_jhope.jpg"},
-    {"valor": 5,  "nombre": "Jimin",       "imagen": "https://i.postimg.cc/placeholder_jimin.jpg"},
-    {"valor": 6,  "nombre": "V",           "imagen": "https://i.postimg.cc/placeholder_v.jpg"},
-    {"valor": 7,  "nombre": "Jungkook",    "imagen": "https://i.postimg.cc/placeholder_jk.jpg"},
-    {"valor": 8,  "nombre": "RM + Jin",    "imagen": "https://i.postimg.cc/placeholder_rmjin.jpg"},
-    {"valor": 9,  "nombre": "Suga + J-Hope","imagen": "https://i.postimg.cc/placeholder_sugahope.jpg"},
-    {"valor": 10, "nombre": "Pista 🎵",    "imagen": "https://i.postimg.cc/placeholder_pista.jpg"},
-    {"valor": 11, "nombre": "Dynamite ✨", "imagen": "https://i.postimg.cc/placeholder_dynamite.jpg"},
-    {"valor": 12, "nombre": "Butter 🧈",   "imagen": "https://i.postimg.cc/placeholder_butter.jpg"},
-    {"valor": 13, "nombre": "ARMY 💜",     "imagen": "https://i.postimg.cc/placeholder_army.jpg"},
+    {"valor": 1,  "nombre": "1",          "imagen": "https://i.postimg.cc/4NF9fTzT/1-20260625-232545-0000.png"},
+    {"valor": 2,  "nombre": "2",         "imagen": "https://i.postimg.cc/HnnkRVvw/1-20260625-232545-0001.png"},
+    {"valor": 3,  "nombre": "3",        "imagen": "https://i.postimg.cc/xdPjdKW9/1-20260625-232545-0002.png"},
+    {"valor": 4,  "nombre": "4",      "imagen": "https://i.postimg.cc/0N9xhzr4/1-20260625-232545-0003.png"},
+    {"valor": 5,  "nombre": "5",       "imagen": "https://i.postimg.cc/kX82mtX2/1-20260625-232507-0004.png"},
+    {"valor": 6,  "nombre": "6",           "imagen": "https://i.postimg.cc/Qd3HxxF3/1-20260625-232546-0005.png"},
+    {"valor": 7,  "nombre": "7",    "imagen": "https://i.postimg.cc/3wLRBXnM/1-20260625-232546-0006.png"},
+    {"valor": 8,  "nombre": "8",    "imagen": "https://i.postimg.cc/fLpb4MG6/1-20260625-232546-0007.png"},
+    {"valor": 9,  "nombre": "9",   "imagen": "https://i.postimg.cc/5Nw2GdnY/1-20260625-232546-0008.png"},
+    {"valor": 10, "nombre": "10",    "imagen": "https://i.postimg.cc/KzkZDd1z/1-20260625-232546-0009.png"},
+    {"valor": 11, "nombre" : "11", "imagen": "https://i.postimg.cc/rs5MvxCk/1-20260625-232546-0010.png"},
+    {"valor": 12, "nombre" : "12",   "imagen": "https://i.postimg.cc/4NTJp2s4/1-20260625-232546-0011.png"},
 ]
 
 # =====================================================================
