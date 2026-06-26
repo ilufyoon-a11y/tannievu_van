@@ -2,7 +2,7 @@ import random
 import asyncio
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario
+from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
 # =====================================================================
 # CORREDORES BTS 💜
@@ -45,6 +45,7 @@ def restar_robux(user_id: int, cantidad: int, detalle: str):
     if user_id in sesion_puntos["jugadores"]:
         sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
         sesion_puntos["jugadores"][user_id]["detalle"].append(detalle)
+        guardar_sesion()
 
 def build_pista(posiciones: dict) -> str:
     """Construye el texto de la pista con las posiciones actuales."""
