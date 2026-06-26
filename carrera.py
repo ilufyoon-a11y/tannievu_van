@@ -55,7 +55,6 @@ def build_pista(posiciones: dict) -> str:
         avance = "❯❯❯" * pos
         resto =  "══" * (PISTA_LARGO - pos)
         lineas.append(f"{corredor['emoji']} `{avance}{resto}` {corredor['nombre']}")
-    lineas.append("\n🚩 Meta")
     return "\n".join(lineas)
 
 def sala_apuestas_txt(chat_id: int) -> str:
@@ -70,13 +69,13 @@ def sala_apuestas_txt(chat_id: int) -> str:
         apostadores = [d["nombre"] for d in apuestas.values() if d["corredor"] == key]
         if apostadores:
             lista = ", ".join(apostadores)
-            lineas.append(f"{corredor['emoji']} *{corredor['nombre']}* — {lista}")
+            lineas.append(f"{corredor['emoji']} — {lista}")
         else:
-            lineas.append(f"{corredor['emoji']} *{corredor['nombre']}*")
+            lineas.append(f"{corredor['emoji']}")
 
     lineas.append("\n📝 *¿Cómo apostar?*")
     lineas.append("`/apostar_carrera <corredor> <cantidad>`")
-    lineas.append("Ej: `/apostar_carrera jungkook 50`\n")
+    lineas.append("Ej: `/apostar_carrerabre"] `\n")
     lineas.append("*Corredores válidos:* rm · jin · suga · jhope · jimin · v · jungkook")
     lineas.append("\n⏳ Esperando jugadores... El host arranca con `/start_carrera`")
     return "\n".join(lineas)
@@ -93,7 +92,7 @@ async def cmd_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if chat_id in sesion_carrera and sesion_carrera[chat_id]["activa"]:
-        await update.message.reply_text("⚠️ Ya hay una carrera en curso en este chat.")
+        await update.message.reply_text("⚠️ Ya hay carrera ocurriendo en el chat.")
         return
 
     sesion_carrera[chat_id] = {
@@ -128,7 +127,7 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
         return
 
     if estado["corriendo"]:
-        await update.message.reply_text("⚠️ ¡La carrera ya arrancó! No puedes apostar ahora.")
+        await update.message.reply_text("⚠️ ¡La apostar ya arrancó! No puedes apostar ahora.")
         return
 
     if user_id in estado["apuestas"]:
