@@ -63,6 +63,13 @@ from carrera import (
     cmd_carrera, cmd_apostar_carrera,
     cmd_start_carrera, cmd_cancelar_carrera,
 )
+from anagrama import (
+    cmd_anagrama, cmd_anagrama4, cmd_start_anagrama,
+    manejar_botones_anagrama,
+    escuchar_anagrama_privado, escuchar_anagrama_grupo,
+    sesion_anagrama,
+)
+from slots import cmd_slots
 
 # =====================================================================
 # FLASK — mantiene el bot vivo en Render
@@ -171,6 +178,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ── PRIVADO: moderador charada envía nombre de equipo ──
     if chat_type == "private":
         await escuchar_charada_privado(update, context, user_id, texto)
+        await escuchar_anagrama_privado(update, context, user_id, texto)
         return
 
     # ── CIPHER: adivinar código en el grupo ──
@@ -197,6 +205,7 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # ── CHARADA: adivinar palabras en el grupo ──
     await escuchar_charada_grupo(update, context, user_id, texto, chat_id)
+    await escuchar_anagrama_grupo(update, context, user_id, texto, chat_id)
 
 # =====================================================================
 # HANDLER DE BOTONES — despacha según callback_data
@@ -224,6 +233,8 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
         await verificar_respuesta_musica(update, context)
     elif data.startswith("mom_"):
         await manejar_botones_mayoromenor(update, context)
+    elif data == "unirme_anagrama_click":
+        await manejar_botones_anagrama(update, context)
 
 # =====================================================================
 # ARRANQUE
@@ -285,7 +296,13 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("apostar_mom", cmd_apostar_mom, filters=PREFIX))
     application.add_handler(CommandHandler("out_card",    cmd_out_card,    filters=PREFIX))
 
-    # Carrera BTS 🏇
+    # Slots 🎰
+    application.add_handler(CommandHandler("slots", cmd_slots, filters=PREFIX))
+
+    # Anagrama 🔀
+    application.add_handler(CommandHandler("anagrama",       cmd_anagrama,       filters=PREFIX))
+    application.add_handler(CommandHandler("anagrama4",      cmd_anagrama4,      filters=PREFIX))
+    application.add_handler(CommandHandler("start_anagrama", cmd_start_anagrama, filters=PREFIX))
     application.add_handler(CommandHandler("carrera",          cmd_carrera,          filters=PREFIX))
     application.add_handler(CommandHandler("apostar_carrera",  cmd_apostar_carrera,  filters=PREFIX))
     application.add_handler(CommandHandler("start_carrera",    cmd_start_carrera,    filters=PREFIX))
