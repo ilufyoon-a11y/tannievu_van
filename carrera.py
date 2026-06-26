@@ -52,8 +52,8 @@ def build_pista(posiciones: dict) -> str:
     lineas = ["🏁 *CARRERA BTS* 💜\n"]
     for key, corredor in CORREDORES.items():
         pos = posiciones.get(key, 0)
-        avance = "▓" * pos
-        resto = "░" * (PISTA_LARGO - pos)
+        avance = "❯❯❯❯" * pos
+        resto = "════════" * (PISTA_LARGO - pos)
         lineas.append(f"{corredor['emoji']} `{avance}{resto}` {corredor['nombre']}")
     lineas.append("\n🚩 Meta")
     return "\n".join(lineas)
