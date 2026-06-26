@@ -37,6 +37,7 @@ def _sesion_default():
         "activa": False,
         "jugadores": {},
         "premio_actual": {},
+        "admin_id": None,
     }
 
 def _cargar_sesion():
@@ -119,6 +120,7 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["activa"] = True
     sesion_puntos["jugadores"] = {}
     sesion_puntos["premio_actual"] = {}
+    sesion_puntos["admin_id"] = update.effective_user.id
     _guardar_sesion()
     await update.message.reply_text(
         "✅ **¡Sesión iniciada!** 🟥\n\n"
@@ -155,6 +157,9 @@ async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     if not sesion_puntos["activa"]:
         await update.message.reply_text("No hay ninguna sesión activa.")
+        return
+    if update.effective_user.id != sesion_puntos.get("admin_id"):
+        await update.message.reply_text("⛔ Solo quien inició la sesión puede ver esto.")
         return
     if not sesion_puntos["jugadores"]:
         await update.message.reply_text("Nadie ha ganado Robux todavía en esta sesión.")
