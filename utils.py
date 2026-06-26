@@ -66,6 +66,8 @@ sesion_puntos = _cargar_sesion()
 def guardar_sesion():
     """Wrapper público para guardar la sesión desde otros módulos."""
     _guardar_sesion()
+
+def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
     """Suma robux al jugador si hay sesión activa."""
     if not sesion_puntos["activa"] or cantidad <= 0:
         return
