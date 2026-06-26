@@ -84,6 +84,9 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
         await update.message.reply_text("¡Alto ahí! Esos no son 6 emojis, por favor vuelve a enviar.")
         return
 
+    # Normalizar para comparación consistente
+    emojis_originales = [normalizar_emoji(e) for e in emojis_originales]
+
     sesion_box[gid].update({
         "emojis_secretos": emojis_originales,
         "emojis_adivinados": [],
@@ -103,6 +106,10 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
     await context.bot.send_message(chat_id=gid,
         text="¡𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗖𝗘𝗥𝗥𝗔𝗗𝗔ⵑ\n\nEnvía tus respuestas de uno en uno. Si coincide con un objeto de la caja, ganas 1 punto.")
 
+def normalizar_emoji(e: str) -> str:
+    """Normaliza un emoji removiendo variantes de presentación."""
+    return e.replace('\uFE0F', '').replace('\u200D', '').strip()
+
 async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Llama esto desde manejar_mensajes cuando hay sesion_box activa en el grupo"""
     chat_id = update.effective_chat.id
@@ -114,9 +121,9 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     emojis_enviados = extraer_emojis(texto)
     if not emojis_enviados:
         return
-    emoji_enviado = emojis_enviados[0].replace('\uFE0F', '')
-    secretos_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_secretos", [])]
-    adivinados_normalizados = [e.replace('\uFE0F', '') for e in sesion.get("emojis_adivinados", [])]
+    emoji_enviado = normalizar_emoji(emojis_enviados[0])
+    secretos_normalizados = [normalizar_emoji(e) for e in sesion.get("emojis_secretos", [])]
+    adivinados_normalizados = [normalizar_emoji(e) for e in sesion.get("emojis_adivinados", [])]
 
     if emoji_enviado in adivinados_normalizados:
         await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
