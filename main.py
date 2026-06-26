@@ -56,7 +56,7 @@ from guessong import (
     verificar_respuesta_musica, manejar_boton_unirse,
 )
 from mayoromenor import (
-    cmd_mayoromenor,
+    cmd_mayoromenor, cmd_apostar_mom, cmd_out_card,
     manejar_botones_mayoromenor,
 )
 from carrera import (
@@ -123,6 +123,14 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  "𝒗𝒊. 𝐏𝐢𝐫𝐚𝐭𝐚  →  /pirata  /start_pirata\n\n"
                  "𝒗𝒊𝒊. 𝐀𝐝𝐢𝐯𝐢𝐧𝐚  →  /adivina  /start_adivina\n\n"
                  "💰 Robux  →  /new_session  /wallet  /spent  /reset\n\n"
+                 "𝖯𝗋𝖾𝗆𝗂𝗈𝗌 𝖺𝗅 𝗂𝗇𝗂𝖼𝗂𝖺𝗋:\n"
+                 "`.start_zombie 5 15` → 5 vivos / 15 zombie\n"
+                 "`.start_caseria 10` → 10 al ganador\n"
+                 "`.start_cipher 8` → 8 al ganador\n"
+                 "`.start_box 6` → 6 al ganador\n"
+                 "`.start_pirata 5` → 5 a los sobrevivientes\n"
+                 "`.start_charada 10` → 10 al equipo ganador\n"
+                 "`.start_adivina 5` → 5 por canción acertada\n\n"
                  "𝖠𝗇𝗍𝖾𝗌 𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝗇𝗎𝖾𝗏𝖺, 𝗎𝗌𝖺 /off_van 𝗉𝖺𝗋𝖺 𝗋𝖾𝗌𝖾𝗍𝖾𝖺𝗋.")
     )
 
@@ -274,6 +282,8 @@ if __name__ == '__main__':
 
     # Mayor o Menor 🃏
     application.add_handler(CommandHandler("mayoromenor", cmd_mayoromenor, filters=PREFIX))
+    application.add_handler(CommandHandler("apostar_mom", cmd_apostar_mom, filters=PREFIX))
+    application.add_handler(CommandHandler("out_card",    cmd_out_card,    filters=PREFIX))
 
     # Carrera BTS 🏇
     application.add_handler(CommandHandler("carrera",          cmd_carrera,          filters=PREFIX))
