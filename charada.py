@@ -79,6 +79,11 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     sesion_charada["fase_registro"] = False
 
+    # Parsear premio opcional: /start_charada 10
+    args = context.args or []
+    premio = int(args[0]) if args and args[0].isdigit() else 0
+    sesion_puntos["premio_actual"]["charada"] = premio
+
     lista_ids = [j["id"] for j in sesion_charada["jugadores"]]
     random.shuffle(lista_ids)
     mitad = len(lista_ids) // 2
@@ -187,6 +192,18 @@ async def reloj_charada(chat_id, context):
                  f"¡El bot queda libre para otra ronda! 🎭"
         )
 
+        # Pagar robux al equipo con más puntos
+        premio = sesion_puntos.get("premio_actual", {}).get("charada", 0)
+        if premio > 0:
+            pts_r = sesion_charada["puntos_rojo"]
+            pts_a = sesion_charada["puntos_azul"]
+            if pts_r != pts_a:
+                equipo_ganador_ids = sesion_charada["equipo_rojo"] if pts_r > pts_a else sesion_charada["equipo_azul"]
+                nombre_ganador = sesion_charada["nombre_equipo_rojo"] if pts_r > pts_a else sesion_charada["nombre_equipo_azul"]
+                for uid in equipo_ganador_ids:
+                    nombre = next((j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid), str(uid))
+                    sumar_robux(uid, nombre, premio, f"Charada 🎭 ({nombre_ganador})")
+
 # ================= MANEJO DE MENSAJES =================
 
 async def escuchar_charada_privado(update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int, texto: str):
@@ -239,6 +256,13 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
                      f"📊 **PUNTAJE GLOBAL:**\n"
                      f"🔴 {sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} pts\n"
                      f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} pts")
+
+            # Pagar robux al equipo que acaba de jugar (puntaje perfecto)
+            premio = sesion_puntos.get("premio_actual", {}).get("charada", 0)
+            if premio > 0:
+                for uid in lista_equipo_valido:
+                    nombre = next((j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid), str(uid))
+                    sumar_robux(uid, nombre, premio, f"Charada 🎭 puntaje perfecto")
 
 # ================= MANEJO DE BOTONES =================
 
