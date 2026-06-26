@@ -8,31 +8,32 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 # =====================================================================
 
 DECK = [
-    {"valor": 1,  "nombre": "1",          "imagen": "https://i.postimg.cc/4NF9fTzT/1-20260625-232545-0000.png"},
-    {"valor": 2,  "nombre": "2",         "imagen": "https://i.postimg.cc/HnnkRVvw/1-20260625-232545-0001.png"},
-    {"valor": 3,  "nombre": "3",        "imagen": "https://i.postimg.cc/xdPjdKW9/1-20260625-232545-0002.png"},
-    {"valor": 4,  "nombre": "4",      "imagen": "https://i.postimg.cc/0N9xhzr4/1-20260625-232545-0003.png"},
-    {"valor": 5,  "nombre": "5",       "imagen": "https://i.postimg.cc/kX82mtX2/1-20260625-232507-0004.png"},
-    {"valor": 6,  "nombre": "6",           "imagen": "https://i.postimg.cc/Qd3HxxF3/1-20260625-232546-0005.png"},
-    {"valor": 7,  "nombre": "7",    "imagen": "https://i.postimg.cc/3wLRBXnM/1-20260625-232546-0006.png"},
-    {"valor": 8,  "nombre": "8",    "imagen": "https://i.postimg.cc/fLpb4MG6/1-20260625-232546-0007.png"},
-    {"valor": 9,  "nombre": "9",   "imagen": "https://i.postimg.cc/5Nw2GdnY/1-20260625-232546-0008.png"},
-    {"valor": 10, "nombre": "10",    "imagen": "https://i.postimg.cc/KzkZDd1z/1-20260625-232546-0009.png"},
-    {"valor": 11, "nombre" : "11", "imagen": "https://i.postimg.cc/rs5MvxCk/1-20260625-232546-0010.png"},
-    {"valor": 12, "nombre" : "12",   "imagen": "https://i.postimg.cc/4NTJp2s4/1-20260625-232546-0011.png"},
+    {"valor": 1,  "nombre": "1",  "sticker": "CAACAgEAAxkBA0JOY2o-CCpcElDKsSfaDRQDffJYgmnfAALeCAACMPnxRZH_1aP_xSgFPAQ"},
+    {"valor": 2,  "nombre": "2",  "sticker": "CAACAgEAAxkBA0K6vWo-gOdDrp6tlzKPco6tvcn9aflkAAIbCAACQArwRV0usVlcD-HVPAQ"},
+    {"valor": 3,  "nombre": "3",  "sticker": "CAACAgEAAxkBA0K6ymo-gPdXtp1ougXumlvIuIbfN4jlAAJLBwAC25XxRSXnl8LF2KdaPAQ"},
+    {"valor": 4,  "nombre": "4",  "sticker": "CAACAgEAAxkBA0K63Go-gQLB0AetwN5qzd7OeM_v8iHKAAKFCgACrDnwRVE0GUO8TyYJPAQ"},
+    {"valor": 5,  "nombre": "5",  "sticker": "CAACAgEAAxkBA0K65mo-gQyxEBlka9ZvUbS7o8ZXLEmOAAKzDAACphTwRWEp3q1JY49mPAQ"},
+    {"valor": 6,  "nombre": "6",  "sticker": "CAACAgEAAxkBA0K672o-gRVMgV4c-5xqnjMSxzCNQKs5AAJPBwACRAAB8UXacZU9f28nuDwE"},
+    {"valor": 7,  "nombre": "7",  "sticker": "CAACAgEAAxkBA0K6-mo-gR3YU2ZiIIja5frkYxv-q0LiAAIqCQACuYzwRUo7MslPG1yHPAQ"},
+    {"valor": 8,  "nombre": "8",  "sticker": "CAACAgEAAxkBA0K7A2o-gSVH1OSp9C599u1z4EUjQWxWAAKMCAACQv3wReN0rglTopGjPAQ"},
+    {"valor": 9,  "nombre": "9",  "sticker": "CAACAgEAAxkBA0K7Cmo-gS6b_HIa1X_lt-340qbkK53vAAKcCQACdpzwRY3foSjUNu9TPAQ"},
+    {"valor": 10, "nombre": "10", "sticker": "CAACAgEAAxkBA0K7Fmo-gTaXMNgAAT_53mVAnFNHa6fQzQAC7AgAAiT68UVXXU7fF4fpuDwE"},
+    {"valor": 11, "nombre": "11", "sticker": "CAACAgEAAxkBA0K7IWo-gT3M-ujSwPBNWRNVKRNG4kZMAAIrDgACspzwRdGMkNjlex7wPAQ"},
+    {"valor": 12, "nombre": "12", "sticker": "CAACAgEAAxkBA0K7LGo-gUTBUZmL56rD-pEF-t_Z96mhAAKECAAChMDxRT_nWpG6uKBmPAQ"},
 ]
 
 # =====================================================================
-# SESION
+# SESION GRUPAL
 # =====================================================================
 
-sesion_mom = {}
-# user_id -> {
-#   "carta_actual": { valor, nombre, imagen },
-#   "apuesta": int,
-#   "chat_id": int,
-#   "msg_id": int,   # id del mensaje de la carta para editarlo
+# chat_id -> {
+#   "activa": bool,
+#   "carta_actual": { valor, nombre, sticker },
+#   "msg_id": int,       # mensaje de sala (texto con apuestas)
+#   "sticker_msg_id": int,  # mensaje del sticker de la carta actual
+#   "apuestas": { user_id: { "nombre", "eleccion", "cantidad" } }
 # }
+sesion_mom = {}
 
 # =====================================================================
 # HELPERS
@@ -46,82 +47,67 @@ def carta_aleatoria(excluir_valor=None):
     opciones = [c for c in DECK if c["valor"] != excluir_valor]
     return random.choice(opciones)
 
+def texto_sala(chat_id: int) -> str:
+    estado = sesion_mom[chat_id]
+    carta = estado["carta_actual"]
+    apuestas = estado["apuestas"]
+    lineas = [
+        f"💜 *MAYOR O MENOR* — Carta actual: *{carta['nombre']}*\n",
+        "Elige con los botones y luego escribe `/apostar_mom <cantidad>`\n",
+    ]
+    if apuestas:
+        lineas.append("*Jugadores:*")
+        for d in apuestas.values():
+            flecha = "⬆️" if d["eleccion"] == "mayor" else "⬇️"
+            cantidad_txt = f"{d['cantidad']} Robux 🟥" if d["cantidad"] > 0 else "_(falta apuesta)_"
+            lineas.append(f"{flecha} {d['nombre']} — {cantidad_txt}")
+    else:
+        lineas.append("_Nadie ha apostado aún..._")
+    lineas.append("\n⏳ El host revela con `/out_card`")
+    return "\n".join(lineas)
+
 # =====================================================================
-# COMANDO PRINCIPAL
+# /mayoromenor — Host abre la ronda
 # =====================================================================
 
 async def cmd_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    user_id = user.id
+    chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("⚠️ No hay ninguna sesión activa. Pide que usen /new_session primero.")
+        await update.message.reply_text("⚠️ No hay ninguna sesión activa. Usa /new_session primero.")
         return
 
-    # Parsear apuesta
-    args = context.args or []
-    if not args:
-        await update.message.reply_text(
-            "💜 **Mayor o Menor BTS**\n\n"
-            "Usa: `/mayoromenor <apuesta>`\n"
-            "Ejemplo: `/mayoromenor 10`\n\n"
-            f"Tu saldo actual: **{get_saldo(user_id)} Robux 🟥**",
-            parse_mode="Markdown"
-        )
+    if chat_id in sesion_mom and sesion_mom[chat_id]["activa"]:
+        await update.message.reply_text("⚠️ Ya hay una ronda abierta. Usa /out_card para revelar.")
         return
 
-    try:
-        apuesta = int(args[0])
-    except ValueError:
-        await update.message.reply_text("❌ La apuesta debe ser un número. Ej: `/mayoromenor 10`", parse_mode="Markdown")
-        return
-
-    if apuesta <= 0:
-        await update.message.reply_text("❌ La apuesta debe ser mayor a 0.")
-        return
-
-    saldo = get_saldo(user_id)
-    if saldo < apuesta:
-        await update.message.reply_text(
-            f"❌ No tienes suficientes Robux.\n"
-            f"Tu saldo: **{saldo} Robux 🟥**\n"
-            f"Apuesta: **{apuesta} Robux**",
-            parse_mode="Markdown"
-        )
-        return
-
-    if user_id in sesion_mom:
-        await update.message.reply_text("⚠️ Ya tienes una ronda en curso. ¡Responde primero!")
-        return
-
-    # Sacar carta
     carta = carta_aleatoria()
-    sesion_mom[user_id] = {
+    sesion_mom[chat_id] = {
+        "activa": True,
         "carta_actual": carta,
-        "apuesta": apuesta,
-        "chat_id": update.effective_chat.id,
+        "msg_id": None,
+        "sticker_msg_id": None,
+        "apuestas": {},
     }
 
+    # Mandar sticker de la carta
+    sticker_msg = await update.message.reply_sticker(sticker=carta["sticker"])
+    sesion_mom[chat_id]["sticker_msg_id"] = sticker_msg.message_id
+
     botones = [[
-        InlineKeyboardButton("⬆️ MAYOR", callback_data=f"mom_mayor_{user_id}"),
-        InlineKeyboardButton("⬇️ MENOR", callback_data=f"mom_menor_{user_id}"),
+        InlineKeyboardButton("⬆️ MAYOR", callback_data=f"mom_mayor_{chat_id}"),
+        InlineKeyboardButton("⬇️ MENOR", callback_data=f"mom_menor_{chat_id}"),
     ]]
 
-    msg = await update.message.reply_photo(
-        photo=carta["imagen"],
-        caption=(
-            f"💜 **MAYOR O MENOR** — {nombre_usuario(user)}\n\n"
-            f"🃏 Carta actual: **{carta['nombre']}** (valor {carta['valor']})\n"
-            f"💰 Apuesta: **{apuesta} Robux 🟥**\n\n"
-            f"¿La siguiente carta será mayor o menor?"
-        ),
+    msg = await update.message.reply_text(
+        texto_sala(chat_id),
         reply_markup=InlineKeyboardMarkup(botones),
         parse_mode="Markdown"
     )
-    sesion_mom[user_id]["msg_id"] = msg.message_id
+    sesion_mom[chat_id]["msg_id"] = msg.message_id
 
 # =====================================================================
-# MANEJO DE BOTONES
+# BOTONES — elegir mayor o menor
 # =====================================================================
 
 async def manejar_botones_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -129,78 +115,183 @@ async def manejar_botones_mayoromenor(update: Update, context: ContextTypes.DEFA
     user = query.from_user
     data = query.data
 
-    # Extraer acción y dueño de la ronda
-    partes = data.split("_")   # mom_mayor_123 o mom_menor_123
-    accion = partes[1]         # "mayor" o "menor"
-    dueno_id = int(partes[2])
+    partes = data.split("_")
+    eleccion = partes[1]
+    chat_id = int(partes[2])
 
-    # Solo el dueño puede responder
-    if user.id != dueno_id:
-        await query.answer("¡Esta ronda no es tuya! 👀", show_alert=True)
-        return
-
-    if dueno_id not in sesion_mom:
+    estado = sesion_mom.get(chat_id)
+    if not estado or not estado["activa"]:
         await query.answer("Esta ronda ya terminó.", show_alert=True)
         return
 
-    await query.answer()
+    user_id = user.id
 
-    datos = sesion_mom.pop(dueno_id)
-    carta_anterior = datos["carta_actual"]
-    apuesta = datos["apuesta"]
-
-    # Sacar nueva carta (distinta a la anterior)
-    carta_nueva = carta_aleatoria(excluir_valor=carta_anterior["valor"])
-
-    # Evaluar resultado
-    if accion == "mayor":
-        gano = carta_nueva["valor"] > carta_anterior["valor"]
+    if user_id in estado["apuestas"]:
+        estado["apuestas"][user_id]["eleccion"] = eleccion
+        await query.answer(f"Cambiaste a {'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'}", show_alert=False)
     else:
-        gano = carta_nueva["valor"] < carta_anterior["valor"]
+        estado["apuestas"][user_id] = {
+            "nombre": nombre_usuario(user),
+            "eleccion": eleccion,
+            "cantidad": 0,
+        }
+        await query.answer(f"{'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'} elegido! Ahora escribe /apostar_mom <cantidad>", show_alert=True)
 
-    # Empate = pierde (carta_aleatoria excluye el mismo valor, pero por si acaso)
-    if carta_nueva["valor"] == carta_anterior["valor"]:
-        gano = False
-
-    nombre = nombre_usuario(user)
-
-    if gano:
-        ganancia = apuesta * 2
-        sumar_robux(dueno_id, nombre, ganancia, f"Mayor o Menor 🃏 (+x2)")
-        resultado_txt = (
-            f"🎉 **¡ACERTASTE, {nombre.upper()}!** 💜\n\n"
-            f"🃏 Carta anterior: **{carta_anterior['nombre']}** (valor {carta_anterior['valor']})\n"
-            f"🃏 Carta nueva: **{carta_nueva['nombre']}** (valor {carta_nueva['valor']})\n\n"
-            f"💰 Ganaste: **{ganancia} Robux 🟥** (x2)\n"
-            f"Saldo actual: **{get_saldo(dueno_id)} Robux 🟥**"
+    try:
+        await context.bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=estado["msg_id"],
+            text=texto_sala(chat_id),
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("⬆️ MAYOR", callback_data=f"mom_mayor_{chat_id}"),
+                InlineKeyboardButton("⬇️ MENOR", callback_data=f"mom_menor_{chat_id}"),
+            ]]),
+            parse_mode="Markdown"
         )
-    else:
-        # Restar del saldo
-        if dueno_id in sesion_puntos["jugadores"]:
-            sesion_puntos["jugadores"][dueno_id]["robux"] -= apuesta
-            sesion_puntos["jugadores"][dueno_id]["detalle"].append(f"Mayor o Menor 🃏: -{apuesta} 🟥")
-            guardar_sesion()
-        resultado_txt = (
-            f"💀 **¡FALLASTE, {nombre.upper()}!**\n\n"
-            f"🃏 Carta anterior: **{carta_anterior['nombre']}** (valor {carta_anterior['valor']})\n"
-            f"🃏 Carta nueva: **{carta_nueva['nombre']}** (valor {carta_nueva['valor']})\n\n"
-            f"💸 Perdiste: **{apuesta} Robux 🟥**\n"
-            f"Saldo actual: **{get_saldo(dueno_id)} Robux 🟥**"
-        )
+    except Exception:
+        pass
 
-    await context.bot.send_photo(
-        chat_id=datos["chat_id"],
-        photo=carta_nueva["imagen"],
-        caption=resultado_txt,
+# =====================================================================
+# /apostar_mom <cantidad>
+# =====================================================================
+
+async def cmd_apostar_mom(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    user_id = user.id
+    chat_id = update.effective_chat.id
+
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("⚠️ No hay ninguna sesión activa.")
+        return
+
+    estado = sesion_mom.get(chat_id)
+    if not estado or not estado["activa"]:
+        await update.message.reply_text("⚠️ No hay ninguna ronda abierta. El host debe usar /mayoromenor primero.")
+        return
+
+    if user_id not in estado["apuestas"]:
+        await update.message.reply_text("⚠️ Primero elige ⬆️ MAYOR o ⬇️ MENOR con los botones.")
+        return
+
+    args = context.args or []
+    if not args:
+        await update.message.reply_text("❌ Uso: `/apostar_mom <cantidad>`", parse_mode="Markdown")
+        return
+
+    try:
+        cantidad = int(args[0])
+    except ValueError:
+        await update.message.reply_text("❌ La cantidad debe ser un número.")
+        return
+
+    if cantidad <= 0:
+        await update.message.reply_text("❌ La apuesta debe ser mayor a 0.")
+        return
+
+    saldo = get_saldo(user_id)
+    if saldo < cantidad:
+        await update.message.reply_text(
+            f"❌ No tienes suficientes Robux.\n"
+            f"Tu saldo: *{saldo} Robux 🟥*\n"
+            f"Apuesta: *{cantidad} Robux*",
+            parse_mode="Markdown"
+        )
+        return
+
+    estado["apuestas"][user_id]["cantidad"] = cantidad
+    eleccion = estado["apuestas"][user_id]["eleccion"]
+    flecha = "⬆️ MAYOR" if eleccion == "mayor" else "⬇️ MENOR"
+
+    await update.message.reply_text(
+        f"✅ *{nombre_usuario(user)}* apostó *{cantidad} Robux 🟥* a {flecha}",
         parse_mode="Markdown"
     )
 
-    # Editar mensaje original para quitar los botones
+    try:
+        await context.bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=estado["msg_id"],
+            text=texto_sala(chat_id),
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("⬆️ MAYOR", callback_data=f"mom_mayor_{chat_id}"),
+                InlineKeyboardButton("⬇️ MENOR", callback_data=f"mom_menor_{chat_id}"),
+            ]]),
+            parse_mode="Markdown"
+        )
+    except Exception:
+        pass
+
+# =====================================================================
+# /out_card — Host revela la carta y liquida
+# =====================================================================
+
+async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+
+    estado = sesion_mom.get(chat_id)
+    if not estado or not estado["activa"]:
+        await update.message.reply_text("⚠️ No hay ninguna ronda abierta.")
+        return
+
+    apuestas_validas = {uid: d for uid, d in estado["apuestas"].items() if d["cantidad"] > 0}
+    if not apuestas_validas:
+        await update.message.reply_text("⚠️ Nadie apostó aún.")
+        return
+
+    carta_anterior = estado["carta_actual"]
+    carta_nueva = carta_aleatoria(excluir_valor=carta_anterior["valor"])
+
+    # Mandar sticker de la carta nueva
+    await context.bot.send_sticker(chat_id=chat_id, sticker=carta_nueva["sticker"])
+
+    ganadores = []
+    perdedores = []
+
+    for user_id, datos in apuestas_validas.items():
+        nombre = datos["nombre"]
+        cantidad = datos["cantidad"]
+        eleccion = datos["eleccion"]
+
+        gano = (eleccion == "mayor" and carta_nueva["valor"] > carta_anterior["valor"]) or \
+               (eleccion == "menor" and carta_nueva["valor"] < carta_anterior["valor"])
+
+        if gano:
+            ganancia = cantidad * 2
+            sumar_robux(user_id, nombre, ganancia, "Mayor o Menor 🃏 (+x2)")
+            ganadores.append(f"  {nombre} → +{ganancia} Robux 🟥")
+        else:
+            if user_id in sesion_puntos["jugadores"]:
+                sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
+                sesion_puntos["jugadores"][user_id]["detalle"].append(f"Mayor o Menor 🃏: -{cantidad} 🟥")
+            perdedores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → -{cantidad} Robux 🟥")
+
+    guardar_sesion()
+
+    resultado = [
+        f"🃏 *Carta anterior:* *{carta_anterior['nombre']}* (valor {carta_anterior['valor']})\n"
+        f"🃏 *Carta nueva:* *{carta_nueva['nombre']}* (valor {carta_nueva['valor']})\n"
+    ]
+    if ganadores:
+        resultado.append("*🎉 Ganadores:*")
+        resultado.extend(ganadores)
+    if perdedores:
+        resultado.append("\n*💸 Perdedores:*")
+        resultado.extend(perdedores)
+
+    await context.bot.send_message(
+        chat_id=chat_id,
+        text="\n".join(resultado),
+        parse_mode="Markdown"
+    )
+
+    # Quitar botones del mensaje de sala
     try:
         await context.bot.edit_message_reply_markup(
-            chat_id=datos["chat_id"],
-            message_id=datos["msg_id"],
+            chat_id=chat_id,
+            message_id=estado["msg_id"],
             reply_markup=None
         )
     except Exception:
         pass
+
+    del sesion_mom[chat_id]
