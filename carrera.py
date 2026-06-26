@@ -9,13 +9,13 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 # =====================================================================
 
 CORREDORES = {
-    "rm":       {"nombre": "RM",       "emoji": "🦋"},
-    "jin":      {"nombre": "Jin",      "emoji": "🐹"},
-    "suga":     {"nombre": "Suga",     "emoji": "🐱"},
-    "jhope":    {"nombre": "J-Hope",   "emoji": "🌻"},
-    "jimin":    {"nombre": "Jimin",    "emoji": "🐥"},
-    "v":        {"nombre": "V",        "emoji": "🐻"},
-    "jungkook": {"nombre": "Jungkook", "emoji": "🐰"},
+    "rm":       {"emoji": "🦋"},
+    "jin":      {"emoji": "🐹"},
+    "suga":     {"emoji": "🐱"},
+    "jhope":    {"emoji": "🌻"},
+    "jimin":    {"emoji": "🐥"},
+    "v":        {"emoji": "🐻"},
+    "jungkook": {"emoji": "🐰"},
 }
 
 PISTA_LARGO = 20  # casillas hasta la meta
