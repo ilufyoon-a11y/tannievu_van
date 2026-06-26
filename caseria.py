@@ -43,11 +43,15 @@ def construir_teclado_tablero(tablero: list, marcados_global: set) -> InlineKeyb
 
 def construir_texto_cartilla(cartilla: list, marcados: set) -> str:
     lineas = []
+    fila = []
     for emoji in cartilla:
-        if emoji in marcados:
-            lineas.append(f"{emoji} ✅")
-        else:
-            lineas.append(f"{emoji} ⬜")
+        marca = "✅" if emoji in marcados else "⬜"
+        fila.append(f"{emoji}{marca}")
+        if len(fila) == 3:
+            lineas.append("  ".join(fila))
+            fila = []
+    if fila:
+        lineas.append("  ".join(fila))
     return "\n".join(lineas)
 
 # ================= CODIGO PRINCIPAL =================
