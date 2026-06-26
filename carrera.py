@@ -9,28 +9,24 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 # =====================================================================
 
 CORREDORES = {
-    "rm":       {"emoji": "🦋"},
-    "jin":      {"emoji": "🐹"},
-    "suga":     {"emoji": "🐱"},
-    "jhope":    {"emoji": "🌻"},
-    "jimin":    {"emoji": "🐥"},
-    "v":        {"emoji": "🐻"},
-    "jungkook": {"emoji": "🐰"},
+    "rm":       "🦋",
+    "jin":      "🐹",
+    "suga":     "🐱",
+    "jhope":    "🌻",
+    "jimin":    "🐥",
+    "v":        "🐻",
+    "jungkook": "🐰",
 }
 
-PISTA_LARGO = 20  # casillas hasta la meta
+# Mapa emoji -> key para parsear /apostar_carrera con emoji
+EMOJI_A_KEY = {v: k for k, v in CORREDORES.items()}
+
+PISTA_LARGO = 20
 
 # =====================================================================
 # SESION
 # =====================================================================
 
-# Estado global de la carrera (solo una por chat a la vez)
-# chat_id -> {
-#   "activa": bool,
-#   "corriendo": bool,
-#   "apuestas": { user_id: { "corredor": str, "cantidad": int, "nombre": str } },
-#   "msg_id": int,   # mensaje de la sala de apuestas
-# }
 sesion_carrera = {}
 
 # =====================================================================
@@ -48,35 +44,32 @@ def restar_robux(user_id: int, cantidad: int, detalle: str):
         guardar_sesion()
 
 def build_pista(posiciones: dict) -> str:
-    """Construye el texto de la pista con las posiciones actuales."""
     lineas = ["🏁 *CARRERA BTS* 💜\n"]
-    for key, corredor in CORREDORES.items():
+    for key, emoji in CORREDORES.items():
         pos = posiciones.get(key, 0)
-        avance = "❯❯❯" * pos
-        resto =  "══" * (PISTA_LARGO - pos)
-        lineas.append(f"{corredor['emoji']} `{avance}{resto}` {corredor['nombre']}")
+        avance = "❯" * pos
+        resto = "─" * (PISTA_LARGO - pos)
+        lineas.append(f"{emoji} `{avance}{resto}` 🏁")
     return "\n".join(lineas)
 
 def sala_apuestas_txt(chat_id: int) -> str:
-    """Texto del mensaje de sala de apuestas."""
     apuestas = sesion_carrera[chat_id]["apuestas"]
     lineas = [
         "🏇 *CARRERA BTS* 💜",
         "¡Apuesta a tu favorito y gana x2!\n",
         "*Corredores:*",
     ]
-    for key, corredor in CORREDORES.items():
+    for key, emoji in CORREDORES.items():
         apostadores = [d["nombre"] for d in apuestas.values() if d["corredor"] == key]
         if apostadores:
-            lista = ", ".join(apostadores)
-            lineas.append(f"{corredor['emoji']} — {lista}")
+            lineas.append(f"{emoji} — {', '.join(apostadores)}")
         else:
-            lineas.append(f"{corredor['emoji']}")
+            lineas.append(f"{emoji}")
 
     lineas.append("\n📝 *¿Cómo apostar?*")
-    lineas.append("`/apostar_carrera <corredor> <cantidad>`")
-    lineas.append("Ej: `/apostar_carrerabre"] `\n")
-    lineas.append("*Corredores válidos:* rm · jin · suga · jhope · jimin · v · jungkook")
+    lineas.append("`/apostar_carrera <emoji> <cantidad>`")
+    lineas.append("Ej: `/apostar_carrera 🐰 50`\n")
+    lineas.append("*Corredores:* 🦋 · 🐹 · 🐱 · 🌻 · 🐥 · 🐻 · 🐰")
     lineas.append("\n⏳ Esperando jugadores... El host arranca con `/start_carrera`")
     return "\n".join(lineas)
 
@@ -92,7 +85,7 @@ async def cmd_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if chat_id in sesion_carrera and sesion_carrera[chat_id]["activa"]:
-        await update.message.reply_text("⚠️ Ya hay carrera ocurriendo en el chat.")
+        await update.message.reply_text("⚠️ Ya hay una carrera abierta en este chat.")
         return
 
     sesion_carrera[chat_id] = {
@@ -109,7 +102,7 @@ async def cmd_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_carrera[chat_id]["msg_id"] = msg.message_id
 
 # =====================================================================
-# /apostar_carrera <corredor> <cantidad>
+# /apostar_carrera <emoji> <cantidad>
 # =====================================================================
 
 async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -127,7 +120,7 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
         return
 
     if estado["corriendo"]:
-        await update.message.reply_text("⚠️ ¡La apostar ya arrancó! No puedes apostar ahora.")
+        await update.message.reply_text("⚠️ ¡La carrera ya arrancó! No puedes apostar ahora.")
         return
 
     if user_id in estado["apuestas"]:
@@ -137,25 +130,25 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
     args = context.args or []
     if len(args) < 2:
         await update.message.reply_text(
-            "❌ Uso correcto: `/apostar_carrera <corredor> <cantidad>`\n"
-            "Ej: `/apostar_carrera jungkook 50`",
+            "❌ Uso: `/apostar_carrera <emoji> <cantidad>`\n"
+            "Ej: `/apostar_carrera 🐰 50`",
             parse_mode="Markdown"
         )
         return
 
-    corredor_key = args[0].lower()
-    if corredor_key not in CORREDORES:
-        validos = " · ".join(CORREDORES.keys())
+    emoji_arg = args[0].strip()
+    corredor_key = EMOJI_A_KEY.get(emoji_arg)
+
+    if not corredor_key:
         await update.message.reply_text(
-            f"❌ Corredor inválido. Los válidos son:\n`{validos}`",
-            parse_mode="Markdown"
+            "❌ Emoji inválido. Los corredores son:\n🦋 · 🐹 · 🐱 · 🌻 · 🐥 · 🐻 · 🐰",
         )
         return
 
     try:
         cantidad = int(args[1])
     except ValueError:
-        await update.message.reply_text("❌ La cantidad debe ser un número. Ej: `/apostar_carrera jungkook 50`", parse_mode="Markdown")
+        await update.message.reply_text("❌ La cantidad debe ser un número.")
         return
 
     if cantidad <= 0:
@@ -172,21 +165,17 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
         )
         return
 
-    # Registrar apuesta
     estado["apuestas"][user_id] = {
         "corredor": corredor_key,
         "cantidad": cantidad,
         "nombre": nombre_usuario(user),
     }
 
-    corredor = CORREDORES[corredor_key]
     await update.message.reply_text(
-        f"✅ *{nombre_usuario(user)}* apostó *{cantidad} Robux 🟥* a "
-        f"{corredor['emoji']} *{corredor['nombre']}*",
+        f"✅ *{nombre_usuario(user)}* apostó *{cantidad} Robux 🟥* a {emoji_arg}",
         parse_mode="Markdown"
     )
 
-    # Actualizar mensaje de sala
     try:
         await context.bot.edit_message_text(
             chat_id=chat_id,
@@ -214,20 +203,17 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if not estado["apuestas"]:
-        await update.message.reply_text("⚠️ Nadie apostó aún. Espera que apuesten antes de arrancar.")
+        await update.message.reply_text("⚠️ Nadie apostó aún.")
         return
 
     estado["corriendo"] = True
-
-    # Inicializar posiciones
     posiciones = {key: 0 for key in CORREDORES}
 
-    # Editar mensaje de sala para cerrar apuestas
     try:
         await context.bot.edit_message_text(
             chat_id=chat_id,
             message_id=estado["msg_id"],
-            text="🏁 *¡Las apuestas están cerradas!* La carrera está por comenzar... 🐎💨",
+            text="🏁 *¡Las apuestas están cerradas!* La carrera está por comenzar... 💨",
             parse_mode="Markdown"
         )
     except Exception:
@@ -235,24 +221,20 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await asyncio.sleep(1.5)
 
-    # Mandar mensaje de pista
     msg_pista = await context.bot.send_message(
         chat_id=chat_id,
         text=build_pista(posiciones),
         parse_mode="Markdown"
     )
 
-    # ---- LOOP DE CARRERA ----
     ganador_key = None
     while ganador_key is None:
         await asyncio.sleep(1.2)
 
-        # Avanzar corredores aleatoriamente
         for key in CORREDORES:
-            avance = random.randint(0, 2)  # 0, 1 o 2 casillas por turno
+            avance = random.randint(0, 2)
             posiciones[key] = min(posiciones[key] + avance, PISTA_LARGO)
 
-        # Editar pista
         try:
             await context.bot.edit_message_text(
                 chat_id=chat_id,
@@ -263,13 +245,12 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-        # Ver si alguien llegó a la meta
         llegaron = [key for key, pos in posiciones.items() if pos >= PISTA_LARGO]
         if llegaron:
-            ganador_key = random.choice(llegaron)  # si empataron, se elige al azar
+            ganador_key = random.choice(llegaron)
 
     # ---- RESULTADO ----
-    ganador = CORREDORES[ganador_key]
+    emoji_ganador = CORREDORES[ganador_key]
     ganadores_txt = []
     perdedores_txt = []
 
@@ -284,11 +265,9 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ganadores_txt.append(f"  {nombre} → +{ganancia} Robux 🟥")
         else:
             restar_robux(user_id, cantidad, f"Carrera 🏇: -{cantidad} 🟥")
-            perdedores_txt.append(f"  {nombre} apostó a {CORREDORES[corredor_apostado]['emoji']} {CORREDORES[corredor_apostado]['nombre']}")
+            perdedores_txt.append(f"  {nombre} apostó a {CORREDORES[corredor_apostado]}")
 
-    resultado = [
-        f"🏆 *¡{ganador['emoji']} {ganador['nombre']} GANÓ LA CARRERA!* 💜\n"
-    ]
+    resultado = [f"🏆 *¡{emoji_ganador} GANÓ LA CARRERA!* 💜\n"]
     if ganadores_txt:
         resultado.append("*🎉 Ganadores:*")
         resultado.extend(ganadores_txt)
@@ -302,11 +281,10 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown"
     )
 
-    # Limpiar sesión
     del sesion_carrera[chat_id]
 
 # =====================================================================
-# /cancelar_carrera — El host cancela (devuelve apuestas)
+# /cancelar_carrera
 # =====================================================================
 
 async def cmd_cancelar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -321,6 +299,5 @@ async def cmd_cancelar_carrera(update: Update, context: ContextTypes.DEFAULT_TYP
         await update.message.reply_text("⚠️ La carrera ya está en curso, no se puede cancelar.")
         return
 
-    # Nadie perdió nada así que solo limpiamos
     del sesion_carrera[chat_id]
     await update.message.reply_text("❌ Carrera cancelada. No se descontó nada a nadie.")
