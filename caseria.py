@@ -45,7 +45,7 @@ def construir_texto_cartilla(cartilla: list, marcados: set) -> str:
     lineas = []
     fila = []
     for emoji in cartilla:
-        marca = " ☐ " if emoji in marcados else " ☑ "
+        marca = " ✓ " if emoji in marcados else " ☐ "
         fila.append(f"{emoji}{marca}")
         if len(fila) == 3:
             lineas.append("  ".join(fila))
@@ -86,8 +86,8 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
         return
 
-    TAMANIO_TABLERO = 64
-    TAMANIO_CARTILLA = 8
+    TAMANIO_TABLERO = 48
+    TAMANIO_CARTILLA = 6
 
     sesion_caseria["fase_registro"] = False
     sesion_caseria["activa"] = True
