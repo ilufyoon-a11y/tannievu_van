@@ -27,17 +27,14 @@ POOL_EMOJIS_CASERIA = [
 
 # ================= HELPERS =================
 
-def construir_teclado_tablero(tablero: list, marcados_global: set) -> InlineKeyboardMarkup:
+def construir_teclado_tablero(tablero: list) -> InlineKeyboardMarkup:
     botones = []
-    for fila in range(8):
+    for fila in range(6):
         row = []
         for col in range(8):
-            idx = fila * 6 + col
+            idx = fila * 8 + col
             emoji = tablero[idx]
-            if emoji in marcados_global:
-                row.append(InlineKeyboardButton("✅", callback_data=f"caseria_tablero_ya_{idx}"))
-            else:
-                row.append(InlineKeyboardButton(emoji, callback_data=f"caseria_tablero_{idx}"))
+            row.append(InlineKeyboardButton(emoji, callback_data=f"caseria_tablero_{idx}"))
         botones.append(row)
     return InlineKeyboardMarkup(botones)
 
@@ -104,9 +101,7 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     cartillas_asignadas = []
     for i in range(n):
-        inicio = (i * TAMANIO_CARTILLA) % TAMANIO_TABLERO
-        elegidos = [todos_indices[(inicio + j) % TAMANIO_TABLERO] for j in range(TAMANIO_CARTILLA)]
-        random.shuffle(elegidos)
+        elegidos = random.sample(todos_indices, TAMANIO_CARTILLA)
         cartillas_asignadas.append(elegidos)
 
     for i, uid in enumerate(uid_list):
@@ -119,10 +114,10 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
         }
 
     marcados_global = set()
-    markup = construir_teclado_tablero(tablero, marcados_global)
+    markup = construir_teclado_tablero(tablero)
     msg = await context.bot.send_message(
         chat_id=chat_id,
-        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los 8 emojis de tu cartilla y ¡presiónalos! El primero en completarla gana. 🏆",
+        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los 6 emojis de tu cartilla y ¡presiónalos! El primero en completarla gana. 🏆",
         reply_markup=markup
     )
     sesion_caseria["tablero_msg_id"] = msg.message_id
@@ -185,7 +180,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             return
 
         marcados.add(emoji_pulsado)
-        await query.answer(f"✅ ¡Marcaste {emoji_pulsado}! ({len(marcados)}/8)", show_alert=False)
+        await query.answer(f"✅ ¡Marcaste {emoji_pulsado}! ({len(marcados)}/6)", show_alert=False)
 
         texto_cartilla = construir_texto_cartilla(cartilla, marcados)
         msg_cartilla_id = datos_jugador.get("cartilla_msg_id")
@@ -202,18 +197,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             except Exception:
                 pass
 
-        marcados_global = set()
-        for d in sesion_caseria["jugadores"].values():
-            if isinstance(d, dict) and "marcados" in d:
-                marcados_global |= d["marcados"]
-        try:
-            await query.edit_message_reply_markup(
-                reply_markup=construir_teclado_tablero(tablero, marcados_global)
-            )
-        except Exception:
-            pass
-
-        if len(marcados) == 8:
+        if len(marcados) == 6:
             sesion_caseria["activa"] = False
             gc = sesion_caseria["chat_id"]
             premio_cas = sesion_puntos.get("premio_actual", {}).get("caseria", 0)
