@@ -45,9 +45,9 @@ def construir_texto_cartilla(cartilla: list, marcados: set) -> str:
     lineas = []
     fila = []
     for emoji in cartilla:
-        marca = "✅" if emoji in marcados else "⬜"
+        marca = "☐" if emoji in marcados else "✔"
         fila.append(f"{emoji}{marca}")
-        if len(fila) == 3:
+        if len(fila) == 2:
             lineas.append("  ".join(fila))
             fila = []
     if fila:
