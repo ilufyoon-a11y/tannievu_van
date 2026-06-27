@@ -9,19 +9,19 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 # =====================================================================
 
 CORREDORES = {
-    "rm":       "🦋",
-    "jin":      "🐹",
-    "suga":     "🐱",
-    "jhope":    "🌻",
-    "jimin":    "🐥",
-    "v":        "🐻",
-    "jungkook": "🐰",
+    "rm":       "🐨",
+    "jin":      "🦙",
+    "suga":     "🍪",
+    "jhope":    "🐿️",
+    "jimin":    "🐕",
+    "v":        "🛸",
+    "jungkook": "🐇",
 }
 
 # Mapa emoji -> key para parsear /apostar_carrera con emoji
 EMOJI_A_KEY = {v: k for k, v in CORREDORES.items()}
 
-PISTA_LARGO = 20
+PISTA_LARGO = 15
 
 # =====================================================================
 # SESION
@@ -47,8 +47,8 @@ def build_pista(posiciones: dict) -> str:
     lineas = ["🏁 *CARRERA BTS* 💜\n"]
     for key, emoji in CORREDORES.items():
         pos = posiciones.get(key, 0)
-        avance = "￣＿￣＿" * pos
-        resto = "￣＿￣＿" * (PISTA_LARGO - pos)
+        avance = "▬▬" * pos
+        resto =  "═══" * (PISTA_LARGO - pos)
         lineas.append(f"{emoji} `{avance}{resto}` 🏁")
     return "\n".join(lineas)
 
@@ -69,7 +69,7 @@ def sala_apuestas_txt(chat_id: int) -> str:
     lineas.append("\n📝 *¿Cómo apostar?*")
     lineas.append("`/apostar_carrera <emoji> <cantidad>`")
     lineas.append("Ej: `/apostar_carrera 🐰 50`\n")
-    lineas.append("*Corredores:* 🦋 · 🐹 · 🐱 · 🌻 · 🐥 · 🐻 · 🐰")
+    lineas.append("*Corredores:* 🐨 · 🦙 · 🍪 · 🐿️ · 🐕 · 🛸 · 🐇")
     lineas.append("\n⏳ Esperando jugadores... El host arranca con `/start_carrera`")
     return "\n".join(lineas)
 
