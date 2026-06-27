@@ -128,7 +128,6 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Recuerda poner el premio al iniciar cada juego:\n\n"
         "`.start_zombie 5 15` → 5 sobrevivientes / 15 zombie\n"
         "`.start_caseria 10` → 10 al ganador\n"
-        "`.start_cipher 8` → 8 al ganador\n"
         "`.start_box 6` → 6 al ganador\n"
         "`.start_pirata 5` → 5 a los sobrevivientes",
         parse_mode="Markdown"
@@ -140,8 +139,8 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     uid = update.effective_user.id
     datos = sesion_puntos["jugadores"].get(uid)
-    if not datos or not datos["detalle"]:
-        await update.message.reply_text("👛 Aún no tienes movimientos en esta sesión. ¡A jugar!")
+    if not datos or datos["robux"] == 0:
+        await update.message.reply_text("👛 Aún no tienes Robux acumulados en esta sesión. ¡A jugar!")
         return
     detalle = "\n".join(datos["detalle"])
     await update.message.reply_text(
@@ -183,19 +182,12 @@ async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🗑️ Sesión reseteada. Los datos han sido borrados.")
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from cipher import sesion_cipher
     from zombie import sesion_zombie
     from caseria import sesion_caseria
     from box import sesion_box
     from charada import sesion_charada
     from pirata import sesion_pirata
-    from mayoromenor import sesion_mom
-    from carrera import sesion_carrera
 
-    chat_id = update.effective_chat.id
-
-    sesion_cipher["activa"] = False
-    sesion_cipher["jugadores"] = []
     sesion_zombie["activa"] = False
     sesion_zombie["jugadores"] = []
     sesion_zombie["zombies"] = []
@@ -203,6 +195,7 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_zombie["fase"] = None
     sesion_caseria["activa"] = False
     sesion_caseria["jugadores"] = {}
+    chat_id = update.effective_chat.id
     if chat_id in sesion_box:
         sesion_box[chat_id]["activa"] = False
         sesion_box[chat_id]["jugadores"] = []
@@ -211,10 +204,6 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_charada["jugadores"] = []
     sesion_pirata["activa"] = False
     sesion_pirata["jugadores"] = []
-    if chat_id in sesion_mom:
-        del sesion_mom[chat_id]
-    if chat_id in sesion_carrera:
-        del sesion_carrera[chat_id]
 
     await update.message.reply_photo(
         photo=GIF_OFFVAN,
