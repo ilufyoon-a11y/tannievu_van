@@ -132,9 +132,11 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
     user_name = update.effective_user.first_name
 
     if not sesion_song["fase_registro"]:
+        await query.answer("¡El registro ya cerró!", show_alert=True)
         return
 
     if user_name in sesion_song["lista_nombres"]:
+        await query.answer("¡Ya estás dentro!", show_alert=True)
         return
 
     sesion_song["lista_nombres"].append(user_name)
@@ -142,14 +144,21 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
 
     lista_j = "\n".join([f"  {i+1}. {j}" for i, j in enumerate(sesion_song["lista_nombres"])])
     
-    await query.message.edit_text(
-        text=f"🎧 ─── **𝖦𝖴𝖤𝖲𝖲 𝖳𝖧𝖤 𝖲𝖮𝖭𝖦** ─── 🎧\n\n"
-             f"៹ ࣪ ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝖢𝖺𝗇𝖼𝗂𝗈́𝗇! 𝖯𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝖺𝖻𝖺𝗃𝗈 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗌𝖺𝗅𝖺. ֪ 𓂃\n\n"
-             f"👥 **𝖩𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌 𝖾𝗇 𝗅𝖺 𝗌𝖺𝗅𝖺:**\n{lista_j}\n\n"
-             f"🔥 ¡𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾́𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝖾𝗅 𝖼𝗋𝖾𝖺𝖽𝗈𝗋 𝗎𝗌𝖾 `/start_adivina`!",
-        reply_markup=query.message.reply_markup,
-        parse_mode="Markdown"
-    )
+    try:
+        await query.message.edit_text(
+            text=f"🎧 ─── **𝖦𝖴𝖤𝖲𝖲 𝖳𝖧𝖤 𝖲𝖮𝖭𝖦** ─── 🎧\n\n"
+                 f"៹ ࣪ ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝖢𝖺𝗇𝖼𝗂𝗈́𝗇! 𝖯𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝖺𝖻𝖺𝗃𝗈 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗌𝖺𝗅𝖺. ֪ 𓂃\n\n"
+                 f"👥 **𝖩𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌 𝖾𝗇 𝗅𝖺 𝗌𝖺𝗅𝖺:**\n{lista_j}\n\n"
+                 f"🔥 ¡𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾́𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝖾𝗅 𝖼𝗋𝖾𝖺𝖽𝗈𝗋 𝗎𝗌𝖾 `/start_adivina`!",
+            reply_markup=query.message.reply_markup,
+            parse_mode="Markdown"
+        )
+    except Exception as e:
+        print(f"❌ Error en manejar_boton_unirse: {e}")
+        await context.bot.send_message(
+            chat_id=query.message.chat.id,
+            text=f"✅ {user_name} se unió a Adivina la Canción 🎧"
+        )
 
 async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Valida los requisitos mínimos y arranca la primera ronda"""
