@@ -20,12 +20,6 @@ from utils import (
 )
 
 # ── Juegos ──────────────────────────────────────────────────────────
-from cipher import (
-    unirse_cipher, iniciar_cipher,
-    manejar_botones_cipher,
-    sesion_cipher, esperando_code,
-    dibujar_pantalla_code, sumar_robux,
-)
 from zombie import (
     unirse_zombie, iniciar_zombie,
     manejar_botones_zombie,
@@ -102,11 +96,9 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=GIF_INFO,
         caption=("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
-                 "𝒊. 𝐂𝐢𝐩𝐡𝐞𝐫\n\n"
-                 "𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝖾𝗅 𝖼𝗈́𝖽𝗂𝗀𝗈 𝗌𝖾𝖼𝗋𝖾𝗍𝗈 𝗇𝗎́𝗆𝖾𝗋𝗈 𝖺 𝗇𝗎́𝗆𝖾𝗋𝗈.\n\n"
-                 "𝒊𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞\n\n"
+                 "𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞\n\n"
                  "𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈́𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾. ¿𝖯𝗈𝖽𝗋𝖺́𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?\n\n"
-                 "𝒊𝒊𝒊. 𝐂𝐚𝐬𝐞𝐫í𝐚\n\n"
+                 "𝒊𝒊. 𝐂𝐚𝐬𝐞𝐫í𝐚\n\n"
                  "𝖤𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗈𝗌 𝖾𝗆𝗈𝗃𝗂𝗌 𝗈𝖼𝗎𝗅𝗍𝗈𝗌 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈.\n\n"
                  "𝒊𝒗. 𝐁𝐨𝐱\n\n"
                  "𝖬𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝗓𝖼𝖺𝗇.\n\n"
@@ -122,8 +114,7 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=GIF_COMANDOS,
         caption=("🎡  𖹭𖹭 ㅤ𝗖𝗼𝗺𝗮𝗻𝗱𝗼𝘀 𝗱𝗶𝘀𝗽𝗼𝗻𝗶𝗯𝗹𝗲𝘀  ꒱꒱\n\n"
-                 "𝒊. 𝐂𝐢𝐩𝐡𝐞𝐫  →  /cipher  /start_cipher\n\n"
-                 "𝒊𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞  →  /zombie  /start_zombie\n\n"
+                 "𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞  →  /zombie  /start_zombie\n\n"
                  "𝒊𝒊𝒊. 𝐂𝐚𝐬𝐞𝐫í𝐚  →  /caseria  /start_caseria\n\n"
                  "𝒊𝒗. 𝐁𝐨𝐱  →  /box  /start_box\n\n"
                  "𝒗. 𝐂𝐡𝐚𝐫𝐚𝐝𝐚  →  /charada  /start_charada\n\n"
@@ -133,7 +124,6 @@ async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  "𝖯𝗋𝖾𝗆𝗂𝗈𝗌 𝖺𝗅 𝗂𝗇𝗂𝖼𝗂𝖺𝗋:\n"
                  "`.start_zombie 5 15` → 5 vivos / 15 zombie\n"
                  "`.start_caseria 10` → 10 al ganador\n"
-                 "`.start_cipher 8` → 8 al ganador\n"
                  "`.start_box 6` → 6 al ganador\n"
                  "`.start_pirata 5` → 5 a los sobrevivientes\n"
                  "`.start_charada 10` → 10 al equipo ganador\n"
@@ -157,19 +147,6 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not texto and update.message.dice:
         texto = update.message.dice.emoji
 
-    # ── PRIVADO: moderador cipher envía código ──
-    if chat_type == "private" and user_id in esperando_code:
-        from cipher import sesion_cipher
-        gid = esperando_code[user_id]
-        sesion_cipher.update({"codigo": texto, "numeros_adivinadas": []})
-        del esperando_code[user_id]
-        await update.message.reply_text("¡𝖢𝗈́𝖽𝗂𝗀𝗈 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝗈! El juego comienza.")
-        pantalla_inicial = dibujar_pantalla_code(texto, "")
-        await context.bot.send_message(chat_id=gid,
-            text=f"📝 **¡CIPHER INICIADO!**\n\nAdivina el código.\n\n`{pantalla_inicial}`",
-            parse_mode="Markdown")
-        return
-
     # ── PRIVADO: encubridor box envía emojis ──
     if chat_type == "private" and user_id in esperando_elementos:
         await manejar_mensajes_box(update, context)
@@ -179,23 +156,6 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chat_type == "private":
         await escuchar_charada_privado(update, context, user_id, texto)
         await escuchar_anagrama_privado(update, context, user_id, texto)
-        return
-
-    # ── CIPHER: adivinar código en el grupo ──
-    if sesion_cipher.get("activa") and texto.isdigit():
-        codigo = sesion_cipher.get("codigo", "")
-        if len(texto) != len(codigo):
-            await update.message.reply_text(f"⚠️ El código debe tener exactamente {len(codigo)} dígitos.")
-            return
-        pantalla = dibujar_pantalla_code(codigo, texto)
-        await update.message.reply_text(f"🧐 Intento de {user_name}:\n\n`{pantalla}`", parse_mode="Markdown")
-        if "_" not in pantalla:
-            sesion_cipher["activa"] = False
-            premio_c = sesion_puntos.get("premio_actual", {}).get("cipher", 0)
-            sumar_robux(user_id, user_name, premio_c, "Cipher 👨‍💻")
-            extra_c = f" (+{premio_c} Robux 🟥)" if premio_c else ""
-            await update.message.reply_text(f"🎉 **¡{user_name} DESCIFRÓ EL CÓDIGO!** 🎉\n\nEl código era: {codigo}{extra_c}",
-                parse_mode="Markdown")
         return
 
     # ── BOX: adivinar emojis en el grupo ──
@@ -215,9 +175,7 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
     query = update.callback_query
     data = query.data if query else ""
 
-    if data == "unirme_cipher_click":
-        await manejar_botones_cipher(update, context)
-    elif data in ("unirme_zombie_click",) or data.startswith("morder:") or data.startswith("voto_z:"):
+    if data in ("unirme_zombie_click",) or data.startswith("morder:") or data.startswith("voto_z:"):
         await manejar_botones_zombie(update, context)
     elif data == "unirme_caseria_click" or data.startswith("caseria_tablero_"):
         await manejar_botones_caseria(update, context)
@@ -262,10 +220,6 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("info",    info,             filters=PREFIX))
     application.add_handler(CommandHandler("cmds",    comandos,         filters=PREFIX))
     application.add_handler(CommandHandler("off_van", detener_juegos,   filters=PREFIX))
-
-    # Cipher
-    application.add_handler(CommandHandler("cipher",       unirse_cipher,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_cipher", iniciar_cipher, filters=PREFIX))
 
     # Zombie
     application.add_handler(CommandHandler("zombie",       unirse_zombie,  filters=PREFIX))
