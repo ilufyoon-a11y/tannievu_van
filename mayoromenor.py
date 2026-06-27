@@ -1,5 +1,5 @@
 import random
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
@@ -29,8 +29,8 @@ DECK = [
 # chat_id -> {
 #   "activa": bool,
 #   "carta_actual": { valor, nombre, sticker },
-#   "msg_id": int,       # mensaje de sala (texto con apuestas)
-#   "sticker_msg_id": int,  # mensaje del sticker de la carta actual
+#   "sticker_msg_id": int,
+#   "sala_msg_id": int,
 #   "apuestas": { user_id: { "nombre", "eleccion", "cantidad" } }
 # }
 sesion_mom = {}
@@ -52,15 +52,14 @@ def texto_sala(chat_id: int) -> str:
     carta = estado["carta_actual"]
     apuestas = estado["apuestas"]
     lineas = [
-        f"💜 *MAYOR O MENOR* — Carta actual: *{carta['nombre']}*\n",
-        "Elige con los botones y luego escribe `/apostar_mom <cantidad>`\n",
+        f"💜 *MAYOR O MENOR* — Carta: *{carta['nombre']}*\n",
+        "Apuesta con: `/beat mayor <cantidad>` o `/beat menor <cantidad>`\n",
     ]
     if apuestas:
         lineas.append("*Jugadores:*")
         for d in apuestas.values():
             flecha = "⬆️" if d["eleccion"] == "mayor" else "⬇️"
-            cantidad_txt = f"{d['cantidad']} Robux 🟥" if d["cantidad"] > 0 else "_(falta apuesta)_"
-            lineas.append(f"{flecha} {d['nombre']} — {cantidad_txt}")
+            lineas.append(f"{flecha} {d['nombre']} — {d['cantidad']} Robux 🟥")
     else:
         lineas.append("_Nadie ha apostado aún..._")
     lineas.append("\n⏳ El host revela con `/out_card`")
@@ -85,77 +84,25 @@ async def cmd_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_mom[chat_id] = {
         "activa": True,
         "carta_actual": carta,
-        "msg_id": None,
         "sticker_msg_id": None,
+        "sala_msg_id": None,
         "apuestas": {},
     }
 
-    # Mandar sticker de la carta
     sticker_msg = await update.message.reply_sticker(sticker=carta["sticker"])
     sesion_mom[chat_id]["sticker_msg_id"] = sticker_msg.message_id
 
-    botones = [[
-        InlineKeyboardButton("⬆️ MAYOR", callback_data=f"mom_mayor_{chat_id}"),
-        InlineKeyboardButton("⬇️ MENOR", callback_data=f"mom_menor_{chat_id}"),
-    ]]
-
     msg = await update.message.reply_text(
         texto_sala(chat_id),
-        reply_markup=InlineKeyboardMarkup(botones),
         parse_mode="Markdown"
     )
-    sesion_mom[chat_id]["msg_id"] = msg.message_id
+    sesion_mom[chat_id]["sala_msg_id"] = msg.message_id
 
 # =====================================================================
-# BOTONES — elegir mayor o menor
+# /beat <mayor|menor> <cantidad>
 # =====================================================================
 
-async def manejar_botones_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    user = query.from_user
-    data = query.data
-
-    partes = data.split("_")
-    eleccion = partes[1]
-    chat_id = int(partes[2])
-
-    estado = sesion_mom.get(chat_id)
-    if not estado or not estado["activa"]:
-        await query.answer("Esta ronda ya terminó.", show_alert=True)
-        return
-
-    user_id = user.id
-
-    if user_id in estado["apuestas"]:
-        estado["apuestas"][user_id]["eleccion"] = eleccion
-        await query.answer(f"Cambiaste a {'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'}", show_alert=False)
-    else:
-        estado["apuestas"][user_id] = {
-            "nombre": nombre_usuario(user),
-            "eleccion": eleccion,
-            "cantidad": 0,
-        }
-        await query.answer(f"{'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'} elegido! Ahora escribe /apostar_mom <cantidad>", show_alert=True)
-
-    try:
-        await context.bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=estado["msg_id"],
-            text=texto_sala(chat_id),
-            reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton("⬆️ MAYOR", callback_data=f"mom_mayor_{chat_id}"),
-                InlineKeyboardButton("⬇️ MENOR", callback_data=f"mom_menor_{chat_id}"),
-            ]]),
-            parse_mode="Markdown"
-        )
-    except Exception:
-        pass
-
-# =====================================================================
-# /apostar_mom <cantidad>
-# =====================================================================
-
-async def cmd_apostar_mom(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     chat_id = update.effective_chat.id
@@ -169,17 +116,21 @@ async def cmd_apostar_mom(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ No hay ninguna ronda abierta. El host debe usar /mayoromenor primero.")
         return
 
-    if user_id not in estado["apuestas"]:
-        await update.message.reply_text("⚠️ Primero elige ⬆️ MAYOR o ⬇️ MENOR con los botones.")
+    args = context.args or []
+    if len(args) < 2:
+        await update.message.reply_text(
+            "❌ Uso: `/beat mayor <cantidad>` o `/beat menor <cantidad>`",
+            parse_mode="Markdown"
+        )
         return
 
-    args = context.args or []
-    if not args:
-        await update.message.reply_text("❌ Uso: `/apostar_mom <cantidad>`", parse_mode="Markdown")
+    eleccion = args[0].lower()
+    if eleccion not in ("mayor", "menor"):
+        await update.message.reply_text("❌ Debes escribir `mayor` o `menor`.", parse_mode="Markdown")
         return
 
     try:
-        cantidad = int(args[0])
+        cantidad = int(args[1])
     except ValueError:
         await update.message.reply_text("❌ La cantidad debe ser un número.")
         return
@@ -192,30 +143,38 @@ async def cmd_apostar_mom(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if saldo < cantidad:
         await update.message.reply_text(
             f"❌ No tienes suficientes Robux.\n"
-            f"Tu saldo: *{saldo} Robux 🟥*\n"
-            f"Apuesta: *{cantidad} Robux*",
+            f"Tu saldo: *{saldo} Robux 🟥*",
             parse_mode="Markdown"
         )
         return
 
-    estado["apuestas"][user_id]["cantidad"] = cantidad
-    eleccion = estado["apuestas"][user_id]["eleccion"]
-    flecha = "⬆️ MAYOR" if eleccion == "mayor" else "⬇️ MENOR"
+    if user_id in estado["apuestas"]:
+        # Actualizar apuesta existente
+        estado["apuestas"][user_id]["eleccion"] = eleccion
+        estado["apuestas"][user_id]["cantidad"] = cantidad
+        await update.message.reply_text(
+            f"🔄 *{nombre_usuario(user)}* actualizó su apuesta a "
+            f"{'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'} — *{cantidad} Robux 🟥*",
+            parse_mode="Markdown"
+        )
+    else:
+        estado["apuestas"][user_id] = {
+            "nombre": nombre_usuario(user),
+            "eleccion": eleccion,
+            "cantidad": cantidad,
+        }
+        await update.message.reply_text(
+            f"✅ *{nombre_usuario(user)}* apostó *{cantidad} Robux 🟥* a "
+            f"{'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'}",
+            parse_mode="Markdown"
+        )
 
-    await update.message.reply_text(
-        f"✅ *{nombre_usuario(user)}* apostó *{cantidad} Robux 🟥* a {flecha}",
-        parse_mode="Markdown"
-    )
-
+    # Actualizar mensaje de sala
     try:
         await context.bot.edit_message_text(
             chat_id=chat_id,
-            message_id=estado["msg_id"],
+            message_id=estado["sala_msg_id"],
             text=texto_sala(chat_id),
-            reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton("⬆️ MAYOR", callback_data=f"mom_mayor_{chat_id}"),
-                InlineKeyboardButton("⬇️ MENOR", callback_data=f"mom_menor_{chat_id}"),
-            ]]),
             parse_mode="Markdown"
         )
     except Exception:
@@ -241,7 +200,6 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     carta_anterior = estado["carta_actual"]
     carta_nueva = carta_aleatoria(excluir_valor=carta_anterior["valor"])
 
-    # Mandar sticker de la carta nueva
     await context.bot.send_sticker(chat_id=chat_id, sticker=carta_nueva["sticker"])
 
     ganadores = []
@@ -258,7 +216,7 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if gano:
             ganancia = cantidad * 2
             sumar_robux(user_id, nombre, ganancia, "Mayor o Menor 🃏 (+x2)")
-            ganadores.append(f"  {nombre} → +{ganancia} Robux 🟥")
+            ganadores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → +{ganancia} Robux 🟥")
         else:
             if user_id in sesion_puntos["jugadores"]:
                 sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
@@ -284,11 +242,10 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown"
     )
 
-    # Quitar botones del mensaje de sala
     try:
         await context.bot.edit_message_reply_markup(
             chat_id=chat_id,
-            message_id=estado["msg_id"],
+            message_id=estado["sala_msg_id"],
             reply_markup=None
         )
     except Exception:
