@@ -50,8 +50,8 @@ from guessong import (
     verificar_respuesta_musica, manejar_boton_unirse,
 )
 from mayoromenor import (
-    cmd_mayoromenor, cmd_apostar_mom, cmd_out_card,
-    manejar_botones_mayoromenor,
+    cmd_mayoromenor, cmd_beat, cmd_out_card,
+    sesion_mom,
 )
 from carrera import (
     cmd_carrera, cmd_apostar_carrera,
@@ -189,8 +189,6 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
         await manejar_boton_unirse(update, context)
     elif data.startswith("mu_"):
         await verificar_respuesta_musica(update, context)
-    elif data.startswith("mom_"):
-        await manejar_botones_mayoromenor(update, context)
     elif data == "unirme_anagrama_click":
         await manejar_botones_anagrama(update, context)
 
@@ -247,7 +245,7 @@ if __name__ == '__main__':
 
     # Mayor o Menor 🃏
     application.add_handler(CommandHandler("mayoromenor", cmd_mayoromenor, filters=PREFIX))
-    application.add_handler(CommandHandler("apostar_mom", cmd_apostar_mom, filters=PREFIX))
+    application.add_handler(CommandHandler("beat",        cmd_beat,        filters=PREFIX))
     application.add_handler(CommandHandler("out_card",    cmd_out_card,    filters=PREFIX))
 
     # Slots 🎰
