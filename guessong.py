@@ -12,8 +12,9 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario
 lovers = ["BTS", "RM", "Agust D", "j-hope", "Jimin", "V", "Jung Kook", "Jin"]
 
 sesion_song = {
-    "jugadores": {},       # Estructura: { "Nombre": puntos }
-    "lista_nombres": [],   # Para verificar quiénes entraron a la sala
+    "jugadores": {},
+    "ids": {},             # nombre -> user_id
+    "lista_nombres": [],
     "ronda": 1,
     "correcta": "",
     "fase_registro": False,
@@ -107,6 +108,7 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
 async def unirse_adivina(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Abre la sala de reclutamiento con un diseño de texto estético sin imágenes"""
     sesion_song["jugadores"] = {}
+    sesion_song["ids"] = {}
     sesion_song["lista_nombres"] = []
     sesion_song["ronda"] = 1
     sesion_song["activa"] = False
@@ -141,6 +143,7 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
 
     sesion_song["lista_nombres"].append(user_name)
     sesion_song["jugadores"][user_name] = 0
+    sesion_song["ids"][user_name] = update.effective_user.id
 
     lista_j = "\n".join([f"  {i+1}. {j}" for i, j in enumerate(sesion_song["lista_nombres"])])
     
@@ -217,12 +220,6 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
     if cancion_elegida == cancion_correcta:
         await query.answer(f"🎉 ¡Acertaste, {user_name}!")
         sesion_song["jugadores"][user_name] += 1
-
-        # Guardar robux por ronda acertada
-        premio_ronda = sesion_puntos.get("premio_actual", {}).get("adivina", 0)
-        if premio_ronda > 0:
-            uid = user.id
-            sumar_robux(uid, user_name, premio_ronda, f"Adivina la canción 🎧 ronda {sesion_song['ronda']}")
         
         texto_resultado = f"🎉 **𝖯𝖴𝖭𝖳𝖮 𝖯𝖠𝖱加 {user_name.upper()}!** 🌸\n𝖠𝖼𝖾𝗋𝗍𝗈́: `{cancion_correcta.title()}`"
         await query.edit_message_caption(caption=texto_resultado, parse_mode="Markdown")
@@ -231,17 +228,24 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
             sesion_song["ronda"] += 1
             tablero_corto = "\n".join([f"• {jugador}: `{pts}` 𝗉𝗍𝗌" for jugador, pts in sesion_song["jugadores"].items()])
             msg_puntos = f"✨ **𝖳𝖺𝖻𝗅𝖾𝗋𝗈 𝖽𝖾  𝗉𝗈𝗌𝗂𝖿𝗂𝗈𝗇𝖾𝗌:**\n{tablero_corto}\n\n¡𝖲𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾 𝖼𝖺𝗇𝖼𝗂𝗈́𝗇! 👇"
-            
             await context.bot.send_message(chat_id=chat_id, text=msg_puntos, parse_mode="Markdown")
             await enviar_siguiente_ronda(chat_id, context)
         else:
-            texto_final = "🏁 **¡𝖥𝖨𝖭 𝖣𝖤𝖫 𝖩𝖴𝖤𝖦𝖮!** 🏁\n\n🏆 **𝖱𝖤𝖲𝖴𝖫𝖳index𝖠𝖣𝖮𝖲 𝖥𝖨𝖭𝖤𝖫𝖤𝖲:**\n"
             jugadores_ordenados = sorted(sesion_song["jugadores"].items(), key=lambda x: x[1], reverse=True)
-            
+            max_pts = jugadores_ordenados[0][1]
+            ganadores = [j for j, p in jugadores_ordenados if p == max_pts]
+
+            premio_ronda = sesion_puntos.get("premio_actual", {}).get("adivina", 0)
+            if premio_ronda > 0:
+                for nombre_g in ganadores:
+                    uid_g = sesion_song["ids"].get(nombre_g)
+                    if uid_g:
+                        sumar_robux(uid_g, nombre_g, premio_ronda, "Adivina la canción 🎧")
+
+            texto_final = "🏁 **¡𝖥𝖨𝖭 𝖣𝖤𝖫 𝖩𝖴𝖤𝖦𝖮!** 🏁\n\n🏆 **𝖱𝖤𝖲𝖴𝖫𝖳𝖠𝖣𝖮𝖲 𝖥𝖨𝖭𝖤𝖫𝖤𝖲:**\n"
             texto_final += f"🥇 **{jugadores_ordenados[0][0]}** 𝖼𝗈𝗇 `{jugadores_ordenados[0][1]}` 𝗉𝗎𝗇𝗍𝗈𝗌 ✨\n"
             for jugador, pts in jugadores_ordenados[1:]:
                 texto_final += f"• {jugador}: `{pts}` 𝗉𝗎𝗇𝗍𝗈𝗌\n"
-                
             texto_final += "\n¿𝖰𝗎𝗂𝖾𝗋𝖾𝗇 𝗋𝖾𝗏𝖺𝗇𝖼𝗁𝖺? 𝖠𝖻𝗋𝖺𝗇 𝗈𝗍𝗋𝖺 𝗌𝖺𝗅𝖺 𝗎𝗌𝖺𝗇𝖽𝗈 `/adivina` 👑🔥"
             await context.bot.send_message(chat_id=chat_id, text=texto_final, parse_mode="Markdown")
             sesion_song["activa"] = False
