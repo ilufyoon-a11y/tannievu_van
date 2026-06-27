@@ -32,7 +32,7 @@ def construir_teclado_tablero(tablero: list, marcados_global: set) -> InlineKeyb
     for fila in range(8):
         row = []
         for col in range(8):
-            idx = fila * 8 + col
+            idx = fila * 6 + col
             emoji = tablero[idx]
             if emoji in marcados_global:
                 row.append(InlineKeyboardButton("✅", callback_data=f"caseria_tablero_ya_{idx}"))
@@ -45,9 +45,9 @@ def construir_texto_cartilla(cartilla: list, marcados: set) -> str:
     lineas = []
     fila = []
     for emoji in cartilla:
-        marca = "☐" if emoji in marcados else "✔"
+        marca = " ☐ " if emoji in marcados else " ☑ "
         fila.append(f"{emoji}{marca}")
-        if len(fila) == 2:
+        if len(fila) == 3:
             lineas.append("  ".join(fila))
             fila = []
     if fila:
