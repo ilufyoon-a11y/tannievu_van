@@ -1,17 +1,18 @@
-# main.py — Punto de entrada del bot Van 🤖
+# =====================================================================
+# LIBRERIAS IMPORTADAS
+# =====================================================================
 
 import os
 import threading
 import asyncio
 
-from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import (
-    ApplicationBuilder, CommandHandler, MessageHandler,
-    CallbackQueryHandler, filters, ContextTypes,
-)
+from telegram.ext import (ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes)
 
-# ── Utilidades compartidas ──────────────────────────────────────────
+# =====================================================================
+# UTILIDADES COMPARTIDAS (Utils.py)
+# =====================================================================
+
 from utils import (
     GIF_BIENVENIDA, GIF_INFO, GIF_COMANDOS,
     sesion_puntos, nombre_usuario,
@@ -19,15 +20,21 @@ from utils import (
     detener_juegos,
 )
 
-# ── Juegos ──────────────────────────────────────────────────────────
-from zombie import (
-    unirse_zombie, iniciar_zombie,
-    manejar_botones_zombie,
+# =====================================================================
+# JUEGOS DISPONIBLES
+# =====================================================================
+
+# ── ANAGRAMA ─────────────────────────────────────────────────────
+
+from anagrama import (
+    cmd_anagrama, cmd_anagrama4, cmd_start_anagrama,
+    manejar_botones_anagrama,
+    escuchar_anagrama_privado, escuchar_anagrama_grupo,
+    sesion_anagrama,
 )
-from caseria import (
-    unirse_caseria, iniciar_caseria,
-    manejar_botones_caseria,
-)
+
+# ── BOX ──────────────────────────────────────────────────────────
+
 from box import (
     unirse_box, iniciar_box,
     manejar_botones_box,
@@ -35,45 +42,54 @@ from box import (
     sesion_box, esperando_elementos,
     extraer_emojis,
 )
+
+# ── CARRERA - CASINO  ─────────────────────────────────────────────
+
+from carrera import (
+    cmd_carrera, cmd_apostar_carrera,
+    cmd_start_carrera, cmd_cancelar_carrera,
+)
+
+# ── CASERIA  ──────────────────────────────────────────────────────
+
+from caseria import (
+    unirse_caseria, iniciar_caseria,
+    manejar_botones_caseria,
+)
+
+# ── CHARADA  ──────────────────────────────────────────────────────
+
 from charada import (
     unirse_charada, iniciar_charada,
     manejar_botones_charada,
     escuchar_charada_privado, escuchar_charada_grupo,
     sesion_charada,
 )
-from pirata import (
-    unirse_pirata, iniciar_pirata,
-    manejar_botones_pirata,
-)
+
+# ── GUESS  ─────────────────────────────────────────────────────────
+
 from guessong import (
     unirse_adivina, iniciar_adivina_juego,
     verificar_respuesta_musica, manejar_boton_unirse,
 )
-from mayoromenor import (
-    cmd_mayoromenor, cmd_beat, cmd_out_card,
-    sesion_mom,
+
+# ── PIRATA  ─────────────────────────────────────────────────────────  
+
+from pirata import (
+    unirse_pirata, iniciar_pirata,
+    manejar_botones_pirata,
 )
-from carrera import (
-    cmd_carrera, cmd_apostar_carrera,
-    cmd_start_carrera, cmd_cancelar_carrera,
-)
-from anagrama import (
-    cmd_anagrama, cmd_anagrama4, cmd_start_anagrama,
-    manejar_botones_anagrama,
-    escuchar_anagrama_privado, escuchar_anagrama_grupo,
-    sesion_anagrama,
-)
+
+# ── SLOTS  ───────────────────────────────────────────────────────────  
+
 from slots import cmd_slots, cmd_open_slots, cmd_spin, sesion_slots
 
-# =====================================================================
-# FLASK — mantiene el bot vivo en Render
-# =====================================================================
+# ── ZOMBIE  ──────────────────────────────────────────────────────────
 
-app_web = Flask('')
-
-@app_web.route('/')
-def home():
-    return "Van fue encendido"
+from zombie import (
+    unirse_zombie, iniciar_zombie,
+    manejar_botones_zombie,
+)
 
 # =====================================================================
 # COMANDOS GENERALES
@@ -142,20 +158,6 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="HTML"
     )
 
-async def manejar_paginas_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    if query.data == "info_noop":
-        return
-    pagina = int(query.data.split("_")[-1])
-    try:
-        await query.edit_message_caption(
-            caption=PAGINAS_INFO[pagina],
-            reply_markup=botones_pagina(pagina),
-            parse_mode="HTML"
-        )
-    except Exception:
-        pass
 
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
