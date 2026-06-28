@@ -151,7 +151,7 @@ PAGINAS_INFO = [
      "<blockquote>`/carrera`</blockquote>\n\n"
      "<b>𝒊𝒊𝒊. 𝐒𝐥𝐨𝐭𝐬</b>\n"
      "<b>¡𝖯𝗋𝗎𝖾𝖻𝖺 𝗍𝗎 𝗌𝗎𝖾𝗋𝗍𝖾 𝖾𝗇 𝗅𝖺 𝗆𝖺́𝗊𝗎𝗂𝗇𝖺 𝗍𝗋𝖺𝗀𝖺𝗆𝗈𝗇𝖾𝖽𝖺𝗌! 𝖧𝖺𝗓 𝗀𝗂𝗋𝖺𝗋 𝗅𝗈𝗌 𝗋𝗈𝖽𝗂𝗅𝗅𝗈𝗌 𝗒 𝖺𝗅𝗂𝗇𝖾𝖺 𝗅𝗈𝗌 𝗌ı́𝗆𝖻𝗈𝗅𝗈𝗌 𝗀𝖺𝗇𝖺𝖽𝗈𝗋𝖾𝗌. ¡𝖴𝗇𝖺 𝖼𝗈𝗆𝖻𝗂𝗇𝖺𝖼𝗂𝗈́𝗇 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝖺 𝗉𝗈𝖽𝗋ı́𝖺 𝗁𝖺𝖼𝖾𝗋𝗍𝖾 𝗀𝖺𝗇𝖺𝗋 𝖾𝗅 𝗀𝗋𝖺𝗇 𝗃𝖺𝖼𝗄𝗉𝗈𝗍!</b>\n"
-     "<blockquote>`/slots`</blockquote>\n\n"
+     "<blockquote>`/slots`</blockquote>\n\n")
 ]
 
 def botones_pagina(pagina: int) -> InlineKeyboardMarkup:
