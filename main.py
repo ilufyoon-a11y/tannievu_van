@@ -208,7 +208,7 @@ if __name__ == '__main__':
 
     token_bot = os.environ.get('TOKEN')
     if not token_bot:
-        raise ValueError("❌ ¡Error crítico! No se encontró la variable 'TOKEN' en el panel de Render.")
+        raise ValueError("❌ ¡Error crítico! No se encontró la variable 'TOKEN'.")
 
     print("🤖 Iniciando bot de Telegram con run_polling...")
     application = ApplicationBuilder().token(token_bot).build()
