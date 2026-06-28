@@ -2,8 +2,35 @@
 
 import json
 import os
+import psycopg2
 from telegram import Update
 from telegram.ext import ContextTypes
+
+# =====================================================================
+# SUPABASE / POSTGRESQL
+# =====================================================================
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def _get_conn():
+    return psycopg2.connect(DATABASE_URL)
+
+def _init_db():
+    """Crea la tabla si no existe."""
+    try:
+        conn = _get_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS sesion (
+                id TEXT PRIMARY KEY,
+                datos JSONB NOT NULL
+            )
+        """)
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"⚠️ Error iniciando DB: {e}")
 
 # !!  VARIABLES DE IMÁGENES  ───  ♥︎
 
@@ -30,7 +57,6 @@ GIF_MAYOROMENOR = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 # !!  SISTEMA DE ROBUX 💰  ───  ♥︎
 
 ADMIN_IDS = set()
-SESION_FILE = "sesion_puntos.json"
 
 def _sesion_default():
     return {
@@ -41,23 +67,36 @@ def _sesion_default():
     }
 
 def _cargar_sesion():
-    """Carga la sesión desde el archivo JSON si existe."""
-    if os.path.exists(SESION_FILE):
-        try:
-            with open(SESION_FILE, "r", encoding="utf-8") as f:
-                datos = json.load(f)
-                # Las keys de jugadores vienen como string en JSON, las convertimos a int
-                datos["jugadores"] = {int(k): v for k, v in datos.get("jugadores", {}).items()}
-                return datos
-        except Exception:
-            pass
+    """Carga la sesión desde Supabase."""
+    try:
+        _init_db()
+        conn = _get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT datos FROM sesion WHERE id = 'principal'")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            datos = row[0]
+            datos["jugadores"] = {int(k): v for k, v in datos.get("jugadores", {}).items()}
+            return datos
+    except Exception as e:
+        print(f"⚠️ Error cargando sesión: {e}")
     return _sesion_default()
 
 def _guardar_sesion():
-    """Guarda la sesión actual en el archivo JSON."""
+    """Guarda la sesión en Supabase."""
     try:
-        with open(SESION_FILE, "w", encoding="utf-8") as f:
-            json.dump(sesion_puntos, f, ensure_ascii=False, indent=2)
+        conn = _get_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO sesion (id, datos)
+            VALUES ('principal', %s::jsonb)
+            ON CONFLICT (id) DO UPDATE SET datos = EXCLUDED.datos
+        """, (json.dumps(sesion_puntos, ensure_ascii=False),))
+        conn.commit()
+        cur.close()
+        conn.close()
     except Exception as e:
         print(f"⚠️ Error guardando sesión: {e}")
 
@@ -128,6 +167,7 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Recuerda poner el premio al iniciar cada juego:\n\n"
         "`.start_zombie 5 15` → 5 sobrevivientes / 15 zombie\n"
         "`.start_caseria 10` → 10 al ganador\n"
+        "`.start_cipher 8` → 8 al ganador\n"
         "`.start_box 6` → 6 al ganador\n"
         "`.start_pirata 5` → 5 a los sobrevivientes",
         parse_mode="Markdown"
@@ -182,12 +222,15 @@ async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🗑️ Sesión reseteada. Los datos han sido borrados.")
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from cipher import sesion_cipher
     from zombie import sesion_zombie
     from caseria import sesion_caseria
     from box import sesion_box
     from charada import sesion_charada
     from pirata import sesion_pirata
 
+    sesion_cipher["activa"] = False
+    sesion_cipher["jugadores"] = []
     sesion_zombie["activa"] = False
     sesion_zombie["jugadores"] = []
     sesion_zombie["zombies"] = []
