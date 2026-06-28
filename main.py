@@ -5,7 +5,7 @@ import threading
 import asyncio
 
 from flask import Flask
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, filters, ContextTypes,
@@ -63,7 +63,7 @@ from anagrama import (
     escuchar_anagrama_privado, escuchar_anagrama_grupo,
     sesion_anagrama,
 )
-from slots import cmd_slots
+from slots import cmd_slots, cmd_open_slots, cmd_spin, sesion_slots
 
 # =====================================================================
 # FLASK — mantiene el bot vivo en Render
@@ -92,72 +92,23 @@ async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     )
 
-PAGINAS_INFO = [
-    # Página 1
-    ("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
-     "𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞\n\n"
-     "𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈́𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾. ¿𝖯𝗈𝖽𝗋𝖺́𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?\n\n"
-     "𝒊𝒊. 𝐂𝐚𝐬𝐞𝐫í𝐚\n\n"
-     "𝖤𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗈𝗌 𝖾𝗆𝗈𝗃𝗂𝗌 𝗈𝖼𝗎𝗅𝗍𝗈𝗌 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈.\n\n"
-     "𝒊𝒊𝒊. 𝐁𝐨𝐱\n\n"
-     "𝖬𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝗓𝖼𝖺𝗇."),
-    # Página 2
-    ("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
-     "𝒊𝒗. 𝐂𝐡𝐚𝐫𝐚𝐝𝐚\n\n"
-     "𝖣𝗈𝗌 𝖾𝗊𝗎𝗂𝗉𝗈𝗌 𝗌𝖾 𝖾𝗇𝖿𝗋𝖾𝗇𝗍𝖺𝗇 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗇𝖽𝗈 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝖼𝗈𝗇 𝗆𝗂́𝗆𝗂𝖼𝖺𝗌 𝗒 𝖾𝗆𝗈𝗃𝗂𝗌.\n\n"
-     "𝒗. 𝐏𝐢𝐫𝐚𝐭𝐚\n\n"
-     "𝖢𝗅𝖺𝗏𝖺 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝖾𝗇 𝗅𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺, ¡𝗉𝖾𝗋𝗈 𝖼𝗎𝗂𝖽𝖺𝖽𝗈 𝖼𝗈𝗇 𝗅𝖺 𝗍𝗋𝖺𝗆𝗉𝖺!\n\n"
-     "𝒗𝒊. 𝐀𝐝𝐢𝐯𝐢𝐧𝐚 𝐥𝐚 𝐜𝐚𝐧𝐜𝐢ó𝐧\n\n"
-     "𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝖼𝖺𝗇𝖼𝗂𝗈́𝗇 𝖽𝖾 𝖪-𝖯𝗈𝗉 𝖾𝗇 𝗌𝗈𝗅𝗈 𝟦 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌. 🎧"),
-    # Página 3
-    ("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
-     "𝒗𝒊𝒊. 𝐌𝐚𝐲𝐨𝐫 𝐨 𝐌𝐞𝐧𝐨𝐫\n\n"
-     "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝗌𝗂 𝗅𝖺 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾 𝖼𝖺𝗋𝗍𝖺 𝗌𝖾𝗋𝖺́ 𝗆𝖺𝗒𝗈𝗋 𝗈 𝗆𝖾𝗇𝗈𝗋. 🃏\n\n"
-     "𝒗𝒊𝒊𝒊. 𝐂𝐚𝐫𝐫𝐞𝐫𝐚𝐬\n\n"
-     "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 𝗍𝗎 𝖼𝗈𝗋𝗋𝖾𝖽𝗈𝗋 𝖡𝖳𝖲 𝖿𝖺𝗏𝗈𝗋𝗂𝗍𝗈 𝗒 𝗀𝖺𝗇𝖺 𝗑𝟤. 🏇\n\n"
-     "𝒊𝒙. 𝐒𝐥𝐨𝐭𝐬\n\n"
-     "𝖦𝗂𝗋𝖺 𝗅𝖺𝗌 𝗋𝗎𝗅𝖾𝗍𝖺𝗌 𝗒 𝗉𝗋𝖾𝗌𝗎𝗆𝖾 𝗍𝗎 𝗌𝗎𝖾𝗋𝗍𝖾. 🎰"),
-    # Página 4
-    ("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
-     "𝒙. 𝐀𝐧𝐚𝐠𝐫𝐚𝐦𝐚\n\n"
-     "𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝖾𝗇𝗍𝗋𝖾𝗏𝖾𝗋𝖺𝖽𝖺 𝖺𝗇𝗍𝖾𝗌 𝗊𝗎𝖾 𝗅𝗈𝗌 𝖽𝖾𝗆𝖺́𝗌. 🔀\n\n"
-     "𝒙𝒊. 𝐀𝐧𝐚𝐠𝐫𝐚𝐦𝐚 𝟒 𝐫𝐨𝐧𝐝𝐚𝐬\n\n"
-     "𝖨𝗀𝗎𝖺𝗅 𝗊𝗎𝖾 𝖠𝗇𝖺𝗀𝗋𝖺𝗆𝖺 𝗉𝖾𝗋𝗈 𝖾𝗇 𝟦 𝗋𝗈𝗇𝖽𝖺𝗌, 𝗀𝖺𝗇𝖺 𝗊𝗎𝗂𝖾𝗇 𝗆𝖺́𝗌 𝗉𝗎𝗇𝗍𝗈𝗌 𝗁𝖺𝗀𝖺. 🔀"),
-]
-
-def botones_pagina(pagina: int) -> InlineKeyboardMarkup:
-    total = len(PAGINAS_INFO)
-    botones = []
-    fila = []
-    if pagina > 0:
-        fila.append(InlineKeyboardButton("⬅️", callback_data=f"info_pag_{pagina - 1}"))
-    if pagina < total - 1:
-        fila.append(InlineKeyboardButton("➡️", callback_data=f"info_pag_{pagina + 1}"))
-    if fila:
-        botones.append(fila)
-    botones.append([InlineKeyboardButton(f"📄 {pagina + 1}/{total}", callback_data="info_noop")])
-    return InlineKeyboardMarkup(botones)
-
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=GIF_INFO,
-        caption=PAGINAS_INFO[0],
-        reply_markup=botones_pagina(0)
+        caption=("🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦     ꒱꒱\n\n"
+                 "𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞\n\n"
+                 "𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈́𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾. ¿𝖯𝗈𝖽𝗋𝖺́𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?\n\n"
+                 "𝒊𝒊. 𝐂𝐚𝐬𝐞𝐫í𝐚\n\n"
+                 "𝖤𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗈𝗌 𝖾𝗆𝗈𝗃𝗂𝗌 𝗈𝖼𝗎𝗅𝗍𝗈𝗌 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈.\n\n"
+                 "𝒊𝒗. 𝐁𝐨𝐱\n\n"
+                 "𝖬𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝗓𝖼𝖺𝗇.\n\n"
+                 "𝒗. 𝐂𝐡𝐚𝐫𝐚𝐝𝐚\n\n"
+                 "𝖣𝗈𝗌 𝖾𝗊𝗎𝗂𝗉𝗈𝗌 𝗌𝖾 𝖾𝗇𝖿𝗋𝖾𝗇𝗍𝖺𝗇 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗇𝖽𝗈 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝖼𝗈𝗇 𝗆𝗂́𝗆𝗂𝖼𝖺𝗌 𝗒 𝖾𝗆𝗈𝗃𝗂𝗌.\n\n"
+                 "𝒗𝒊. 𝐏𝐢𝐫𝐚𝐭𝐚\n\n"
+                 "𝖢𝗅𝖺𝗏𝖺 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝖾𝗇 𝗅𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺, ¡𝗉𝖾𝗋𝗈 𝖼𝗎𝗂𝖽𝖺𝖽𝗈 𝖼𝗈𝗇 𝗅𝖺 𝗍𝗋𝖺𝗆𝗉𝖺!\n\n"
+                 "𝒗𝒊𝒊. 𝐀𝐝𝐢𝐯𝐢𝐧𝐚 𝐥𝐚 𝐜𝐚𝐧𝐜𝐢ó𝐧\n\n"
+                 "𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝖼𝖺𝗇𝖼𝗂𝗈́𝗇 𝖽𝖾 𝖪-𝖯𝗈𝗉 𝖾𝗇 𝗌𝗈𝗅𝗈 𝟦 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌. 🎧")
     )
-
-async def manejar_paginas_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    if query.data == "info_noop":
-        return
-    pagina = int(query.data.split("_")[-1])
-    try:
-        await query.edit_message_caption(
-            caption=PAGINAS_INFO[pagina],
-            reply_markup=botones_pagina(pagina)
-        )
-    except Exception:
-        pass
 
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -224,9 +175,7 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
     query = update.callback_query
     data = query.data if query else ""
 
-    if data.startswith("info_"):
-        await manejar_paginas_info(update, context)
-    elif data in ("unirme_zombie_click",) or data.startswith("morder:") or data.startswith("voto_z:"):
+    if data in ("unirme_zombie_click",) or data.startswith("morder:") or data.startswith("voto_z:"):
         await manejar_botones_zombie(update, context)
     elif data == "unirme_caseria_click" or data.startswith("caseria_tablero_"):
         await manejar_botones_caseria(update, context)
@@ -300,7 +249,9 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("out_card",    cmd_out_card,    filters=PREFIX))
 
     # Slots 🎰
-    application.add_handler(CommandHandler("slots", cmd_slots, filters=PREFIX))
+    application.add_handler(CommandHandler("open_slots", cmd_open_slots, filters=PREFIX))
+    application.add_handler(CommandHandler("slots",      cmd_slots,      filters=PREFIX))
+    application.add_handler(CommandHandler("spin",       cmd_spin,       filters=PREFIX))
 
     # Anagrama 🔀
     application.add_handler(CommandHandler("anagrama",       cmd_anagrama,       filters=PREFIX))
