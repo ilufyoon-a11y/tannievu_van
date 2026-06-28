@@ -117,27 +117,27 @@ PAGINAS_INFO = [
     ("<b>🐋 𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦</b>\n\n"
      "<b>𝒊. 𝐁𝐨𝐱</b>\n"
      "<b>𝖨𝗇𝗌𝗉𝗂𝗋𝖺𝖽𝗈 𝖾𝗇 𝖵𝖺𝗋𝗂𝖾𝗍𝗒 𝖲𝗁𝗈𝗐𝗌 𝗈𝖿 𝖬𝖾𝗆𝗈𝗋𝗂𝖾𝗌: 𝖯𝖺𝗋𝗍 𝟣, 𝗍𝖾𝗇𝖽𝗋𝖺𝗇 𝗌𝗈𝗅𝗈 𝟧 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝗈𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!</b>\n"
-     "<blockquote>`/box` - `/start_box <cantidad>`</blockquote>\n\n"
+     "<blockquote>`/box` - `/start_box &lt;cantidad&gt;`</blockquote>\n\n"
      "<b>𝒊𝒊. 𝐂𝐚𝐜𝐞𝐫𝛊́𝐚</b>\n"
      "<b>𝖴𝗇𝖺 𝗏𝖺𝗋𝗂𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖡𝗂𝗇𝗀𝗈, 𝗌𝖾 𝗉𝗋𝖾𝗌𝖾𝗇𝗍𝖺𝗋𝖺 𝗎𝗇 𝗍𝖺𝖻𝗅𝖾𝗋𝗈 𝗒 𝖼𝖺𝖽𝖺 𝗎𝗇𝗈 𝗈𝖻𝗍𝖾𝗇𝖽𝗋𝖺 𝗎𝗇𝖺 𝗉𝗅𝖺𝗇𝗍𝗂𝗅𝗅𝖺 𝖼𝗈𝗇 𝟨 𝗈𝖻𝗃𝖾𝗍𝗈𝗌. ¡𝖤𝗅 𝗉𝗋𝗂𝗆𝖾𝗋 𝖾𝗇 𝖾𝗇𝖼𝗈𝗇𝗍𝗋𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈 𝗒 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖺𝗋 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗀𝖺𝗇𝖺!</b>\n"
-     "<blockquote>`/hunt` - `/start_hunt <cantidad>`</blockquote>\n\n"
+     "<blockquote>`/hunt` - `/start_hunt &lt;cantidad&gt;`</blockquote>\n\n"
      "<b>𝒊𝒊𝒊. 𝐂𝐡𝐚𝐫𝐚𝐝𝐚</b>\n"
      "<b>𝖢𝗈𝗇𝗌𝗂𝗌𝗍𝖾 𝖾𝗇 𝗋𝖾𝗉𝗋𝖾𝗌𝖾𝗇𝗍𝖺𝗋 𝗎𝗇𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾 𝖿𝗋𝖺𝗌𝖾𝗌, 𝗉𝖾𝗅ı́𝖼𝗎𝗅𝖺𝗌 𝗈 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗃𝖾𝗌 𝗆𝖾𝖽𝗂𝖺𝗇𝗍𝖾 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗈 𝖾𝗆𝗈𝗃𝗂𝗌, 𝖼𝗈𝗇 𝗅𝖺 𝖿𝗂𝗇𝖺𝗅𝗂𝖽𝖺𝖽 𝖽𝖾 𝗊𝗎𝖾 𝗅𝗈𝗌 𝖼𝗈𝗆𝗉𝖺𝗇̃𝖾𝗋𝗈𝗌 𝖽𝖾 𝖾𝗊𝗎𝗂𝗉𝗈 𝗅𝗈𝗀𝗋𝖾𝗇 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋 𝗅𝖺 𝗆𝖺𝗒𝗈𝗋 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝖾𝗅 𝗍𝗂𝖾𝗆𝗉𝗈 𝖺𝖼𝖺𝖻𝖾.</b>\n"
-     "<blockquote>`/charada` - `/start_charada <cantidad>`</blockquote>\n\n"),
+     "<blockquote>`/charada` - `/start_charada &lt;cantidad&gt;`</blockquote>\n\n"),
     # ── PAGINA 2  ───────────────────
     ("<b>🐋 𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦</b>\n\n"
      "<b>𝒊𝒗. 𝐆𝐮𝐞𝐬𝐬 𝐒𝐨𝐧𝐠</b>\n"
      "<b>𝖨𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺 𝖾𝗅 𝗇𝗈𝗆𝖻𝗋𝖾 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖺 𝗉𝖺𝗋𝗍𝗂𝗋 𝖽𝖾 𝗉𝗂𝗌𝗍𝖺𝗌 𝖽𝖾 𝟦 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌, 𝗌𝖾𝗋𝖺𝗇 𝟧 𝗋𝗈𝗇𝖽𝖺𝗌, ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝖼𝖺𝗇𝖼𝗂𝗈𝗇𝖾𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝖺𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!</b>\n"
-     "<blockquote>`/guess` - `/start_guess <cantidad>`</blockquote>\n\n"
+     "<blockquote>`/guess` - `/start_guess &lt;cantidad&gt;`</blockquote>\n\n"
      "<b>𝒗. 𝐉𝐮𝐦𝐛𝐥𝐞</b>\n"
      "<b>𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗊𝗎𝖾 𝖽𝗂𝗈 𝗂𝗇𝗂𝖼𝗂𝗈 𝖺𝗅 𝖾𝗇𝗋𝖾𝖽𝗈 𝖽𝖾 𝗅𝖾𝗍𝗋𝖺𝗌</b>\n"
-     "<blockquote>`/jumble` - `/start_jumble <cantidad>`</blockquote>\n\n"
+     "<blockquote>`/jumble` - `/start_jumble &lt;cantidad&gt;`</blockquote>\n\n"
      "<b>𝒗𝒊. 𝐒𝐚𝐥𝐭𝐚 𝐏𝐢𝐫𝐚𝐭𝐚</b>\n"
      "<b>𝖨𝗇𝗌𝖾𝗋𝗍𝖺 𝖾𝗌𝗉𝖺𝖽𝖺𝗌 𝖾𝗇 𝗅𝖺𝗌 𝗋𝖺𝗇𝗎𝗋𝖺𝗌 𝖽𝖾 𝗎𝗇 𝖻𝖺𝗋𝗋𝗂𝗅 𝖽𝗈𝗇𝖽𝖾 𝗌𝖾 𝖾𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝖾𝗌𝖼𝗈𝗇𝖽𝗂𝖽𝗈 𝖾𝗅 𝗉𝗂𝗋𝖺𝗍𝖺 𝗌𝖾𝗀𝗎𝗇 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈. ¡𝖳𝗋𝖺𝗍𝖺 𝖽𝖾 𝗇𝗈 𝗌𝖾𝗋 𝗍𝗎 𝖾𝗅 𝗊𝗎𝖾 𝗅𝗈 𝗁𝖺𝗀𝖺𝗌 𝗏𝗈𝗅𝖺𝗋 𝗉𝗈𝗋 𝗅𝗈𝗌 𝖺𝗂𝗋𝖾𝗌!</b>\n"
-     "<blockquote>`/pirata` - `/start_pirata <cantidad>`</blockquote>\n\n"
+     "<blockquote>`/pirata` - `/start_pirata &lt;cantidad&gt;`</blockquote>\n\n"
      "<b>𝒗𝒊𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞</b>\n"
      "<b>𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝖽𝖾𝖻𝖾𝗇 𝖾𝗌𝗉𝖾𝗋𝖺𝗋 𝗁𝖺𝗌𝗍𝖺 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗋𝖾𝗌𝖼𝖺𝗍𝖾𝗇, 𝗌𝗈𝗅𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾𝗇 𝗋𝖾𝗌𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝖾𝗇 𝗎𝗇 𝖺𝗎𝗍𝗈𝖻𝗎𝗌, 𝗉𝖾𝗋𝗈 𝗎𝗇 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝖾 𝖼𝗈𝗅𝗈 𝗒 𝖺𝗍𝖺𝖼𝖺 𝗉𝗈𝗋 𝗅𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌 𝖼𝗎𝖺𝗇𝖽𝗈 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝗌𝖾 𝖺𝗉𝖺𝗀𝖺𝗇 𝗉𝗈𝗋 𝗌𝖾𝗀𝗎𝗋𝗂𝖽𝖺𝖽 ¿𝖯𝗈𝖽𝗋𝖺𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?</b>\n"
-     "<blockquote>`/zombie` - `/start_zombie <cantidad sobrevivientes> <cantidad zombie>`</blockquote>\n\n"),
+     "<blockquote>`/zombie` - `/start_zombie &lt;cantidad sobrevivientes&gt; &lt;cantidad zombie&gt;`</blockquote>\n\n"),
     # ── PAGINA 3  ───────────────────
     ("<b>🐋 VAN'S BET </b>\n\n"
      "<blockquote>¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗍𝖾𝗇𝖾𝗋 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝗉𝗈𝖽𝖾𝗋 𝗃𝗎𝗀𝖺𝗋! 𝖯𝖺𝗋𝖺 𝖼𝗈𝗇𝗌𝗎𝗅𝗍𝖺𝗋 𝗍𝗎 𝗌𝖺𝗅𝖽𝗈 𝗎𝗌𝖺 `/wallet`</blockquote>\n\n"
@@ -165,9 +165,9 @@ def botones_pagina(pagina: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(botones)
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_photo(
-        photo=GIF_INFO,
-        caption=PAGINAS_INFO[0],
+    await update.message.reply_photo(photo=GIF_INFO)
+    await update.message.reply_text(
+        text=PAGINAS_INFO[0],
         reply_markup=botones_pagina(0),
         parse_mode="HTML"
     )
@@ -178,14 +178,11 @@ async def manejar_paginas_info(update: Update, context: ContextTypes.DEFAULT_TYP
     if query.data == "info_noop":
         return
     pagina = int(query.data.split("_")[-1])
-    try:
-        await query.edit_message_caption(
-            caption=PAGINAS_INFO[pagina],
-            reply_markup=botones_pagina(pagina),
-            parse_mode="HTML"
-        )
-    except Exception:
-        pass
+    await query.edit_message_text(
+        text=PAGINAS_INFO[pagina],
+        reply_markup=botones_pagina(pagina),
+        parse_mode="HTML"
+    )
 
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
