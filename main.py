@@ -23,15 +23,6 @@ from utils import (
 # JUEGOS DISPONIBLES
 # =====================================================================
 
-# ── ANAGRAMA ─────────────────────────────────────────────────────
-
-from anagrama import (
-    cmd_anagrama, cmd_anagrama4, cmd_start_anagrama,
-    manejar_botones_anagrama,
-    escuchar_anagrama_privado, escuchar_anagrama_grupo,
-    sesion_anagrama,
-)
-
 # ── BOX ──────────────────────────────────────────────────────────
 
 from box import (
@@ -70,6 +61,15 @@ from charada import (
 from guessong import (
     unirse_adivina, iniciar_adivina_juego,
     verificar_respuesta_musica, manejar_boton_unirse,
+)
+
+# ── JUMBLE ─────────────────────────────────────────────────────
+
+from anagrama import (
+    cmd_anagrama, cmd_anagrama4, cmd_start_anagrama,
+    manejar_botones_anagrama,
+    escuchar_anagrama_privado, escuchar_anagrama_grupo,
+    sesion_anagrama,
 )
 
 # ── PIRATA  ─────────────────────────────────────────────────────────  
