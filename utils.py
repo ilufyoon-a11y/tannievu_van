@@ -222,15 +222,18 @@ async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🗑️ Sesión reseteada. Los datos han sido borrados.")
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from cipher import sesion_cipher
     from zombie import sesion_zombie
     from caseria import sesion_caseria
     from box import sesion_box
     from charada import sesion_charada
     from pirata import sesion_pirata
+    from mayoromenor import sesion_mom
+    from carrera import sesion_carrera
+    from anagrama import sesion_anagrama, _reset_sesion as reset_anagrama
+    from slots import sesion_slots
 
-    sesion_cipher["activa"] = False
-    sesion_cipher["jugadores"] = []
+    chat_id = update.effective_chat.id
+
     sesion_zombie["activa"] = False
     sesion_zombie["jugadores"] = []
     sesion_zombie["zombies"] = []
@@ -238,7 +241,6 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_zombie["fase"] = None
     sesion_caseria["activa"] = False
     sesion_caseria["jugadores"] = {}
-    chat_id = update.effective_chat.id
     if chat_id in sesion_box:
         sesion_box[chat_id]["activa"] = False
         sesion_box[chat_id]["jugadores"] = []
@@ -247,6 +249,13 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_charada["jugadores"] = []
     sesion_pirata["activa"] = False
     sesion_pirata["jugadores"] = []
+    if chat_id in sesion_mom:
+        del sesion_mom[chat_id]
+    if chat_id in sesion_carrera:
+        del sesion_carrera[chat_id]
+    if chat_id in sesion_slots:
+        del sesion_slots[chat_id]
+    reset_anagrama()
 
     await update.message.reply_photo(
         photo=GIF_OFFVAN,
