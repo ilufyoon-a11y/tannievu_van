@@ -23,7 +23,7 @@ from utils import (
 # JUEGOS DISPONIBLES
 # =====================================================================
 
-# ── BOX ──────────────────────────────────────────────────────────
+# ── BOX ✔️ ──────────────────────────────────────────────────────────
 
 from box import (
     unirse_box, iniciar_box,
@@ -40,14 +40,14 @@ from carrera import (
     cmd_start_carrera, cmd_cancelar_carrera,
 )
 
-# ── CASERIA  ──────────────────────────────────────────────────────
+# ── CACERIA ✔️  ──────────────────────────────────────────────────────
 
 from caseria import (
     unirse_caseria, iniciar_caseria,
     manejar_botones_caseria,
 )
 
-# ── CHARADA  ──────────────────────────────────────────────────────
+# ── CHARADA ✔️  ──────────────────────────────────────────────────────
 
 from charada import (
     unirse_charada, iniciar_charada,
@@ -56,14 +56,14 @@ from charada import (
     sesion_charada,
 )
 
-# ── GUESS  ─────────────────────────────────────────────────────────
+# ── GUESS ✔️  ─────────────────────────────────────────────────────────
 
 from guessong import (
     unirse_adivina, iniciar_adivina_juego,
     verificar_respuesta_musica, manejar_boton_unirse,
 )
 
-# ── JUMBLE ─────────────────────────────────────────────────────
+# ── JUMBLE ✔️ ─────────────────────────────────────────────────────
 
 from anagrama import (
     cmd_anagrama, cmd_anagrama4, cmd_start_anagrama,
@@ -72,7 +72,7 @@ from anagrama import (
     sesion_anagrama,
 )
 
-# ── PIRATA  ─────────────────────────────────────────────────────────  
+# ── PIRATA ✔️  ─────────────────────────────────────────────────────────  
 
 from pirata import (
     unirse_pirata, iniciar_pirata,
@@ -90,7 +90,7 @@ from mayoromenor import (
     sesion_mom,
 )
 
-# ── ZOMBIE  ──────────────────────────────────────────────────────────
+# ── ZOMBIE ✔️  ──────────────────────────────────────────────────────────
 
 from zombie import (
     unirse_zombie, iniciar_zombie,
@@ -115,32 +115,43 @@ async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 PAGINAS_INFO = [
-    # Página 1
+    # ── PAGINA 1  ───────────────────
     ("<b>🐋 𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦</b>\n\n"
-     "<b>𝒊. Zombie</b>\n"
-     "<blockquote>𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈́𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾. ¿𝖯𝗈𝖽𝗋𝖺́𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?</blockquote>\n\n"
-     "<b>𝒊𝒊. Casería</b>\n"
-     "<blockquote>𝖤𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗈𝗌 𝖾𝗆𝗈𝗃𝗂𝗌 𝗈𝖼𝗎𝗅𝗍𝗈𝗌 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈.</blockquote>\n\n"
-     "<b>𝒊𝒊𝒊. Box</b>\n"
-     "<blockquote>𝖬𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝗓𝖼𝖺𝗇.</blockquote>"),
-    # Página 2
+     "<b>𝒊. 𝐁𝐨𝐱</b>\n"
+     "<b>𝖨𝗇𝗌𝗉𝗂𝗋𝖺𝖽𝗈 𝖾𝗇 𝖵𝖺𝗋𝗂𝖾𝗍𝗒 𝖲𝗁𝗈𝗐𝗌 𝗈𝖿 𝖬𝖾𝗆𝗈𝗋𝗂𝖾𝗌: 𝖯𝖺𝗋𝗍 𝟣, 𝗍𝖾𝗇𝖽𝗋𝖺𝗇 𝗌𝗈𝗅𝗈 𝟧 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝗈𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!</b>\n"
+     "<blockquote>`/box` - `/start_box <cantidad>`</blockquote>\n\n"
+     "<b>𝒊𝒊. 𝐂𝐚𝐜𝐞𝐫𝛊́𝐚</b>\n"
+     "<b>𝖴𝗇𝖺 𝗏𝖺𝗋𝗂𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖡𝗂𝗇𝗀𝗈, 𝗌𝖾 𝗉𝗋𝖾𝗌𝖾𝗇𝗍𝖺𝗋𝖺 𝗎𝗇 𝗍𝖺𝖻𝗅𝖾𝗋𝗈 𝗒 𝖼𝖺𝖽𝖺 𝗎𝗇𝗈 𝗈𝖻𝗍𝖾𝗇𝖽𝗋𝖺 𝗎𝗇𝖺 𝗉𝗅𝖺𝗇𝗍𝗂𝗅𝗅𝖺 𝖼𝗈𝗇 𝟨 𝗈𝖻𝗃𝖾𝗍𝗈𝗌. ¡𝖤𝗅 𝗉𝗋𝗂𝗆𝖾𝗋 𝖾𝗇 𝖾𝗇𝖼𝗈𝗇𝗍𝗋𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈 𝗒 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖺𝗋 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗀𝖺𝗇𝖺!</b>\n"
+     "<blockquote>`/hunt` - `/start_hunt <cantidad>`</blockquote>\n\n"
+     "<b>𝒊𝒊𝒊. 𝐂𝐡𝐚𝐫𝐚𝐝𝐚</b>\n"
+     "<b>𝖢𝗈𝗇𝗌𝗂𝗌𝗍𝖾 𝖾𝗇 𝗋𝖾𝗉𝗋𝖾𝗌𝖾𝗇𝗍𝖺𝗋 𝗎𝗇𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾 𝖿𝗋𝖺𝗌𝖾𝗌, 𝗉𝖾𝗅ı́𝖼𝗎𝗅𝖺𝗌 𝗈 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗃𝖾𝗌 𝗆𝖾𝖽𝗂𝖺𝗇𝗍𝖾 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗈 𝖾𝗆𝗈𝗃𝗂𝗌, 𝖼𝗈𝗇 𝗅𝖺 𝖿𝗂𝗇𝖺𝗅𝗂𝖽𝖺𝖽 𝖽𝖾 𝗊𝗎𝖾 𝗅𝗈𝗌 𝖼𝗈𝗆𝗉𝖺𝗇̃𝖾𝗋𝗈𝗌 𝖽𝖾 𝖾𝗊𝗎𝗂𝗉𝗈 𝗅𝗈𝗀𝗋𝖾𝗇 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋 𝗅𝖺 𝗆𝖺𝗒𝗈𝗋 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝖾𝗅 𝗍𝗂𝖾𝗆𝗉𝗈 𝖺𝖼𝖺𝖻𝖾.</b>\n"
+     "<blockquote>`/charada` - `/start_charada <cantidad>`</blockquote>\n\n"),
+    # ── PAGINA 2  ───────────────────
     ("<b>🐋 𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦</b>\n\n"
-     "<b>𝒊𝒗. Charada</b>\n"
-     "<blockquote>𝖣𝗈𝗌 𝖾𝗊𝗎𝗂𝗉𝗈𝗌 𝗌𝖾 𝖾𝗇𝖿𝗋𝖾𝗇𝗍𝖺𝗇 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗇𝖽𝗈 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝖼𝗈𝗇 𝗆𝗂́𝗆𝗂𝖼𝖺𝗌 𝗒 𝖾𝗆𝗈𝗃𝗂𝗌.</blockquote>\n\n"
-     "<b>𝒗. Pirata</b>\n"
-     "<blockquote>𝖢𝗅𝖺𝗏𝖺 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝖾𝗇 𝗅𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺, ¡𝗉𝖾𝗋𝗈 𝖼𝗎𝗂𝖽𝖺𝖽𝗈 𝖼𝗈𝗇 𝗅𝖺 𝗍𝗋𝖺𝗆𝗉𝖺!</blockquote>\n\n"
-     "<b>𝒗𝒊. Adivina la canción</b>\n"
-     "<blockquote>𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝖼𝖺𝗇𝖼𝗂𝗈́𝗇 𝖽𝖾 𝖪-𝖯𝗈𝗉 𝖾𝗇 𝗌𝗈𝗅𝗈 𝟦 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌. 🎧</blockquote>\n\n"
-     "<b>𝒗𝒊𝒊. Anagrama</b>\n"
-     "<blockquote>𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝖾𝗇𝗍𝗋𝖾𝗏𝖾𝗋𝖺𝖽𝖺 𝖺𝗇𝗍𝖾𝗌 𝗊𝗎𝖾 𝗅𝗈𝗌 𝖽𝖾𝗆𝖺́𝗌. 🔀</blockquote>"),
-    # Página 3
-    ("<b>🐋 𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦</b>\n\n"
-     "<b>𝒗𝒊𝒊𝒊. Mayor o Menor</b>\n"
-     "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝗌𝗂 𝗅𝖺 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾 𝖼𝖺𝗋𝗍𝖺 𝗌𝖾𝗋𝖺́ 𝗆𝖺𝗒𝗈𝗋 𝗈 𝗆𝖾𝗇𝗈𝗋. 🃏</blockquote>\n\n"
-     "<b>𝒊𝒙. Carreras</b>\n"
-     "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 𝗍𝗎 𝖼𝗈𝗋𝗋𝖾𝖽𝗈𝗋 𝖡𝖳𝖲 𝖿𝖺𝗏𝗈𝗋𝗂𝗍𝗈 𝗒 𝗀𝖺𝗇𝖺 𝗑𝟤. 🏇</blockquote>\n\n"
-     "<b>𝒙. Slots</b>\n"
-     "<blockquote>𝖦𝗂𝗋𝖺 𝗅𝖺𝗌 𝗋𝗎𝗅𝖾𝗍𝖺𝗌 𝗒 𝗉𝗋𝖾𝗌𝗎𝗆𝖾 𝗍𝗎 𝗌𝗎𝖾𝗋𝗍𝖾. 🎰</blockquote>"),
+     "<b>𝒊𝒗. 𝐆𝐮𝐞𝐬𝐬 𝐒𝐨𝐧𝐠</b>\n"
+     "<b>𝖨𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺 𝖾𝗅 𝗇𝗈𝗆𝖻𝗋𝖾 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖺 𝗉𝖺𝗋𝗍𝗂𝗋 𝖽𝖾 𝗉𝗂𝗌𝗍𝖺𝗌 𝖽𝖾 𝟦 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌, 𝗌𝖾𝗋𝖺𝗇 𝟧 𝗋𝗈𝗇𝖽𝖺𝗌, ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝖼𝖺𝗇𝖼𝗂𝗈𝗇𝖾𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝖺𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!</b>\n"
+     "<blockquote>`/guess` - `/start_guess <cantidad>`</blockquote>\n\n"
+     "<b>𝒗. 𝐉𝐮𝐦𝐛𝐥𝐞</b>\n"
+     "<b>𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗊𝗎𝖾 𝖽𝗂𝗈 𝗂𝗇𝗂𝖼𝗂𝗈 𝖺𝗅 𝖾𝗇𝗋𝖾𝖽𝗈 𝖽𝖾 𝗅𝖾𝗍𝗋𝖺𝗌</b>\n"
+     "<blockquote>`/jumble` - `/start_jumble <cantidad>`</blockquote>\n\n"
+     "<b>𝒗𝒊. 𝐒𝐚𝐥𝐭𝐚 𝐏𝐢𝐫𝐚𝐭𝐚</b>\n"
+     "<b>𝖨𝗇𝗌𝖾𝗋𝗍𝖺 𝖾𝗌𝗉𝖺𝖽𝖺𝗌 𝖾𝗇 𝗅𝖺𝗌 𝗋𝖺𝗇𝗎𝗋𝖺𝗌 𝖽𝖾 𝗎𝗇 𝖻𝖺𝗋𝗋𝗂𝗅 𝖽𝗈𝗇𝖽𝖾 𝗌𝖾 𝖾𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝖾𝗌𝖼𝗈𝗇𝖽𝗂𝖽𝗈 𝖾𝗅 𝗉𝗂𝗋𝖺𝗍𝖺 𝗌𝖾𝗀𝗎𝗇 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈. ¡𝖳𝗋𝖺𝗍𝖺 𝖽𝖾 𝗇𝗈 𝗌𝖾𝗋 𝗍𝗎 𝖾𝗅 𝗊𝗎𝖾 𝗅𝗈 𝗁𝖺𝗀𝖺𝗌 𝗏𝗈𝗅𝖺𝗋 𝗉𝗈𝗋 𝗅𝗈𝗌 𝖺𝗂𝗋𝖾𝗌!</b>\n"
+     "<blockquote>`/pirata` - `/start_pirata <cantidad>`</blockquote>\n\n"
+     "<b>𝒗𝒊𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞</b>\n"
+     "<b>𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝖽𝖾𝖻𝖾𝗇 𝖾𝗌𝗉𝖾𝗋𝖺𝗋 𝗁𝖺𝗌𝗍𝖺 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗋𝖾𝗌𝖼𝖺𝗍𝖾𝗇, 𝗌𝗈𝗅𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾𝗇 𝗋𝖾𝗌𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝖾𝗇 𝗎𝗇 𝖺𝗎𝗍𝗈𝖻𝗎𝗌, 𝗉𝖾𝗋𝗈 𝗎𝗇 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝖾 𝖼𝗈𝗅𝗈 𝗒 𝖺𝗍𝖺𝖼𝖺 𝗉𝗈𝗋 𝗅𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌 𝖼𝗎𝖺𝗇𝖽𝗈 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝗌𝖾 𝖺𝗉𝖺𝗀𝖺𝗇 𝗉𝗈𝗋 𝗌𝖾𝗀𝗎𝗋𝗂𝖽𝖺𝖽 ¿𝖯𝗈𝖽𝗋𝖺𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?</b>\n"
+     "<blockquote>`/zombie` - `/start_zombie <cantidad sobrevivientes> <cantidad zombie>`</blockquote>\n\n"
+    # ── PAGINA 3  ───────────────────
+    ("<b>🐋 VAN'S BET </b>\n\n"
+     "<blockquote>¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗍𝖾𝗇𝖾𝗋 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝗉𝗈𝖽𝖾𝗋 𝗃𝗎𝗀𝖺𝗋! 𝖯𝖺𝗋𝖺 𝖼𝗈𝗇𝗌𝗎𝗅𝗍𝖺𝗋 𝗍𝗎 𝗌𝖺𝗅𝖽𝗈 𝗎𝗌𝖺 `/wallet`</blockquote>\n\n"
+     "<b>𝒊. 𝐌𝐚𝐲𝐨𝐫 𝐨 𝐦𝐞𝐧𝐨𝐫</b>\n"
+     "<b>𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗌𝗂 𝗅𝖺 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾 𝖼𝖺𝗋𝗍𝖺 𝖽𝖾 𝗅𝖺 𝖻𝖺𝗋𝖺𝗃𝖺 𝗌𝖾𝗋𝖺́ 𝗆𝖺𝗒𝗈𝗋 𝗈 𝗆𝖾𝗇𝗈𝗋 𝗊𝗎𝖾 𝗅𝖺 𝖺𝖼𝗍𝗎𝖺𝗅. ¿𝖳𝖾 𝖼𝗋𝖾𝖾𝗌 𝖼𝖺𝗉𝖺𝗓 𝖽𝖾 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗒 𝖽𝗎𝗉𝗅𝗂𝖼𝖺𝗋 𝗍𝗎𝗌 𝖿𝗂𝖼𝗁𝖺𝗌?</b>\n"
+     "<blockquote>`/mom`</blockquote>\n\n"
+     "<b>𝒊𝒊. 𝐂𝐚𝐫𝐫𝐞𝐫𝐚</b>\n"
+     "<b>𝖠𝗇𝗍𝖾𝗌 𝖽𝖾 𝗊𝗎𝖾 𝗅𝗈𝗌 𝖼𝗈𝗋𝗋𝖾𝖽𝗈𝗋𝖾𝗌 𝗌𝖾 𝗆𝗎𝖾𝗏𝖺𝗇, 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌 𝖺𝗉𝗎𝖾𝗌𝗍𝖺𝗇 𝗉𝗈𝗋 𝗅𝖺 𝗆𝖺𝗌𝖼𝗈𝗍𝖺 𝗊𝗎𝖾 𝖼𝗋𝖾𝖾𝗇 𝗊𝗎𝖾 𝗅𝗅𝖾𝗀𝖺𝗋𝖺́ 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 𝖺 𝗅𝖺 𝗆𝖾𝗍𝖺</b>\n"
+     "<blockquote>`/carrera`</blockquote>\n\n"
+     "<b>𝒊𝒊𝒊. 𝐒𝐥𝐨𝐭𝐬</b>\n"
+     "<b>¡𝖯𝗋𝗎𝖾𝖻𝖺 𝗍𝗎 𝗌𝗎𝖾𝗋𝗍𝖾 𝖾𝗇 𝗅𝖺 𝗆𝖺́𝗊𝗎𝗂𝗇𝖺 𝗍𝗋𝖺𝗀𝖺𝗆𝗈𝗇𝖾𝖽𝖺𝗌! 𝖧𝖺𝗓 𝗀𝗂𝗋𝖺𝗋 𝗅𝗈𝗌 𝗋𝗈𝖽𝗂𝗅𝗅𝗈𝗌 𝗒 𝖺𝗅𝗂𝗇𝖾𝖺 𝗅𝗈𝗌 𝗌ı́𝗆𝖻𝗈𝗅𝗈𝗌 𝗀𝖺𝗇𝖺𝖽𝗈𝗋𝖾𝗌. ¡𝖴𝗇𝖺 𝖼𝗈𝗆𝖻𝗂𝗇𝖺𝖼𝗂𝗈́𝗇 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝖺 𝗉𝗈𝖽𝗋ı́𝖺 𝗁𝖺𝖼𝖾𝗋𝗍𝖾 𝗀𝖺𝗇𝖺𝗋 𝖾𝗅 𝗀𝗋𝖺𝗇 𝗃𝖺𝖼𝗄𝗉𝗈𝗍!</b>\n"
+     "<blockquote>`/slots`</blockquote>\n\n"
 ]
 
 def botones_pagina(pagina: int) -> InlineKeyboardMarkup:
@@ -280,13 +291,13 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("cmds",    comandos,         filters=PREFIX))
     application.add_handler(CommandHandler("off_van", detener_juegos,   filters=PREFIX))
 
+    # Cacería
+    application.add_handler(CommandHandler("hunt",       unirse_caseria,  filters=PREFIX))
+    application.add_handler(CommandHandler("start_hunt", iniciar_caseria, filters=PREFIX))
+
     # Zombie
     application.add_handler(CommandHandler("zombie",       unirse_zombie,  filters=PREFIX))
     application.add_handler(CommandHandler("start_zombie", iniciar_zombie, filters=PREFIX))
-
-    # Casería
-    application.add_handler(CommandHandler("caseria",       unirse_caseria,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_caseria", iniciar_caseria, filters=PREFIX))
 
     # Box
     application.add_handler(CommandHandler("box",       unirse_box,  filters=PREFIX))
@@ -301,8 +312,8 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX))
 
     # Adivina la canción
-    application.add_handler(CommandHandler("adivina",       unirse_adivina,        filters=PREFIX))
-    application.add_handler(CommandHandler("start_adivina", iniciar_adivina_juego, filters=PREFIX))
+    application.add_handler(CommandHandler("guess",       unirse_adivina,        filters=PREFIX))
+    application.add_handler(CommandHandler("start_guess", iniciar_adivina_juego, filters=PREFIX))
 
     # Mayor o Menor 🃏
     application.add_handler(CommandHandler("mayoromenor", cmd_mayoromenor, filters=PREFIX))
@@ -315,9 +326,9 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("spin",       cmd_spin,       filters=PREFIX))
 
     # Anagrama 🔀
-    application.add_handler(CommandHandler("anagrama",       cmd_anagrama,       filters=PREFIX))
-    application.add_handler(CommandHandler("anagrama4",      cmd_anagrama4,      filters=PREFIX))
-    application.add_handler(CommandHandler("start_anagrama", cmd_start_anagrama, filters=PREFIX))
+    application.add_handler(CommandHandler("jumble",       cmd_anagrama,       filters=PREFIX))
+    application.add_handler(CommandHandler("jumble4",      cmd_anagrama4,      filters=PREFIX))
+    application.add_handler(CommandHandler("start_jumble", cmd_start_anagrama, filters=PREFIX))
     application.add_handler(CommandHandler("carrera",          cmd_carrera,          filters=PREFIX))
     application.add_handler(CommandHandler("apostar_carrera",  cmd_apostar_carrera,  filters=PREFIX))
     application.add_handler(CommandHandler("start_carrera",    cmd_start_carrera,    filters=PREFIX))
