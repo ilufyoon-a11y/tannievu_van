@@ -316,12 +316,12 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("start_guess", iniciar_adivina_juego, filters=PREFIX))
 
     # Mayor o Menor 🃏
-    application.add_handler(CommandHandler("mayoromenor", cmd_mayoromenor, filters=PREFIX))
+    application.add_handler(CommandHandler("mom", cmd_mayoromenor, filters=PREFIX))
     application.add_handler(CommandHandler("beat",        cmd_beat,        filters=PREFIX))
     application.add_handler(CommandHandler("out_card",    cmd_out_card,    filters=PREFIX))
 
     # Slots 🎰
-    application.add_handler(CommandHandler("open_slots", cmd_open_slots, filters=PREFIX))
+    application.add_handler(CommandHandler("slots", cmd_open_slots, filters=PREFIX))
     application.add_handler(CommandHandler("slots",      cmd_slots,      filters=PREFIX))
     application.add_handler(CommandHandler("spin",       cmd_spin,       filters=PREFIX))
 
