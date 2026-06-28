@@ -3,7 +3,6 @@
 # =====================================================================
 
 import os
-import asyncio
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes)
@@ -101,7 +100,6 @@ from zombie import (
 # COMANDOS GENERALES
 # =====================================================================
 
-PREFIX = filters.Regex(r'^[./]')
 
 async def start_bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -139,7 +137,7 @@ PAGINAS_INFO = [
      "<blockquote>`/pirata` - `/start_pirata <cantidad>`</blockquote>\n\n"
      "<b>𝒗𝒊𝒊. 𝐙𝐨𝐦𝐛𝐢𝐞</b>\n"
      "<b>𝖴𝗇𝖺 𝖾𝗑𝖼𝗎𝗋𝗌𝗂𝗈𝗇 𝗌𝖾 𝗏𝗂𝗈 𝗂𝗇𝗍𝖾𝗋𝗋𝗎𝗆𝗉𝗂𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇 𝗏𝗂𝗋𝗎𝗌 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝖽𝖾𝖻𝖾𝗇 𝖾𝗌𝗉𝖾𝗋𝖺𝗋 𝗁𝖺𝗌𝗍𝖺 𝗊𝗎𝖾 𝗅𝗈𝗌 𝗋𝖾𝗌𝖼𝖺𝗍𝖾𝗇, 𝗌𝗈𝗅𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾𝗇 𝗋𝖾𝗌𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝖾𝗇 𝗎𝗇 𝖺𝗎𝗍𝗈𝖻𝗎𝗌, 𝗉𝖾𝗋𝗈 𝗎𝗇 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝖾 𝖼𝗈𝗅𝗈 𝗒 𝖺𝗍𝖺𝖼𝖺 𝗉𝗈𝗋 𝗅𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌 𝖼𝗎𝖺𝗇𝖽𝗈 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝗌𝖾 𝖺𝗉𝖺𝗀𝖺𝗇 𝗉𝗈𝗋 𝗌𝖾𝗀𝗎𝗋𝗂𝖽𝖺𝖽 ¿𝖯𝗈𝖽𝗋𝖺𝗇 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗋?</b>\n"
-     "<blockquote>`/zombie` - `/start_zombie <cantidad sobrevivientes> <cantidad zombie>`</blockquote>\n\n"
+     "<blockquote>`/zombie` - `/start_zombie <cantidad sobrevivientes> <cantidad zombie>`</blockquote>\n\n"),
     # ── PAGINA 3  ───────────────────
     ("<b>🐋 VAN'S BET </b>\n\n"
      "<blockquote>¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗍𝖾𝗇𝖾𝗋 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝗉𝗈𝖽𝖾𝗋 𝗃𝗎𝗀𝖺𝗋! 𝖯𝖺𝗋𝖺 𝖼𝗈𝗇𝗌𝗎𝗅𝗍𝖺𝗋 𝗍𝗎 𝗌𝖺𝗅𝖽𝗈 𝗎𝗌𝖺 `/wallet`</blockquote>\n\n"
@@ -286,59 +284,58 @@ if __name__ == '__main__':
     application = ApplicationBuilder().token(token_bot).build()
 
     # Comandos generales
-    application.add_handler(CommandHandler("start",   start_bienvenida, filters=PREFIX))
-    application.add_handler(CommandHandler("info",    info,             filters=PREFIX))
-    application.add_handler(CommandHandler("cmds",    comandos,         filters=PREFIX))
-    application.add_handler(CommandHandler("off_van", detener_juegos,   filters=PREFIX))
+    application.add_handler(CommandHandler("start",   start_bienvenida))
+    application.add_handler(CommandHandler("info",    info))
+    application.add_handler(CommandHandler("cmds",    comandos))
+    application.add_handler(CommandHandler("off_van", detener_juegos))
 
     # Cacería
-    application.add_handler(CommandHandler("hunt",       unirse_caseria,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_hunt", iniciar_caseria, filters=PREFIX))
+    application.add_handler(CommandHandler("hunt",       unirse_caseria))
+    application.add_handler(CommandHandler("start_hunt", iniciar_caseria))
 
     # Zombie
-    application.add_handler(CommandHandler("zombie",       unirse_zombie,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_zombie", iniciar_zombie, filters=PREFIX))
+    application.add_handler(CommandHandler("zombie",       unirse_zombie))
+    application.add_handler(CommandHandler("start_zombie", iniciar_zombie))
 
     # Box
-    application.add_handler(CommandHandler("box",       unirse_box,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_box", iniciar_box, filters=PREFIX))
+    application.add_handler(CommandHandler("box",       unirse_box))
+    application.add_handler(CommandHandler("start_box", iniciar_box))
 
     # Charada
-    application.add_handler(CommandHandler("charada",       unirse_charada,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_charada", iniciar_charada, filters=PREFIX))
+    application.add_handler(CommandHandler("charada",       unirse_charada))
+    application.add_handler(CommandHandler("start_charada", iniciar_charada))
 
     # Pirata
-    application.add_handler(CommandHandler("pirata",       unirse_pirata,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_pirata", iniciar_pirata, filters=PREFIX))
+    application.add_handler(CommandHandler("pirata",       unirse_pirata))
+    application.add_handler(CommandHandler("start_pirata", iniciar_pirata))
 
     # Adivina la canción
-    application.add_handler(CommandHandler("guess",       unirse_adivina,        filters=PREFIX))
-    application.add_handler(CommandHandler("start_guess", iniciar_adivina_juego, filters=PREFIX))
+    application.add_handler(CommandHandler("guess",       unirse_adivina))
+    application.add_handler(CommandHandler("start_guess", iniciar_adivina_juego))
 
     # Mayor o Menor 🃏
-    application.add_handler(CommandHandler("mom", cmd_mayoromenor, filters=PREFIX))
-    application.add_handler(CommandHandler("beat",        cmd_beat,        filters=PREFIX))
-    application.add_handler(CommandHandler("out_card",    cmd_out_card,    filters=PREFIX))
+    application.add_handler(CommandHandler("mom",      cmd_mayoromenor))
+    application.add_handler(CommandHandler("beat",     cmd_beat))
+    application.add_handler(CommandHandler("out_card", cmd_out_card))
 
     # Slots 🎰
-    application.add_handler(CommandHandler("slots", cmd_open_slots, filters=PREFIX))
-    application.add_handler(CommandHandler("slots",      cmd_slots,      filters=PREFIX))
-    application.add_handler(CommandHandler("spin",       cmd_spin,       filters=PREFIX))
+    application.add_handler(CommandHandler("slots", cmd_open_slots))
+    application.add_handler(CommandHandler("spin",  cmd_spin))
 
     # Anagrama 🔀
-    application.add_handler(CommandHandler("jumble",       cmd_anagrama,       filters=PREFIX))
-    application.add_handler(CommandHandler("jumble4",      cmd_anagrama4,      filters=PREFIX))
-    application.add_handler(CommandHandler("start_jumble", cmd_start_anagrama, filters=PREFIX))
-    application.add_handler(CommandHandler("carrera",          cmd_carrera,          filters=PREFIX))
-    application.add_handler(CommandHandler("apostar_carrera",  cmd_apostar_carrera,  filters=PREFIX))
-    application.add_handler(CommandHandler("start_carrera",    cmd_start_carrera,    filters=PREFIX))
-    application.add_handler(CommandHandler("cancelar_carrera", cmd_cancelar_carrera, filters=PREFIX))
+    application.add_handler(CommandHandler("jumble",       cmd_anagrama))
+    application.add_handler(CommandHandler("jumble4",      cmd_anagrama4))
+    application.add_handler(CommandHandler("start_jumble", cmd_start_anagrama))
+    application.add_handler(CommandHandler("carrera",          cmd_carrera))
+    application.add_handler(CommandHandler("apostar_carrera",  cmd_apostar_carrera))
+    application.add_handler(CommandHandler("start_carrera",    cmd_start_carrera))
+    application.add_handler(CommandHandler("cancelar_carrera", cmd_cancelar_carrera))
 
     # Robux / Wallet
-    application.add_handler(CommandHandler("new_session", cmd_new_session, filters=PREFIX))
-    application.add_handler(CommandHandler("wallet",      cmd_wallet,      filters=PREFIX))
-    application.add_handler(CommandHandler("spent",       cmd_spent,       filters=PREFIX))
-    application.add_handler(CommandHandler("reset",       cmd_reset,       filters=PREFIX))
+    application.add_handler(CommandHandler("new_session", cmd_new_session))
+    application.add_handler(CommandHandler("wallet",      cmd_wallet))
+    application.add_handler(CommandHandler("spent",       cmd_spent))
+    application.add_handler(CommandHandler("reset",       cmd_reset))
 
     # Handlers generales
     application.add_handler(CallbackQueryHandler(manejar_botones_main))
