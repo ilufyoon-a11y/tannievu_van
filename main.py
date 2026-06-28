@@ -3,7 +3,6 @@
 # =====================================================================
 
 import os
-import threading
 import asyncio
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -84,6 +83,13 @@ from pirata import (
 
 from slots import cmd_slots, cmd_open_slots, cmd_spin, sesion_slots
 
+# ── MAYOROMENOR - CASINO ─────────────────────────────────────────────
+
+from mayoromenor import (
+    cmd_mayoromenor, cmd_beat, cmd_out_card,
+    sesion_mom,
+)
+
 # ── ZOMBIE  ──────────────────────────────────────────────────────────
 
 from zombie import (
@@ -147,7 +153,6 @@ def botones_pagina(pagina: int) -> InlineKeyboardMarkup:
         fila.append(InlineKeyboardButton("➡️", callback_data=f"info_pag_{pagina + 1}"))
     if fila:
         botones.append(fila)
-    botones.append([InlineKeyboardButton(f"📄 {pagina + 1}/{total}", callback_data="info_noop")])
     return InlineKeyboardMarkup(botones)
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -158,6 +163,20 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="HTML"
     )
 
+async def manejar_paginas_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    if query.data == "info_noop":
+        return
+    pagina = int(query.data.split("_")[-1])
+    try:
+        await query.edit_message_caption(
+            caption=PAGINAS_INFO[pagina],
+            reply_markup=botones_pagina(pagina),
+            parse_mode="HTML"
+        )
+    except Exception:
+        pass
 
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -247,16 +266,7 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
 # ARRANQUE
 # =====================================================================
 
-def run_flask():
-    port = int(os.environ.get('PORT', 10000))
-    print(f"🌐 Servidor Flask escuchando en el puerto {port}...")
-    app_web.run(host='0.0.0.0', port=port, use_reloader=False)
-
 if __name__ == '__main__':
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.daemon = True
-    flask_thread.start()
-
     token_bot = os.environ.get('TOKEN')
     if not token_bot:
         raise ValueError("❌ ¡Error crítico! No se encontró la variable 'TOKEN'.")
