@@ -68,7 +68,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
 
     esperando_elementos[encubridor["id"]] = chat_id
-    await update.message.reply_text("˒˓  ¡𝖤𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈! Esperando que asigne los objetos {encubridor.get('username', 'usuario')}  ᨦᨩ")
+    await update.message.reply_text("˒˓  ¡𝖤𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈! Esperando que asigne los objetos {encubridor(user)}  ᨦᨩ")
 
     try:
         await context.bot.send_photo(
