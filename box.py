@@ -12,11 +12,7 @@ esperando_elementos = {}   # user_id -> chat_id
 EMOJIS_PROHIBIDOS = {"🎳", "🎰", "🏀", "⚽", "🎲"}
 
 ERRORES_PROHIBIDOS = [
-    "¡Ese emoji no está permitido en la caja! 🚫",
-    "¡Ese elemento está prohibido, elige otro! ❌",
-    "¡No se puede insertar ese objeto en la caja! 🚫",
-    "¡Ese emoji no es válido para el juego, intenta con otro! ❌",
-    "¡Ese elemento está fuera de juego, prueba con uno diferente! 🚫",
+    "¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝖾𝗌𝖾 𝖾𝗆𝗈𝗃𝗂 𝗇𝗈 𝗉𝗈𝖽𝗋𝖺 𝗌𝖾𝗋 𝖽𝖾𝗍𝖾𝖼𝗍𝖺𝖽𝗈 𝖼𝗈𝗆𝗈 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝗈𝗍𝗋𝗈!"
 ]
 
 # ================= CODIGO PRINCIPAL =================
@@ -33,7 +29,7 @@ async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_box_click")
     await update.message.reply_photo(
         photo=GIF_JITB,
-        caption="<b>៹ ࣪  📦 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝗊𝗎𝖾 𝗁𝖺𝗒 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗌𝖾𝗇 <code>/start_box &lt;cantidad&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
+        caption="<b> ៹ ࣪  📦 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝗊𝗎𝖾 𝗁𝖺𝗒 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗌𝖾𝗇 <code>/start_box &lt;cantidad&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -74,7 +70,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:    
         await context.bot.send_message(
             chat_id=encubridor["id"],
-            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂́𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...) 𝗌𝖾𝗋𝖺́𝗇 𝗆𝗈𝗌𝗍𝗋𝖺𝖽𝗈𝗌 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote> 𝖤𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝖾𝗌𝗍𝗈𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲. 𝖠𝗅 𝗍𝖾𝗇𝖾𝗋 𝖺𝗇𝗂𝗆𝖺𝖼𝗂𝗈𝗇𝖾𝗌 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗅𝗂𝗓𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝖾𝗇𝗏𝗂𝗈 𝖾𝗅 𝖻𝗈𝗍 𝗇𝗈 𝗅𝗈𝗌 𝗉𝗎𝖾𝖽𝖾 𝗋𝖾𝖼𝗈𝗇𝗈𝖼𝖾𝗋 𝖼𝗈𝗆𝗈 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺𝗌, 𝗀𝗋𝖺𝖼𝗂𝖺𝗌! </blockquote>",
+            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...), 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾𝗋𝖺𝗇 𝗆𝗈𝗌𝗍𝗋𝖺𝖽𝗈𝗌 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote> 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
             parse_mode="HTML"
         )
     
@@ -85,7 +81,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     except Exception:
         await update.message.reply_photo(photo=GIF_RECHAZADO,
-            caption=f"𝖴𝗉𝗌, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {encubridor(user)}. 𝖠𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈.")
+            caption=f"𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {encubridor(user)}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖾𝗇𝗌𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈.")
 
 # ================= MANEJO DE MENSAJES =================
 
