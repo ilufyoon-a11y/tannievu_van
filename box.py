@@ -80,7 +80,7 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
     gid = esperando_elementos[user_id]
 
     emojis_originales = extraer_emojis(texto)
-    if len(emojis_originales) != 6:
+    if len(emojis_originales) != 20:
         await update.message.reply_text("¡Alto ahí! Esos no son 6 emojis, por favor vuelve a enviar.")
         return
 
