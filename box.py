@@ -80,7 +80,7 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
     gid = esperando_elementos[user_id]
 
     emojis_originales = extraer_emojis(texto)
-    if len(emojis_originales) != 20:
+    if len(emojis_originales) != 50:
         await update.message.reply_text("¡Alto ahí! Esos no son 6 emojis, por favor vuelve a enviar.")
         return
 
@@ -140,9 +140,9 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}! El objeto sí estaba en la caja.\n"
-        f"Llevamos [{total}/6] objetos descubiertos.")
+        f"Llevamos [{total}/50] objetos descubiertos.")
 
-    if total == 6:
+    if total == 50:
         sesion["activa"] = False
         tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
         medallas = ["🥇", "🥈", "🥉"]
