@@ -9,6 +9,16 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, extraer_emojis, GI
 sesion_box = {}
 esperando_elementos = {}   # user_id -> chat_id
 
+EMOJIS_PROHIBIDOS = {"🎳", "🎰", "🏀", "⚽", "🎲"}
+
+ERRORES_PROHIBIDOS = [
+    "¡Ese emoji no está permitido en la caja! 🚫",
+    "¡Ese elemento está prohibido, elige otro! ❌",
+    "¡No se puede insertar ese objeto en la caja! 🚫",
+    "¡Ese emoji no es válido para el juego, intenta con otro! ❌",
+    "¡Ese elemento está fuera de juego, prueba con uno diferente! 🚫",
+]
+
 # ================= CODIGO PRINCIPAL =================
 
 async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -80,12 +90,17 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
     gid = esperando_elementos[user_id]
 
     emojis_originales = extraer_emojis(texto)
-    if len(emojis_originales) != 50:
+    if len(emojis_originales) != 6:
         await update.message.reply_text("¡Alto ahí! Esos no son 6 emojis, por favor vuelve a enviar.")
         return
 
     # Normalizar para comparación consistente
     emojis_originales = [normalizar_emoji(e) for e in emojis_originales]
+
+    prohibidos_encontrados = [e for e in emojis_originales if e in EMOJIS_PROHIBIDOS]
+    if prohibidos_encontrados:
+        await update.message.reply_text(random.choice(ERRORES_PROHIBIDOS))
+        return
 
     sesion_box[gid].update({
         "emojis_secretos": emojis_originales,
@@ -124,6 +139,10 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     emoji_enviado = normalizar_emoji(emojis_enviados[0])
     secretos_normalizados = [normalizar_emoji(e) for e in sesion.get("emojis_secretos", [])]
     adivinados_normalizados = [normalizar_emoji(e) for e in sesion.get("emojis_adivinados", [])]
+
+    if emoji_enviado in EMOJIS_PROHIBIDOS:
+        await update.message.reply_text(random.choice(ERRORES_PROHIBIDOS))
+        return
 
     if emoji_enviado in adivinados_normalizados:
         await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
