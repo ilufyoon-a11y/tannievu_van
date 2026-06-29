@@ -166,9 +166,9 @@ def botones_pagina(pagina: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(botones)
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_photo(photo=GIF_INFO)
-    await update.message.reply_text(
-        text=PAGINAS_INFO[0],
+    await update.message.reply_photo(
+        photo=GIF_INFO,
+        caption=PAGINAS_INFO[0],
         reply_markup=botones_pagina(0),
         parse_mode="HTML"
     )
@@ -179,8 +179,8 @@ async def manejar_paginas_info(update: Update, context: ContextTypes.DEFAULT_TYP
     if query.data == "info_noop":
         return
     pagina = int(query.data.split("_")[-1])
-    await query.edit_message_text(
-        text=PAGINAS_INFO[pagina],
+    await query.edit_message_caption(
+        caption=PAGINAS_INFO[pagina],
         reply_markup=botones_pagina(pagina),
         parse_mode="HTML"
     )
