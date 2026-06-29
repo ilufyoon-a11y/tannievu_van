@@ -70,14 +70,14 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     esperando_elementos[encubridor["id"]] = chat_id
     await update.message.reply_text(f"˒˓  ¡{encubridor['name']} 𝖾𝗌 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈! Esperando que asigne los objetos  ᨦᨩ")
-
+    
     try:    
         await context.bot.send_message(
             chat_id=encubridor["id"],
-            text=(f"¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!\n\n"
-                  "𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂́𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...) 𝗌𝖾𝗋𝖺́𝗇 𝗆𝗈𝗌𝗍𝗋𝖺𝖽𝗈𝗌 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.")
+            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂́𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...) 𝗌𝖾𝗋𝖺́𝗇 𝗆𝗈𝗌𝗍𝗋𝖺𝖽𝗈𝗌 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote> 𝖤𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝖾𝗌𝗍𝗈𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲. 𝖠𝗅 𝗍𝖾𝗇𝖾𝗋 𝖺𝗇𝗂𝗆𝖺𝖼𝗂𝗈𝗇𝖾𝗌 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗅𝗂𝗓𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝖾𝗇𝗏𝗂𝗈 𝖾𝗅 𝖻𝗈𝗍 𝗇𝗈 𝗅𝗈𝗌 𝗉𝗎𝖾𝖽𝖾 𝗋𝖾𝖼𝗈𝗇𝗈𝖼𝖾𝗋 𝖼𝗈𝗆𝗈 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺𝗌, 𝗀𝗋𝖺𝖼𝗂𝖺𝗌! </blockquote>",
+            parse_mode="HTML"
         )
-
+    
         await context.bot.send_sticker(
             chat_id=encubridor["id"],
             sticker="CAACAgEAAxkBA0WkVGpCeFxv3hOINwnldaJhBC_FXDhhAAIbCQAC-nQYRn3vKswkIhekPAQ"
