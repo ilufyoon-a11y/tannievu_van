@@ -158,9 +158,9 @@ def botones_pagina(pagina: int) -> InlineKeyboardMarkup:
     botones = []
     fila = []
     if pagina > 0:
-        fila.append(InlineKeyboardButton("⤸", callback_data=f"info_pag_{pagina - 1}"))
+        fila.append(InlineKeyboardButton("⮨", callback_data=f"info_pag_{pagina - 1}"))
     if pagina < total - 1:
-        fila.append(InlineKeyboardButton("⤿", callback_data=f"info_pag_{pagina + 1}"))
+        fila.append(InlineKeyboardButton("⮩", callback_data=f"info_pag_{pagina + 1}"))
     if fila:
         botones.append(fila)
     return InlineKeyboardMarkup(botones)
