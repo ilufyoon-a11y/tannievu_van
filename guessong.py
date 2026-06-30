@@ -17,6 +17,10 @@ lovers = ["BTS", "RM", "Agust D", "j-hope", "Jimin", "V", "Jung Kook", "Jin"]
 # o cambiar).
 sesion_song = {}   # chat_id -> {"jugadores": [...], "activa": bool, ...}
 
+def reset_guessong_chat(chat_id: int):
+    """Apaga y limpia la partida de Adivina la Canción de un chat puntual (usado por /off_van)."""
+    sesion_song.pop(chat_id, None)
+
 # ================= MOTOR DE AUDIO (iTunes & Pydub) =================
 
 def obtener_canciones(excluir_ids=None):
