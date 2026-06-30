@@ -229,7 +229,8 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from pirata import sesion_pirata
     from mayoromenor import sesion_mom
     from carrera import sesion_carrera
-    from anagrama import sesion_anagrama, _reset_sesion as reset_anagrama
+    from anagrama import reset_anagrama_chat
+    from guessong import reset_guessong_chat
     from slots import sesion_slots
 
     chat_id = update.effective_chat.id
@@ -255,7 +256,8 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del sesion_carrera[chat_id]
     if chat_id in sesion_slots:
         del sesion_slots[chat_id]
-    reset_anagrama()
+    reset_anagrama_chat(chat_id)
+    reset_guessong_chat(chat_id)
 
     await update.message.reply_photo(
         photo=GIF_OFFVAN,
