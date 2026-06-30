@@ -56,9 +56,9 @@ async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_charada["fase_registro"] = True
     sesion_charada["activa"] = False
 
-    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_box_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_charada_click")
     await update.message.reply_photo(
-        photo=GIF_JITB,
+        photo=GIF_CHARADA,
         caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ lɑs Chɑrɑdɑs!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_charada &lt;cantidad&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
@@ -73,7 +73,10 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if len(sesion_charada["jugadores"]) < 4:
         await update.message.reply_text("Se requiere un minimo de 4 personɑs pɑrɑ jugɑr.")
-        await update.message.sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ"
+        )
         return
 
     sesion_charada["fase_registro"] = False
