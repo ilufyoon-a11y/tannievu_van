@@ -183,7 +183,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             extra = f" — +{robux_p} Robux 🟥" if robux_p else ""
             msg += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
             if robux_p and jugador_obj:
-                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"Box puesto {i+1} 📦")
+                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1} 📦")
         await context.bot.send_message(chat_id=chat_id, text=msg)
 
 # ================= MANEJO DE BOTONES =================
