@@ -117,9 +117,11 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     marcados_global = set()
     markup = construir_teclado_tablero(tablero)
     msg = await context.bot.send_message(
-        chat_id=chat_id,
-        text="🎯 ¡𝗧𝗔𝗕𝗟𝗘𝗥𝗢 𝗗𝗘 𝗖𝗔𝗖𝗘𝗥𝗜𝗔ⵑ\n\nEncuentrɑ los 6 emojis de tu cɑrtillɑ y presionɑlos. ¡El primero en completɑrlɑ gɑnɑ! 🏆"
+    chat_id=chat_id,
+    text="🎯 ¡𝗧𝗔𝗕𝗟𝗘𝗥𝗢 𝗗𝗘 𝗖𝗔𝗖𝗘𝗥𝗜𝗔ⵑ\n\nEncuentrɑ los 6 emojis de tu cɑrtillɑ y presionɑlos. ¡El primero en completɑrlɑ gɑnɑ! 🏆",
+    reply_markup=markup
     )
+
     sesion_caseria["tablero_msg_id"] = msg.message_id
 
     for uid, datos in sesion_caseria["jugadores"].items():
