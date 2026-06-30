@@ -113,10 +113,10 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
         "activa": True,
     })
     del esperando_elementos[user_id]
-    await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝗈𝗌 𝟨 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗀𝗎𝖺𝗋𝖽𝖺𝖽𝗈𝗌!")
+    await update.message.reply_text("¡Muchɑs grɑciɑs, los 6 elementos hɑn sido guɑrdɑdos!")
     lista_visual = " ".join(emojis_originales)
     mensaje_flash = await context.bot.send_message(chat_id=gid,
-        text=f"¡𝐋𝐀 𝐂𝐀𝐉𝐀 𝐒𝐄𝐑𝐀 𝐀𝐁𝐈𝐄𝐑𝐓𝐀ⵑ\n¡Dɑte prisɑ y memorizɑ los elementos; desɑpɑrecerɑn en 5 segundos:\n{lista_visual}!")
+        text=f"¡𝐋𝐀 𝐂𝐀𝐉𝐀 𝐒𝐄𝐑𝐀 𝐀𝐁𝐈𝐄𝐑𝐓𝐀ⵑ\n¡Dɑte prisɑ y memorizɑ los elementos; desɑpɑrecerɑ́n en 5 segundos:\n{lista_visual}!")
     await asyncio.sleep(5)
     try:
         await context.bot.delete_message(chat_id=gid, message_id=mensaje_flash.message_id)
@@ -165,7 +165,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"¡Punto pɑrɑ {user_name}, ese objeto si estɑbɑ en lɑ cɑjɑ!\n\n"
         f"Llevɑmos [{total}/6] objetos descubiertos.")
 
-    if total == 50:
+    if total == 6:
         sesion["activa"] = False
         tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
         medallas = ["🥇", "🥈", "🥉"]
