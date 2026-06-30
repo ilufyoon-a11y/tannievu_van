@@ -81,7 +81,10 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if len(sesion_caseria["jugadores"]) < 2:
         await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
-        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ"
+        )
         return
 
     TAMANIO_TABLERO = 48
