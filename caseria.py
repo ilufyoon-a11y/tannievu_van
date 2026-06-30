@@ -177,7 +177,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             return
 
         marcados.add(emoji_pulsado)
-        await query.answer(f"✅ ¡Mɑrcɑste {emoji_pulsado}!. ¡Sigue ɑsi, llevɑs ({len(marcados)}/6) objetos completɑdos!", show_alert=False)
+        await query.answer(f"✅ ¡Sigue ɑsi, llevɑs ({len(marcados)}/6) objetos completɑdos!", show_alert=False)
 
         texto_cartilla = construir_texto_cartilla(cartilla, marcados)
         msg_cartilla_id = datos_jugador.get("cartilla_msg_id")
@@ -202,5 +202,6 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             await context.bot.send_message(
                 chat_id=gc,
                 text=f"🎉 ¡𝗕𝗜𝗡𝗚𝗢, 𝗬𝗔 𝗧𝗘𝗡𝗘𝗠𝗢𝗦 𝗨𝗡 𝗚𝗔𝗡𝗔𝗗𝗢𝗥/𝗔ⵑ 🏆\n\n"
-                     f"✨ {nombre_usuario(user)} fue quien completo su cɑrtillɑ primero. ¡Felicidɑdes!{extra_cas}"
+                     f"✨ {nombre_usuario(user)} fue quien completo su cɑrtillɑ primero. ¡Felicidɑdes!"
             )
+            await update.message.reply_sticker(sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ")
