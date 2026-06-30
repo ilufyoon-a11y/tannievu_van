@@ -68,12 +68,12 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_charada.get("fase_registro"):
-        await update.message.reply_text("⚠️ No hay ninguna convocatoria abierta. Usa `.charada` primero.")
+        await update.message.reply_text("No hɑy ningunɑ pɑrtidɑ ɑctivɑ.")
         return
 
     if len(sesion_charada["jugadores"]) < 4:
-        await update.message.reply_photo(photo=GIF_ERROR,
-            caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟦 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗋𝗆𝖺𝗋 𝗅𝗈𝗌 𝖽𝗈𝗌 𝖾𝗊𝗎𝗂𝗉𝗈𝗌.")
+        await update.message.reply_text("Se requiere un minimo de 4 personɑs pɑrɑ jugɑr.")
+        await update.message.sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
     sesion_charada["fase_registro"] = False
