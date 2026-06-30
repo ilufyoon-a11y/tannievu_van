@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
-from utils import sesion_puntos, sumar_robux, nombre_usuario
+from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_CASERIA
 
 # ================= DICCIONARIOS Y CONFIG =================
 
@@ -90,7 +90,7 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_voice(
                 chat_id=chat_id,
                 voice=audio,
-                caption=f"🎵 **𝖱𝖮𝖭𝖣𝖤 {sesion_song['ronda']}/5** ⏱️\n🪞 𝖳𝖨𝖤𝖭𝖤𝖲 𝖲𝖮𝖫𝖮 𝟦 𝖲𝖤𝖦𝖴𝖭𝖣𝖮𝖲... ¿𝖰𝗎𝖾́ 𝖼𝖺𝗇𝖼𝗂𝗈́𝗇 𝖾𝗌?",
+                caption=f"𝗥𝗢𝗡𝗗𝗔 {sesion_song['ronda']}/5 \n\n¿Logrɑste identificɑr que cɑncion es?",
                 reply_markup=reply_markup,
                 parse_mode="Markdown"
             )
@@ -113,15 +113,12 @@ async def unirse_adivina(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_song["fase_registro"] = True
     sesion_song["creador_id"] = update.effective_user.id
 
-    boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_adivina_click")
-    
-    await update.message.reply_text(
-        text="🎧 ─── **𝖦𝖴𝖤𝖲𝖲 𝖳𝖧𝖤 𝖲𝖮𝖭𝖦** ─── 🎧\n\n"
-             "៹ ࣪ ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝖢𝖺𝗇𝖼𝗂𝗈́𝗇! 𝖯𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝖺𝖻𝖺𝗃𝗈 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗌𝖺𝗅𝖺. ֪ 𓂃\n\n"
-             "👥 **𝖩𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌 𝖾𝗇 𝗅𝖺 𝗌𝖺𝗅𝖺:**\n  ( esperando jugadores... )\n\n"
-             "🔥 ¡𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾́𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝖾𝗅 𝖼𝗋𝖾𝖺𝖽𝗈𝗋 𝗎𝗌𝖾 `/start_adivina`!",
-        reply_markup=InlineKeyboardMarkup([[boton]]),
-        parse_mode="Markdown"
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_adivina_click")
+    await update.message.reply_photo(
+        photo=GIF_CASERIA,
+        caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ Adivinɑr lɑ cɑncion!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_hunt &lt;cantidad&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
+        parse_mode="HTML",
+        reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
 async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYPE):
