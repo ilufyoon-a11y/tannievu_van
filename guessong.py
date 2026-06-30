@@ -244,9 +244,6 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
                 f"• {next((j['name'] for j in sesion['jugadores'] if j['id'] == uid), uid)}: `{pts}` pts"
                 for uid, pts in sesion["puntajes"].items()
             ])
-            msg_puntos = f"✨ 𝗧𝗮𝗯𝗹𝗲𝗿𝗼 𝗱𝗲 𝗽𝗼𝘀𝗶𝗰𝗶𝗼𝗻𝗲𝘀:\n\n{tablero_corto}\n\n"
-
-            await context.bot.send_message(chat_id=chat_id, text=msg_puntos, parse_mode="Markdown")
             await enviar_siguiente_ronda(chat_id, context)
         else:
             sesion["activa"] = False
