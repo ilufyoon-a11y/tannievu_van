@@ -61,10 +61,11 @@ async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_caseria["fase_registro"] = True
     sesion_caseria["chat_id"] = None
 
-    boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_caseria_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_caseria_click")
     await update.message.reply_photo(
         photo=GIF_CASERIA,
-        caption="៹ ࣪  🔎 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖢𝖺𝗌𝖾𝗋𝗂́𝖺! 𝖯𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾  ֪   𓂃",
+        caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ Cɑceriɑ!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_hunt &lt;cantidad&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
+        parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
@@ -79,8 +80,8 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     if len(sesion_caseria["jugadores"]) < 2:
-        await update.message.reply_photo(photo=GIF_ERROR,
-            caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
+        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
     TAMANIO_TABLERO = 48
@@ -117,8 +118,7 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     markup = construir_teclado_tablero(tablero)
     msg = await context.bot.send_message(
         chat_id=chat_id,
-        text="🎯 **¡TABLERO DE LA CASERÍA!**\n\nEncuentra los 6 emojis de tu cartilla y ¡presiónalos! El primero en completarla gana. 🏆",
-        reply_markup=markup
+        text="🎯 ¡𝗧𝗔𝗕𝗟𝗘𝗥𝗢 𝗗𝗘 𝗖𝗔𝗖𝗘𝗥𝗜𝗔ⵑ\n\nEncuentrɑ los 6 emojis de tu cɑrtillɑ y presionɑlos. ¡El primero en completɑrlɑ gɑnɑ! 🏆"
     )
     sesion_caseria["tablero_msg_id"] = msg.message_id
 
@@ -127,8 +127,7 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
         nombre = datos.get("nombre", f"ID{uid}")
         msg_cartilla = await context.bot.send_message(
             chat_id=chat_id,
-            text=f"🎴 **Cartilla de {nombre}:**\n\n{texto_cartilla}",
-            parse_mode="Markdown"
+            text=f"🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 {nombre}:\n\n{texto_cartilla}"
         )
         datos["cartilla_msg_id"] = msg_cartilla.message_id
 
@@ -142,27 +141,23 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
     if query.data == "unirme_caseria_click":
         await query.answer()
         if sesion_caseria.get("activa"):
-            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+            await query.answer("¡Lo siento, yɑ hɑy unɑ pɑrtidɑ en curso!", show_alert=True)
             return
         uid = user.id
         if uid in sesion_caseria["jugadores"]:
             await query.answer("¡Ya estás dentro de la lista de espera, amiko! 😎", show_alert=True)
             return
         sesion_caseria["jugadores"][uid] = {"nombre": nombre_usuario(user)}
-        await query.message.reply_text(f"🎰 ֹ  {nombre_usuario(user)} se unió a la Casería, ¡suerte! 𓂃")
+        await query.message.reply_text(f"🎰 ֹ  {nombre_usuario(user)} se unio 𓂃")
 
     elif query.data.startswith("caseria_tablero_"):
         if not sesion_caseria.get("activa"):
-            await query.answer("No hay partida activa.", show_alert=True)
-            return
-
-        if query.data.startswith("caseria_tablero_ya_"):
-            await query.answer("¡Este emoji ya fue marcado por alguien! 👀", show_alert=True)
+            await query.answer("No hɑy ningunɑ pɑrtidɑ ɑctivɑ.", show_alert=True)
             return
 
         uid = user.id
         if uid not in sesion_caseria["jugadores"]:
-            await query.answer("❌ No estás participando en esta partida.", show_alert=True)
+            await query.answer("Lo siento, no puedes pɑrticipɑr en estɑ pɑrtidɑ", show_alert=True)
             return
 
         idx = int(query.data.split("_")[2])
@@ -173,14 +168,14 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
         marcados = datos_jugador["marcados"]
 
         if emoji_pulsado not in cartilla:
-            await query.answer("❌ Ese emoji no está en tu cartilla.", show_alert=True)
+            await query.answer("¡𝖠y, ese emoji no formɑ pɑrte de tu cɑrtillɑ!", show_alert=True)
             return
         if emoji_pulsado in marcados:
-            await query.answer("¡Ya marcaste ese emoji antes!", show_alert=True)
+            await query.answer("¡Cuidɑdo, yɑ mɑrcɑste ese emoji ɑnteriormente!", show_alert=True)
             return
 
         marcados.add(emoji_pulsado)
-        await query.answer(f"✅ ¡Marcaste {emoji_pulsado}! ({len(marcados)}/6)", show_alert=False)
+        await query.answer(f"✅ ¡Mɑrcɑste {emoji_pulsado}!. ¡Sigue ɑsi, llevɑs ({len(marcados)}/6) objetos completɑdos!", show_alert=False)
 
         texto_cartilla = construir_texto_cartilla(cartilla, marcados)
         msg_cartilla_id = datos_jugador.get("cartilla_msg_id")
@@ -191,8 +186,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
                 await context.bot.edit_message_text(
                     chat_id=gc,
                     message_id=msg_cartilla_id,
-                    text=f"🎴 **Cartilla de {nombre_jug}:**\n\n{texto_cartilla}",
-                    parse_mode="Markdown"
+                    text=f"🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 {nombre_jug}:\n\n{texto_cartilla}"
                 )
             except Exception:
                 pass
@@ -202,9 +196,9 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             gc = sesion_caseria["chat_id"]
             premio_cas = sesion_puntos.get("premio_actual", {}).get("caseria", 0)
             sumar_robux(uid, nombre_usuario(user), premio_cas, "Casería 🔎")
-            extra_cas = f"\n\n+{premio_cas} Robux 🟥" if premio_cas else ""
+            extra_cas = f"\n\n+{premio_cas} fichɑs" if premio_cas else ""
             await context.bot.send_message(
                 chat_id=gc,
-                text=f"🎉 **¡BINGO! ¡TENEMOS GANADOR/A!** 🏆\n\n"
-                     f"✨ **{nombre_usuario(user)}** completó su cartilla primero. ¡Felicidades!{extra_cas}"
+                text=f"🎉 ¡𝗕𝗜𝗡𝗚𝗢, 𝗬𝗔 𝗧𝗘𝗡𝗘𝗠𝗢𝗦 𝗨𝗡 𝗚𝗔𝗡𝗔𝗗𝗢𝗥/𝗔ⵑ 🏆\n\n"
+                     f"✨ {nombre_usuario(user)} fue quien completo su cɑrtillɑ primero. ¡Felicidɑdes!{extra_cas}"
             )
