@@ -27,12 +27,25 @@ def obtener_canciones():
         try:
             url = f"https://itunes.apple.com/search?term={artista}&entity=song&limit=15"
             response = requests.get(url).json()
-            canciones_validas = [track for track in response.get('results', []) if track.get('previewUrl')]
+            canciones_validas = [
+                track for track in response.get('results', [])
+                if track.get('previewUrl') and _es_artista_valido(track.get('artistName', ''))
+            ]
             all_songs.extend(canciones_validas)
         except Exception:
             continue
 
     if len(all_songs) < 4:
+        url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=30"
+        response = requests.get(url).json()
+        all_songs = [
+            track for track in response.get('results', [])
+            if track.get('previewUrl') and _es_artista_valido(track.get('artistName', ''))
+        ]
+
+    if not all_songs:
+        # Último recurso: traer canciones de BTS sin filtrar para que el
+        # juego no se rompa, aunque sea menos preciso.
         url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=30"
         response = requests.get(url).json()
         all_songs = [track for track in response.get('results', []) if track.get('previewUrl')]
@@ -53,6 +66,27 @@ def obtener_canciones():
     opciones = [correcta] + falsas
     random.shuffle(opciones)
     return correcta, opciones
+
+# Nombres de artista "tal cual" aparecen en iTunes para BTS y sus miembros
+# (en minúsculas, para comparar). Esto evita que el término de búsqueda
+# genérico ("V", "RM", "Jin"...) traiga canciones de artistas que no
+# tienen nada que ver (ej. Maroon 5).
+_ARTISTAS_VALIDOS = {
+    "bts", "rm", "agust d", "j-hope", "jimin", "v", "jung kook", "jungkook", "jin",
+}
+
+def _es_artista_valido(artist_name: str) -> bool:
+    nombre = artist_name.lower().strip()
+    # Coincidencia exacta o "bts" como parte del nombre del artista
+    # (ej. "BTS", "j-hope (방탄소년단)" suele incluir bts en algún punto,
+    # pero para evitar falsos positivos solo aceptamos match exacto o
+    # que contenga explícitamente "bts").
+    if nombre in _ARTISTAS_VALIDOS:
+        return True
+    if "bts" in nombre or "방탄소년단" in nombre:
+        return True
+    return False
+
 
 def descargar_y_recortar_audio(url_audio):
     archivo_temporal = "temp_itunes.m4a"
@@ -114,10 +148,10 @@ async def unirse_adivina(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "creador_id": update.effective_user.id,
     }
 
-    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗖𝗥𝗔ㅤㅤ!¡", callback_data="unirme_adivina_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_adivina_click")
     await update.message.reply_photo(
         photo=GIF_CASERIA,
-        caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ Adivinɑr lɑ cɑncion!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_adivina &lt;premio&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
+        caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ Adivinɑr lɑ cɑncion!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_guess &lt;premio&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -136,7 +170,7 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
     sesion = sesion_song[chat_id]
 
     if sesion["activa"]:
-        await query.answer("¡Lo siento, ya hay una partida en curso!", show_alert=True)
+        await query.answer("¡Lo siento, yɑ hɑy unɑ pɑrtidɑ en curso!", show_alert=True)
         return
 
     if any(j["id"] == user.id for j in sesion["jugadores"]):
@@ -150,7 +184,7 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
     chat_id = update.effective_chat.id
 
     if chat_id not in sesion_song or len(sesion_song[chat_id]["jugadores"]) < 2:
-        await update.message.reply_text("Se requiere un minimo de 2 personas para jugar.")
+        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
         await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
@@ -166,7 +200,7 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
 
     await context.bot.send_message(
         chat_id=chat_id,
-        text="🎧 ¡El juego ha comenzado! 🌸\nPreparando los clips... ¡Preparen sus oidos!",
+        text="🎧 ¡El juego hɑ comenzɑdo! Se estɑn extrɑyendo los clips, esten ɑtentos",
     )
 
     await enviar_siguiente_ronda(chat_id, context)
@@ -185,7 +219,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
     sesion = sesion_song[chat_id]
 
     if not any(j["id"] == user.id for j in sesion["jugadores"]):
-        await query.answer("🛑 ¡No estas inscrito en esta sala, causa!", show_alert=True)
+        await query.answer("🛑 Lo siento, yɑ hɑy unɑ rondɑ ejecutɑndose, esperɑ ɑ que se hɑgɑ unɑ nuevɑ", show_alert=True)
         return
 
     cancion_elegida = query.data.replace("mu_", "").lower().strip()
@@ -193,16 +227,16 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
 
     # --- CASO 1: ¡ACERTÓ! (Termina la ronda) ---
     if cancion_elegida == cancion_correcta:
-        await query.answer(f"🎉 ¡Acertaste, {user_name}!")
+        await query.answer(f"¡Acertɑste, {user_name}!")
         sesion["puntajes"][user.id] = sesion["puntajes"].get(user.id, 0) + 1
 
         # Guardar robux por ronda acertada
         premio_ronda = sesion_puntos.get("premio_actual", {}).get("adivina", 0)
         if premio_ronda > 0:
-            sumar_robux(user.id, user_name, premio_ronda, f"Adivina la canción 🎧 ronda {sesion['ronda']}")
+            sumar_robux(user.id, user_name, premio_ronda, f"Adivinɑ lɑ cɑncion rondɑ {sesion['ronda']}")
 
-        texto_resultado = f"🎉 **¡PUNTO PARA {user_name.upper()}!** 🌸\nAcertó: `{cancion_correcta.title()}`"
-        await query.edit_message_caption(caption=texto_resultado, parse_mode="Markdown")
+        texto_resultado = f"🎉 ¡Punto pɑrɑ {user_name}! \nLɑ cɑncion erɑ: {cancion_correcta.title()}"
+        await query.edit_message_caption(caption=texto_resultado)
 
         if sesion["ronda"] < 5:
             sesion["ronda"] += 1
@@ -210,7 +244,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
                 f"• {next((j['name'] for j in sesion['jugadores'] if j['id'] == uid), uid)}: `{pts}` pts"
                 for uid, pts in sesion["puntajes"].items()
             ])
-            msg_puntos = f"✨ **Tablero de posiciones:**\n{tablero_corto}\n\n¡Siguiente canción! 👇"
+            msg_puntos = f"✨ 𝗧𝗮𝗯𝗹𝗲𝗿𝗼 𝗱𝗲 𝗽𝗼𝘀𝗶𝗰𝗶𝗼𝗻𝗲𝘀:\n\n{tablero_corto}\n\n"
 
             await context.bot.send_message(chat_id=chat_id, text=msg_puntos, parse_mode="Markdown")
             await enviar_siguiente_ronda(chat_id, context)
@@ -219,22 +253,20 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
             tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
             medallas = ["🥇", "🥈", "🥉"]
 
-            texto_final = "🏁 **¡FIN DEL JUEGO!** 🏁\n\n🏆 **RESULTADOS FINALES:**\n"
+            texto_final = "¡𝗙𝗜𝗡 𝗗𝗘𝗟 𝗝𝗨𝗘𝗚𝗢ⵑ 🏁\n\n🏆 𝗣𝘂𝗲𝘀𝘁𝗼𝘀:\n\n"
             for i, (uid_p, pts) in enumerate(tabla):
                 jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_p), None)
                 nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_p}"
                 dec = medallas[i] if i < 3 else "🔹"
-                texto_final += f"{dec} {nombre_p}: `{pts}` puntos\n"
-
-            texto_final += "\n¿Quieren revancha? Abran otra sala usando `/adivina` 👑🔥"
+                texto_final += f"{dec} {nombre_p}: {pts} pt(s)s\n"
             await context.bot.send_message(chat_id=chat_id, text=texto_final, parse_mode="Markdown")
 
     # --- CASO 2: SE EQUIVOCÓ (La ronda NO se muere, los demás continúan) ---
     else:
-        await query.answer(f"❌ Esa no es la respuesta, {user_name}...", show_alert=False)
+        await query.answer(f"Esɑ no es lɑ respuestɑ, {user_name}...", show_alert=False)
 
         mencion = user.mention_markdown_v2() if user.username else f"`{user_name}`"
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"💀 Esa no es la respuesta, {mencion} ¡Sigan intentando! 🎧",
+            text=f"Esɑ no es lɑ respuestɑ, {mencion}. ¡Sigue intentɑndo!",
         )
