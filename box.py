@@ -184,7 +184,6 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         for i, (uid_b, pts) in enumerate(tabla):
             jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_b), None)
             nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_b}"
-            dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
             extra = f" — +{robux_p} fichɑs" if robux_p else ""
             msg += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
