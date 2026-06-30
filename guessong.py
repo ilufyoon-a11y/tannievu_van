@@ -212,8 +212,12 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
     sesion = sesion_song[chat_id]
 
     args = context.args or []
-    premio = int(args[0]) if args and args[0].isdigit() else 0
-    sesion_puntos["premio_actual"]["adivina"] = premio
+    try:
+        sesion_puntos["premio_actual"]["adivina_1"] = int(args[0]) if len(args) > 0 else 0
+        sesion_puntos["premio_actual"]["adivina_2"] = int(args[1]) if len(args) > 1 else 0
+        sesion_puntos["premio_actual"]["adivina_3"] = int(args[2]) if len(args) > 2 else 0
+    except ValueError:
+        pass
 
     sesion["activa"] = True
     sesion["ronda"] = 1
@@ -252,11 +256,6 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
         await query.answer(f"¡Acertɑste, {user_name}!")
         sesion["puntajes"][user.id] = sesion["puntajes"].get(user.id, 0) + 1
 
-        # Guardar robux por ronda acertada
-        premio_ronda = sesion_puntos.get("premio_actual", {}).get("adivina", 0)
-        if premio_ronda > 0:
-            sumar_robux(user.id, user_name, premio_ronda, f"Adivinɑ lɑ cɑncion rondɑ {sesion['ronda']}")
-
         texto_resultado = f"🎉 ¡Punto pɑrɑ {user_name}! \nLɑ cɑncion erɑ: {cancion_correcta.title()}"
         await query.edit_message_caption(caption=texto_resultado)
 
@@ -267,13 +266,22 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
             sesion["activa"] = False
             tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
             medallas = ["🥇", "🥈", "🥉"]
+            premios_adivina = [
+                sesion_puntos.get("premio_actual", {}).get("adivina_1", 0),
+                sesion_puntos.get("premio_actual", {}).get("adivina_2", 0),
+                sesion_puntos.get("premio_actual", {}).get("adivina_3", 0),
+            ]
 
             texto_final = "¡𝗙𝗜𝗡 𝗗𝗘𝗟 𝗝𝗨𝗘𝗚𝗢ⵑ 🏁\n\n🏆 𝗣𝘂𝗲𝘀𝘁𝗼𝘀:\n\n"
             for i, (uid_p, pts) in enumerate(tabla):
                 jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_p), None)
                 nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_p}"
                 dec = medallas[i] if i < 3 else "🔹"
-                texto_final += f"{dec} {nombre_p}: {pts} pt(s)\n"
+                robux_p = premios_adivina[i] if i < 3 else 0
+                extra = f" — +{robux_p} fichɑs" if robux_p else ""
+                texto_final += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
+                if robux_p and jugador_obj:
+                    sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1} 🎧")
             await context.bot.send_message(chat_id=chat_id, text=texto_final)
             await context.bot.send_sticker(
                 chat_id=chat_id,
