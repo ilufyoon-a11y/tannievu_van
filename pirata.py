@@ -26,10 +26,11 @@ async def unirse_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_pirata["agujerosave"] = []
     sesion_pirata["respondio_turno"] = False
 
-    boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_pirata_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_box_click")
     await update.message.reply_photo(
         photo=GIF_PIRATA,
-        caption="🏴‍☠️ ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖯𝗂𝗋𝖺𝗍𝖺! 𝖯𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾  ֪   𓂃",
+        caption="<b> ៹ ࣪  📦 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖲𝖺𝗅𝗍𝖺 𝖯𝗂𝗋𝖺𝗍𝖺!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗌𝖾𝗇 <code>/start_box &lt;cantidad&gt;</code> pɑrɑ inicɑr el juego.</blockquote>",
+        parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
@@ -44,8 +45,8 @@ async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     if len(sesion_pirata["jugadores"]) < 2:
-        await update.message.reply_photo(photo=GIF_ERROR,
-            caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
+        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
     sesion_pirata["activa"] = True
@@ -55,9 +56,9 @@ async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_pirata["agujerofake"] = random.randint(1, 20)
 
     await context.bot.send_message(chat_id=chat_id,
-        text="🏴‍☠️ **¡LA RULETA DEL PIRATA COMIENZA!**\n\n"
-             "Hay 20 ranuras. Una tiene trampa 💀 Las demás son seguras. ¡Clava tu espada con cuidado!\n\n"
-             f"El turno es de **{next(j['name'] for j in sesion_pirata['jugadores'] if j['id'] == sesion_pirata['sobrevivientes'][0])}**",
+        text="¡𝗟𝗔 𝗣𝗔𝗥𝗧𝗜𝗗𝗔 𝗗𝗘 𝗣𝗜𝗥𝗔𝗧𝗔 𝗛𝗔 𝗖𝗢𝗠𝗘𝗡𝗭𝗔𝗗𝗢ⵑ\n\n"
+             "𝖧𝖺𝗒 𝟤𝟢 𝗋𝖺𝗇𝗎𝗋𝖺𝗌 𝖽𝖾 𝗅𝖺𝗌 𝖼𝗎𝖺𝗅𝖾𝗌 𝗎𝗇𝖺 𝖺𝖼𝗍𝗂𝗏𝖺 𝖾𝗅 𝗆𝖾𝖼𝖺𝗇𝗂𝗌𝗆𝗈. ¡𝖲𝖾 𝗉𝗋𝖾𝖼𝖺𝗏𝗂𝖽@ 𝖺𝗅 𝖾𝗌𝖼𝗈𝗀𝖾𝗋 𝖽𝗈𝗇𝖽𝖾 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝗌 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺!\n\n"
+             f"¡{next(j['name'] for j in sesion_pirata['jugadores'] if j['id'] == sesion_pirata['sobrevivientes'][0])} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!",
         parse_mode="Markdown")
 
     await enviar_turno_pirata(chat_id, context)
@@ -80,7 +81,7 @@ async def enviar_turno_pirata(chat_id, context):
     botones = [todos_los_botones[i:i+4] for i in range(0, len(todos_los_botones), 4)]
 
     await context.bot.send_message(chat_id=chat_id,
-        text=f"🗡️ Turno de **{nombre_actual}** — ¡elige una ranura!",
+        text=f"¡{nombre_actual} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!",
         reply_markup=InlineKeyboardMarkup(botones),
         parse_mode="Markdown")
 
@@ -94,11 +95,11 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
     if query.data == "unirme_pirata_click":
         await query.answer()
         if sesion_pirata.get("activa"):
-            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈ⵑ", show_alert=True)
             return
         if not any(j["id"] == user.id for j in sesion_pirata["jugadores"]):
             sesion_pirata["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-            await query.message.reply_text(f"🏴‍☠️ ֹ  {nombre_usuario(user)} se unió al barco 𓂃")
+            await query.message.reply_text(f"🏴‍☠️ ֹ  {nombre_usuario(user)} 𝗌𝖾 𝗎𝗇𝗂𝗈 𓂃")
 
     elif query.data.startswith("pirata_clic_"):
         await query.answer()
