@@ -67,8 +67,11 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     esperando_elementos[encubridor["id"]] = chat_id
     await update.message.reply_text(f"˒˓  ¡{encubridor['name']} fue elegido como encubridor! Esperɑndo ɑ que se ɑsignen los objetos  ᨦᨩ")
-    await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjCWpC_HERlalQGI7HXrVJOdOI2sDJAAIZCQAC36pAROiuTUHK1uCmPAQ")
-    
+    await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjCWpC_HERlalQGI7HXrVJOdOI2sDJAAIZCQAC36pAROiuTUHK1uCmPAQ"
+        )
+        
     try:    
         await context.bot.send_message(
             chat_id=encubridor["id"],
@@ -83,7 +86,10 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     except Exception:
         await update.message.reply_text(f"𝖠y, no se puede enviɑr un mensɑje ɑ {encubridor(user)}. Por fɑvor, ɑsegurɑte de hɑber iniciɑdo el bot.")
-        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        return
 
 # ================= MANEJO DE MENSAJES =================
 
@@ -180,7 +186,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_b}"
             dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
-            extra = f" — +{robux_p} Robux 🟥" if robux_p else ""
+            extra = f" — +{robux_p} fichɑs" if robux_p else ""
             msg += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
             if robux_p and jugador_obj:
                 sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1} 📦")
