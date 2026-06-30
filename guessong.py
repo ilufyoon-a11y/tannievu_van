@@ -19,13 +19,14 @@ sesion_song = {}   # chat_id -> {"jugadores": [...], "activa": bool, ...}
 
 # ================= MOTOR DE AUDIO (iTunes & Pydub) =================
 
-def obtener_canciones():
+def obtener_canciones(excluir_ids=None):
+    excluir_ids = excluir_ids or set()
     seleccionados = random.sample(lovers, 4)
     all_songs = []
 
     for artista in seleccionados:
         try:
-            url = f"https://itunes.apple.com/search?term={artista}&entity=song&limit=15"
+            url = f"https://itunes.apple.com/search?term={artista}&entity=song&limit=25"
             response = requests.get(url).json()
             canciones_validas = [
                 track for track in response.get('results', [])
@@ -35,20 +36,35 @@ def obtener_canciones():
         except Exception:
             continue
 
-    if len(all_songs) < 4:
-        url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=30"
+    if len(all_songs) < 6:
+        url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=50"
         response = requests.get(url).json()
-        all_songs = [
+        extra = [
             track for track in response.get('results', [])
             if track.get('previewUrl') and _es_artista_valido(track.get('artistName', ''))
         ]
+        all_songs.extend(extra)
 
     if not all_songs:
         # Último recurso: traer canciones de BTS sin filtrar para que el
         # juego no se rompa, aunque sea menos preciso.
-        url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=30"
+        url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=50"
         response = requests.get(url).json()
         all_songs = [track for track in response.get('results', []) if track.get('previewUrl')]
+
+    # Quitar duplicados (mismo trackId puede salir varias veces al combinar búsquedas)
+    vistos = set()
+    unicos = []
+    for c in all_songs:
+        if c['trackId'] not in vistos:
+            vistos.add(c['trackId'])
+            unicos.append(c)
+    all_songs = unicos
+
+    # Evitar repetir canciones ya usadas en la partida actual, si hay opciones suficientes
+    disponibles = [c for c in all_songs if c['trackId'] not in excluir_ids]
+    if len(disponibles) >= 4:
+        all_songs = disponibles
 
     random.shuffle(all_songs)
     correcta = random.choice(all_songs)
@@ -77,14 +93,16 @@ _ARTISTAS_VALIDOS = {
 
 def _es_artista_valido(artist_name: str) -> bool:
     nombre = artist_name.lower().strip()
-    # Coincidencia exacta o "bts" como parte del nombre del artista
-    # (ej. "BTS", "j-hope (방탄소년단)" suele incluir bts en algún punto,
-    # pero para evitar falsos positivos solo aceptamos match exacto o
-    # que contenga explícitamente "bts").
     if nombre in _ARTISTAS_VALIDOS:
         return True
     if "bts" in nombre or "방탄소년단" in nombre:
         return True
+    # Coincidencia parcial para casos como "RM (Feat. ...)" o nombres con
+    # paréntesis/colaboraciones, siempre que el nombre del miembro sea
+    # razonablemente largo (evita falsos positivos con "v" suelto).
+    for valido in _ARTISTAS_VALIDOS:
+        if len(valido) > 2 and valido in nombre:
+            return True
     return False
 
 
@@ -109,7 +127,10 @@ def descargar_y_recortar_audio(url_audio):
 async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
     sesion = sesion_song[chat_id]
     try:
-        correcta, opciones = obtener_canciones()
+        usadas = sesion.setdefault("usadas_ids", set())
+        correcta, opciones = obtener_canciones(excluir_ids=usadas)
+        usadas.add(correcta['trackId'])
+
         archivo_reto = descargar_y_recortar_audio(correcta['previewUrl'])
 
         sesion["correcta"] = correcta['trackName'].lower().strip()
@@ -197,6 +218,7 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
     sesion["activa"] = True
     sesion["ronda"] = 1
     sesion["puntajes"] = {j["id"]: 0 for j in sesion["jugadores"]}
+    sesion["usadas_ids"] = set()
 
     await context.bot.send_message(
         chat_id=chat_id,
@@ -240,11 +262,6 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
 
         if sesion["ronda"] < 5:
             sesion["ronda"] += 1
-            tablero_corto = "\n".join([
-                f"• {next((j['name'] for j in sesion['jugadores'] if j['id'] == uid), uid)}: `{pts}` pts"
-                for uid, pts in sesion["puntajes"].items()
-            ])
-            await context.bot.send_message(chat_id=chat_id, text=f"Tɑblero ɑctuɑl:\n{tablero_corto}")
             await enviar_siguiente_ronda(chat_id, context)
         else:
             sesion["activa"] = False
@@ -267,8 +284,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
     else:
         await query.answer(f"Esɑ no es lɑ respuestɑ, {user_name}...", show_alert=False)
 
-        mencion = user.mention_markdown_v2() if user.username else f"`{user_name}`"
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"Esɑ no es lɑ respuestɑ, {mencion}. ¡Sigue intentɑndo!",
+            text=f"Esɑ no es lɑ respuestɑ, {user_name}. ¡Sigue intentɑndo!",
         )
