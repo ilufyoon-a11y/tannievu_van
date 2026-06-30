@@ -244,6 +244,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
                 f"• {next((j['name'] for j in sesion['jugadores'] if j['id'] == uid), uid)}: `{pts}` pts"
                 for uid, pts in sesion["puntajes"].items()
             ])
+            await context.bot.send_message(chat_id=chat_id, text=f"Tɑblero ɑctuɑl:\n{tablero_corto}")
             await enviar_siguiente_ronda(chat_id, context)
         else:
             sesion["activa"] = False
@@ -255,10 +256,10 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
                 jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_p), None)
                 nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_p}"
                 dec = medallas[i] if i < 3 else "🔹"
-                texto_final += f"{dec} {nombre_p}: {pts} pt(s)s\n"
-            await context.bot.send_message(chat_id=chat_id, text=texto_final")
-            await context.bot.send_sticker(  # 👈 corregido
-                chat_id=gc,
+                texto_final += f"{dec} {nombre_p}: {pts} pt(s)\n"
+            await context.bot.send_message(chat_id=chat_id, text=texto_final)
+            await context.bot.send_sticker(
+                chat_id=chat_id,
                 sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
             )
 
