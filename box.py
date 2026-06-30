@@ -12,7 +12,7 @@ esperando_elementos = {}   # user_id -> chat_id
 EMOJIS_PROHIBIDOS = {"🎳", "🎰", "🏀", "⚽", "🎲"}
 
 ERRORES_PROHIBIDOS = [
-    "¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝖾𝗌𝖾 𝖾𝗆𝗈𝗃𝗂 𝗇𝗈 𝗉𝗈𝖽𝗋𝖺 𝗌𝖾𝗋 𝖽𝖾𝗍𝖾𝖼𝗍𝖺𝖽𝗈 𝖼𝗈𝗆𝗈 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝗈𝗍𝗋𝗈!"
+    "Lo siento, ese emoji no podrɑ ser detectɑdo como respuestɑ, por fɑvor, pruebɑ con otro"
 ]
 
 # ================= CODIGO PRINCIPAL =================
@@ -29,7 +29,7 @@ async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_box_click")
     await update.message.reply_photo(
         photo=GIF_JITB,
-        caption="<b> ៹ ࣪  📦 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝗊𝗎𝖾 𝗁𝖺𝗒 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗌𝖾𝗇 <code>/start_box &lt;cantidad&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
+        caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ ¿Que hɑy en lɑ cɑjɑ?!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_box &lt;cantidad&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -42,11 +42,12 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos["premio_actual"]["box_1"] = int(args[0]) if len(args) > 0 else 0
         sesion_puntos["premio_actual"]["box_2"] = int(args[1]) if len(args) > 1 else 0
         sesion_puntos["premio_actual"]["box_3"] = int(args[2]) if len(args) > 2 else 0
+        
     except ValueError:
         pass
 
     if chat_id not in sesion_box or len(sesion_box[chat_id]["jugadores"]) < 2:
-        await update.message.reply_text("𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
+        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
         await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
@@ -65,12 +66,13 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
 
     esperando_elementos[encubridor["id"]] = chat_id
-    await update.message.reply_text(f"˒˓  ¡{encubridor['name']} 𝖾𝗌 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈! Esperando que asigne los objetos  ᨦᨩ")
+    await update.message.reply_text(f"˒˓  ¡{encubridor['name']} fue elegido como encubridor! Esperɑndo ɑ que se ɑsignen los objetos  ᨦᨩ")
+    await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjCWpC_HERlalQGI7HXrVJOdOI2sDJAAIZCQAC36pAROiuTUHK1uCmPAQ")
     
     try:    
         await context.bot.send_message(
             chat_id=encubridor["id"],
-            text="<b> ¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! </b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...), 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾𝗋𝖺𝗇 𝗆𝗈𝗌𝗍𝗋𝖺𝖽𝗈𝗌 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote> 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
+            text="<b> ¡En horɑ buenɑ, te tocɑ ser el encubridor!</b>\n\n Enviɑ exɑctɑmente 6 emojis sin espɑcios (🌸🌟📰...); se mostrɑrɑn brevemente ɑ los jugɑdores.\n\n<blockquote> Por fɑvor, evitɑ enviɑr los siguientes emojis: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
             parse_mode="HTML"
         )
     
@@ -80,8 +82,8 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         
     except Exception:
-        await update.message.reply_photo(photo=GIF_RECHAZADO,
-            caption=f"𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {encubridor(user)}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖾𝗇𝗌𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈.")
+        await update.message.reply_text(f"𝖠y, no se puede enviɑr un mensɑje ɑ {encubridor(user)}. Por fɑvor, ɑsegurɑte de hɑber iniciɑdo el bot.")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
 
 # ================= MANEJO DE MENSAJES =================
 
@@ -93,7 +95,7 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
 
     emojis_originales = extraer_emojis(texto)
     if len(emojis_originales) != 6:
-        await update.message.reply_text("¡Alto ahí! Esos no son 6 emojis, por favor vuelve a enviar.")
+        await update.message.reply_text("¡Un momento! Esos no son 6 emojis; por fɑvor, enviɑlos de nuevo.")
         return
 
     # Normalizar para comparación consistente
@@ -114,14 +116,14 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
     await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝗈𝗌 𝟨 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗀𝗎𝖺𝗋𝖽𝖺𝖽𝗈𝗌!")
     lista_visual = " ".join(emojis_originales)
     mensaje_flash = await context.bot.send_message(chat_id=gid,
-        text=f"¡𝗟𝗔 𝗖𝗔𝗝𝗔 𝗦𝗘𝗥𝗔 𝗔𝗕𝗜𝗘𝗥𝗧𝗔ⵑ\n\nMemoriza los elementos, desaparecerán en 5 segundos:\n\n{lista_visual}")
+        text=f"¡𝐋𝐀 𝐂𝐀𝐉𝐀 𝐒𝐄𝐑𝐀 𝐀𝐁𝐈𝐄𝐑𝐓𝐀ⵑ\n¡Dɑte prisɑ y memorizɑ los elementos; desɑpɑrecerɑn en 5 segundos:\n{lista_visual}!")
     await asyncio.sleep(5)
     try:
         await context.bot.delete_message(chat_id=gid, message_id=mensaje_flash.message_id)
     except Exception:
         pass
     await context.bot.send_message(chat_id=gid,
-        text="¡𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗖𝗘𝗥𝗥𝗔𝗗𝗔ⵑ\n\nEnvía tus respuestas de uno en uno. Si coincide con un objeto de la caja, ganas 1 punto.")
+        text="¡𝐋𝐀 𝐂𝐀𝐉𝐀 𝐅𝐔𝐄 𝐂𝐄𝐑𝐑𝐀𝐃𝐀ⵑ\nEnviɑ tus respuestɑs unɑ por unɑ. Si coinciden con ɑlgun elemento de lɑ cɑjɑ, ¡gɑnɑs 1 punto!")
 
 def normalizar_emoji(e: str) -> str:
     """Normaliza un emoji removiendo variantes de presentación."""
@@ -147,10 +149,10 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if emoji_enviado in adivinados_normalizados:
-        await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝖿𝗎𝖾 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝖺𝗇𝗍𝖾𝗌!")
+        await update.message.reply_text("¡Ups, ese objeto yɑ fue descubierto!")
         return
     if emoji_enviado not in secretos_normalizados:
-        await update.message.reply_text("¡𝖤𝗌𝖾 𝗈𝖻𝗃𝖾𝗍𝗈 𝗇𝗈 𝖾𝗌𝗍𝖺𝖻𝖺 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺!")
+        await update.message.reply_text("¡Ese objeto no estɑbɑ dentro de lɑ cɑjɑ!")
         return
 
     indice = secretos_normalizados.index(emoji_enviado)
@@ -160,14 +162,14 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     total = len(sesion["emojis_adivinados"])
 
     await update.message.reply_text(
-        f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}! El objeto sí estaba en la caja.\n"
-        f"Llevamos [{total}/50] objetos descubiertos.")
+        f"¡Punto pɑrɑ {user_name}, ese objeto si estɑbɑ en lɑ cɑjɑ!\n\n"
+        f"Llevɑmos [{total}/6] objetos descubiertos.")
 
     if total == 50:
         sesion["activa"] = False
         tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
         medallas = ["🥇", "🥈", "🥉"]
-        msg = "¡𝖱𝖮𝖭𝖣𝖠 𝖥𝖨𝖭𝖠𝖫𝖨𝖹𝖠𝖣𝖠! Se descubrieron todos los objetos.\n\nPuntuación final:\n"
+        msg = "¡𝐑𝐎𝐍𝐃𝐀 𝐅𝐈𝐍𝐀𝐋𝐈𝐙𝐀𝐃𝐀ⵑ Se descubrieron todos los objetos.\n\n𝗣𝘂𝗻𝘁𝘂𝗮𝗰𝗶𝗼𝗻 𝗳𝗶𝗻𝗮𝗹:\n\n"
         premios_box = [
             sesion_puntos.get("premio_actual", {}).get("box_1", 0),
             sesion_puntos.get("premio_actual", {}).get("box_2", 0),
@@ -196,8 +198,8 @@ async def manejar_botones_box(update: Update, context: ContextTypes.DEFAULT_TYPE
         if chat_id not in sesion_box:
             sesion_box[chat_id] = {"jugadores": [], "activa": False}
         if sesion_box[chat_id]["activa"]:
-            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+            await query.answer("¡Lo siento, yɑ hɑy unɑ pɑrtidɑ en curso!", show_alert=True)
             return
         if not any(j["id"] == user.id for j in sesion_box[chat_id]["jugadores"]):
             sesion_box[chat_id]["jugadores"].append({"id": user.id, "name": nombre_usuario(user), "username": user.username})
-            await query.message.reply_text(f"📦  {nombre_usuario(user)} se unió 𓂃")
+            await query.message.reply_text(f"📦  {nombre_usuario(user)} se unio 𓂃")
