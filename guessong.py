@@ -12,8 +12,7 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_CASERIA
 lovers = ["BTS", "RM", "Agust D", "j-hope", "Jimin", "V", "Jung Kook", "Jin"]
 
 sesion_song = {
-    "jugadores": {},       # Estructura: { "Nombre": puntos }
-    "lista_nombres": [],   # Para verificar quiénes entraron a la sala
+    "jugadores": {},       
     "ronda": 1,
     "correcta": "",
     "fase_registro": False,
@@ -99,7 +98,7 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
             os.remove(archivo_reto)
             
     except Exception as e:
-        await context.bot.send_message(chat_id=chat_id, text=f"❌ Error al pasar a la siguiente ronda: {e}")
+        await context.bot.send_message(chat_id=chat_id, text=f"Se presento un error ɑl pɑsɑr ɑ lɑ siguiente rondɑ, por fɑvor, reinciɑ el juego {e}")
         sesion_song["activa"] = False
 
 # ================= CONTROL DE LA SALA (ESTILO CASERÍA) =================
@@ -107,7 +106,6 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
 async def unirse_adivina(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Abre la sala de reclutamiento con un diseño de texto estético sin imágenes"""
     sesion_song["jugadores"] = {}
-    sesion_song["lista_nombres"] = []
     sesion_song["ronda"] = 1
     sesion_song["activa"] = False
     sesion_song["fase_registro"] = True
@@ -157,17 +155,10 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
         return
 
     if len(sesion_song["lista_nombres"]) < 2:
-        await update.message.reply_text(
-            text="❌ **𝖲𝖺𝗅𝖺 𝖨𝗇𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖺:**\n𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂́𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋. ¡𝖯𝖺𝗌𝖺 𝗅𝖺 𝗏𝗈𝗓, 𝖼𝖺𝗎𝗌𝖺!",
-            parse_mode="Markdown"
-        )
+        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
-    if user_id != sesion_song["creador_id"]:
-        await update.message.reply_text("🛑 ¡𝖲𝖺𝖼𝖺 𝗅𝖺 𝗆𝖺𝗇𝗈 𝖽𝖾 𝖺𝗁𝗂́! 𝖲𝗈 ولو 𝖾𝗅 𝖼𝗋𝖾𝖺𝖽𝗈𝗋 𝖽𝖾 𝗅𝖺 𝗌𝖺𝗅𝖺 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈.")
-        return
-
-    # Parsear premio opcional: /start_adivina 10
     args = context.args or []
     premio = int(args[0]) if args and args[0].isdigit() else 0
     sesion_puntos["premio_actual"]["adivina"] = premio
