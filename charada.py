@@ -56,12 +56,11 @@ async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_charada["fase_registro"] = True
     sesion_charada["activa"] = False
 
-    boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_charada_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_box_click")
     await update.message.reply_photo(
-        photo=GIF_CHARADA,
-        caption="៹ ࣪ 🎭 ¡𝖦𝖱𝖠𝖭 𝖢𝖧𝖠𝖱𝖠𝖣𝖠 𝖯𝖮𝖱 𝖤𝖰𝖴𝖨𝖯𝖮𝖲! 🎭\n\n"
-                "Preparen sus mejores mímicas y emojis. Se armarán dos bandos y jugaremos en contrarreloj.\n\n"
-                "👉 ¡Únete! Cuando estén listos, pongan `.start_charada`.",
+        photo=GIF_JITB,
+        caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ lɑs Chɑrɑdɑs!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_charada &lt;cantidad&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
+        parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
