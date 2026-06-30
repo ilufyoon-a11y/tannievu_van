@@ -256,7 +256,11 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
                 nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_p}"
                 dec = medallas[i] if i < 3 else "🔹"
                 texto_final += f"{dec} {nombre_p}: {pts} pt(s)s\n"
-            await context.bot.send_message(chat_id=chat_id, text=texto_final, parse_mode="Markdown")
+            await context.bot.send_message(chat_id=chat_id, text=texto_final")
+            await context.bot.send_sticker(  # 👈 corregido
+                chat_id=gc,
+                sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
+            )
 
     # --- CASO 2: SE EQUIVOCÓ (La ronda NO se muere, los demás continúan) ---
     else:
