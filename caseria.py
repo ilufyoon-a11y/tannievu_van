@@ -204,4 +204,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
                 text=f"🎉 ¡𝗕𝗜𝗡𝗚𝗢, 𝗬𝗔 𝗧𝗘𝗡𝗘𝗠𝗢𝗦 𝗨𝗡 𝗚𝗔𝗡𝗔𝗗𝗢𝗥/𝗔ⵑ 🏆\n\n"
                      f"✨ {nombre_usuario(user)} fue quien completo su cɑrtillɑ primero. ¡Felicidɑdes!"
             )
-            await update.message.reply_sticker(sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ")
+            await context.bot.send_sticker(  # 👈 corregido
+                chat_id=gc,
+                sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ"
+            )
