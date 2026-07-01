@@ -128,16 +128,15 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
     sesion = sesion_anagrama.get(chat_id)
 
     if not sesion or not sesion.get("fase_registro"):
-        await update.message.reply_text("⚠️ No hay ninguna sala abierta. Usa /anagrama primero.")
-        return
-
-    if update.effective_user.id != sesion["creador_id"]:
-        await update.message.reply_text("⛔ Solo el creador de la sala puede iniciar.")
+        await update.message.reply_text("No hɑy ningunɑ pɑrtidɑ ɑctivɑ.")
         return
 
     if len(sesion["jugadores"]) < 2:
-        await update.message.reply_photo(photo=GIF_ERROR,
-            caption="Se necesitan mínimo 2 personas para jugar.")
+        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ"
+        )
         return
 
     args = context.args or []
@@ -158,12 +157,17 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
         parse_mode="Markdown"
     )
 
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA0YjCWpC_HERlalQGI7HXrVJOdOI2sDJAAIZCQAC36pAROiuTUHK1uCmPAQ"
+    )
+
     sesion["esperando"] = "categoria"
     try:
         if sesion["modo_rondas"]:
             await context.bot.send_message(
                 chat_id=mod["id"],
-                text="🎙️ *¡Eres el moderador!*\n\n"
+                text="<b> ¡En horɑ buenɑ, te tocɑ ser el encubridor!</b>\n\n"
                      "Primero escribe la *categoría* de las 4 palabras:",
                 parse_mode="Markdown"
             )
