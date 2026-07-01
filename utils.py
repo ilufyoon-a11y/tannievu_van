@@ -240,8 +240,9 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_zombie["zombies"] = []
     sesion_zombie["vivos"] = []
     sesion_zombie["fase"] = None
-    sesion_caseria["activa"] = False
-    sesion_caseria["jugadores"] = {}
+    from caseria import sesion_caseria
+    if chat_id in sesion_caseria:
+        del sesion_caseria[chat_id]
     if chat_id in sesion_box:
         sesion_box[chat_id]["activa"] = False
         sesion_box[chat_id]["jugadores"] = []
