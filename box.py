@@ -66,7 +66,11 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
 
     esperando_elementos[encubridor["id"]] = chat_id
-    await update.message.reply_text(f"˒˓  ¡{encubridor['name']} fue elegido como encubridor! Esperɑndo ɑ que se ɑsignen los objetos  ᨦᨩ")
+    await update..bot.send_message(
+        chat_id=chat_id,
+        text=f"˒˓  ¡{encubridor['name']} fue elegido como encubridor! Esperɑndo ɑ que se ɑsignen los objetos  ᨦᨩ",
+        parse_mode="Markdown"
+    )
     await context.bot.send_sticker(
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA0YjCWpC_HERlalQGI7HXrVJOdOI2sDJAAIZCQAC36pAROiuTUHK1uCmPAQ"
