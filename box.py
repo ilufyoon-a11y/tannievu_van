@@ -66,7 +66,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
 
     esperando_elementos[encubridor["id"]] = chat_id
-    await update..bot.send_message(
+    await update.message.reply_text(
         chat_id=chat_id,
         text=f"˒˓  ¡{encubridor['name']} fue elegido como encubridor! Esperɑndo ɑ que se ɑsignen los objetos  ᨦᨩ",
         parse_mode="Markdown"
@@ -89,7 +89,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         
     except Exception:
-        await update.message.reply_text(f"𝖠y, no se puede enviɑr un mensɑje ɑ {encubridor(user)}. Por fɑvor, ɑsegurɑte de hɑber iniciɑdo el bot.")
+        await update.message.reply_text(f"𝖠y, no se puede enviɑr un mensɑje ɑ {encubridor['name']}. Por fɑvor, ɑsegurɑte de hɑber iniciɑdo el bot.")
         await context.bot.send_sticker(
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
@@ -188,6 +188,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         for i, (uid_b, pts) in enumerate(tabla):
             jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_b), None)
             nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_b}"
+            dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
             extra = f" — +{robux_p} fichɑs" if robux_p else ""
             msg += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
