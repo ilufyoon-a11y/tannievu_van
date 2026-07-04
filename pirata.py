@@ -1,91 +1,97 @@
 import random
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_PIRATA, GIF_ERROR
+from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_PIRATA
 
 # ================= DICCIONARIO =================
 
-sesion_pirata = {
-    "jugadores": [],
-    "activa": False,
-    "sobrevivientes": [],
-    "turno_actual": 0,
-    "agujerofake": None,
-    "agujerosave": [],
-    "respondio_turno": False,
-}
+sesion_pirata = {}   # chat_id -> {...}
+
+def _sesion_base() -> dict:
+    return {
+        "jugadores": [],
+        "activa": False,
+        "sobrevivientes": [],
+        "turno_actual": 0,
+        "agujerofake": None,
+        "agujerosave": [],
+    }
 
 # ================= CODIGO PRINCIPAL =================
 
 async def unirse_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    sesion_pirata["jugadores"] = []
-    sesion_pirata["activa"] = False
-    sesion_pirata["sobrevivientes"] = []
-    sesion_pirata["turno_actual"] = 0
-    sesion_pirata["agujerofake"] = None
-    sesion_pirata["agujerosave"] = []
-    sesion_pirata["respondio_turno"] = False
+    chat_id = update.effective_chat.id
+    sesion_pirata[chat_id] = _sesion_base()
 
-    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_box_click")
+    boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_pirata_click")
     await update.message.reply_photo(
         photo=GIF_PIRATA,
-        caption="<b> ៹ ࣪  📦 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖲𝖺𝗅𝗍𝖺 𝖯𝗂𝗋𝖺𝗍𝖺!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗌𝖾𝗇 <code>/start_box &lt;cantidad&gt;</code> pɑrɑ inicɑr el juego.</blockquote>",
+        caption="<b> ៹ ࣪  🏴‍☠️ ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖲𝖺𝗅𝗍𝖺 𝖯𝗂𝗋𝖺𝗍𝖺!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗌𝖾𝗇 <code>/start_pirata &lt;premio&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈.</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
 
 async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+    sesion = sesion_pirata.get(chat_id)
+
+    if not sesion:
+        await update.message.reply_text("No hɑy ningunɑ sɑlɑ ɑbiertɑ, primero utilizɑ /pirata.")
+        return
 
     args = context.args or []
-    if args:
-        try:
-            sesion_puntos["premio_actual"]["pirata"] = int(args[0])
-        except ValueError:
-            pass
+    try:
+        sesion_puntos["premio_actual"]["pirata"] = int(args[0]) if args else 0
+    except ValueError:
+        pass
 
-    if len(sesion_pirata["jugadores"]) < 2:
+    if len(sesion["jugadores"]) < 2:
         await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
         await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
-    sesion_pirata["activa"] = True
-    sesion_pirata["sobrevivientes"] = [j["id"] for j in sesion_pirata["jugadores"]]
-    sesion_pirata["turno_actual"] = 0
-    sesion_pirata["agujerosave"] = []
-    sesion_pirata["agujerofake"] = random.randint(1, 20)
+    sesion["activa"] = True
+    sesion["sobrevivientes"] = [j["id"] for j in sesion["jugadores"]]
+    sesion["turno_actual"] = 0
+    sesion["agujerosave"] = []
+    sesion["agujerofake"] = random.randint(1, 20)
 
-    await context.bot.send_message(chat_id=chat_id,
-        text="¡𝗟𝗔 𝗣𝗔𝗥𝗧𝗜𝗗𝗔 𝗗𝗘 𝗣𝗜𝗥𝗔𝗧𝗔 𝗛𝗔 𝗖𝗢𝗠𝗘𝗡𝗭𝗔𝗗𝗢ⵑ\n\n"
+    primer_nombre = next(j["name"] for j in sesion["jugadores"] if j["id"] == sesion["sobrevivientes"][0])
+    await context.bot.send_message(
+        chat_id=chat_id,
+        text=f"¡𝗟𝗔 𝗣𝗔𝗥𝗧𝗜𝗗𝗔 𝗗𝗘 𝗣𝗜𝗥𝗔𝗧𝗔 𝗛𝗔 𝗖𝗢𝗠𝗘𝗡𝗭𝗔𝗗𝗢ⵑ\n\n"
              "𝖧𝖺𝗒 𝟤𝟢 𝗋𝖺𝗇𝗎𝗋𝖺𝗌 𝖽𝖾 𝗅𝖺𝗌 𝖼𝗎𝖺𝗅𝖾𝗌 𝗎𝗇𝖺 𝖺𝖼𝗍𝗂𝗏𝖺 𝖾𝗅 𝗆𝖾𝖼𝖺𝗇𝗂𝗌𝗆𝗈. ¡𝖲𝖾 𝗉𝗋𝖾𝖼𝖺𝗏𝗂𝖽@ 𝖺𝗅 𝖾𝗌𝖼𝗈𝗀𝖾𝗋 𝖽𝗈𝗇𝖽𝖾 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝗌 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺!\n\n"
-             f"¡{next(j['name'] for j in sesion_pirata['jugadores'] if j['id'] == sesion_pirata['sobrevivientes'][0])} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!",
-        parse_mode="Markdown")
-
+             f"¡{primer_nombre} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!"
+    )
     await enviar_turno_pirata(chat_id, context)
 
 async def enviar_turno_pirata(chat_id, context):
-    if sesion_pirata["turno_actual"] >= len(sesion_pirata["sobrevivientes"]):
-        sesion_pirata["turno_actual"] = 0
+    sesion = sesion_pirata.get(chat_id)
+    if not sesion:
+        return
 
-    actual_id = sesion_pirata["sobrevivientes"][sesion_pirata["turno_actual"]]
-    nombre_actual = next(j["name"] for j in sesion_pirata["jugadores"] if j["id"] == actual_id)
+    if sesion["turno_actual"] >= len(sesion["sobrevivientes"]):
+        sesion["turno_actual"] = 0
+
+    actual_id = sesion["sobrevivientes"][sesion["turno_actual"]]
+    nombre_actual = next(j["name"] for j in sesion["jugadores"] if j["id"] == actual_id)
 
     todos_los_botones = [
         InlineKeyboardButton(
-            "🗡️" if i in sesion_pirata["agujerosave"] else "🕳️",
-            callback_data=f"ranura_ya_usada_{i}" if i in sesion_pirata["agujerosave"] else f"pirata_clic_{i}_{actual_id}"
+            "🗡️" if i in sesion["agujerosave"] else "🕳️",
+            callback_data=f"ranura_ya_usada_{i}" if i in sesion["agujerosave"] else f"pirata_clic_{i}_{actual_id}"
         )
         for i in range(1, 21)
     ]
-
     botones = [todos_los_botones[i:i+4] for i in range(0, len(todos_los_botones), 4)]
 
-    await context.bot.send_message(chat_id=chat_id,
+    await context.bot.send_message(
+        chat_id=chat_id,
         text=f"¡{nombre_actual} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!",
-        reply_markup=InlineKeyboardMarkup(botones),
-        parse_mode="Markdown")
+        reply_markup=InlineKeyboardMarkup(botones)
+    )
 
-# ================= MANEJO DE BOTONES (CallbackQuery) =================
+# ================= MANEJO DE BOTONES =================
 
 async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -94,49 +100,56 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
 
     if query.data == "unirme_pirata_click":
         await query.answer()
-        if sesion_pirata.get("activa"):
+        sesion = sesion_pirata.get(chat_id)
+        if not sesion:
+            return
+        if sesion.get("activa"):
             await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈ⵑ", show_alert=True)
             return
-        if not any(j["id"] == user.id for j in sesion_pirata["jugadores"]):
-            sesion_pirata["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
+        if not any(j["id"] == user.id for j in sesion["jugadores"]):
+            sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
             await query.message.reply_text(f"🏴‍☠️ ֹ  {nombre_usuario(user)} 𝗌𝖾 𝗎𝗇𝗂𝗈 𓂃")
 
     elif query.data.startswith("pirata_clic_"):
         await query.answer()
-        if not sesion_pirata.get("activa"):
+        sesion = sesion_pirata.get(chat_id)
+        if not sesion or not sesion.get("activa"):
             return
+
         partes = query.data.split("_")
         num_ranura = int(partes[2])
         autor_id = int(partes[3])
 
-        actual_id = sesion_pirata["sobrevivientes"][sesion_pirata["turno_actual"]]
+        actual_id = sesion["sobrevivientes"][sesion["turno_actual"]]
         if user.id != actual_id or user.id != autor_id:
             return
 
-        sesion_pirata["respondio_turno"] = True
-
-        if num_ranura == sesion_pirata["agujerofake"]:
-            sesion_pirata["activa"] = False
-            ganadores = [next(j["name"] for j in sesion_pirata["jugadores"] if j["id"] == uid)
-                         for uid in sesion_pirata["sobrevivientes"] if uid != autor_id]
-            texto_ganadores = f"✨ {', '.join(ganadores)} ✨" if ganadores else "¡Nadie! El pirata se quedó solo en el mar. 🌊"
+        if num_ranura == sesion["agujerofake"]:
+            sesion["activa"] = False
+            ganadores = [
+                next(j["name"] for j in sesion["jugadores"] if j["id"] == uid)
+                for uid in sesion["sobrevivientes"] if uid != autor_id
+            ]
+            texto_ganadores = f"✨ {', '.join(ganadores)} ✨" if ganadores else "¡Nɑdie! El pirata se quedó solo en el mar. 🌊"
             premio_p = sesion_puntos.get("premio_actual", {}).get("pirata", 0)
             if premio_p:
-                for uid_p in sesion_pirata["sobrevivientes"]:
+                for uid_p in sesion["sobrevivientes"]:
                     if uid_p != autor_id:
-                        nom_p = next((j["name"] for j in sesion_pirata["jugadores"] if j["id"] == uid_p), f"ID{uid_p}")
+                        nom_p = next((j["name"] for j in sesion["jugadores"] if j["id"] == uid_p), f"ID{uid_p}")
                         sumar_robux(uid_p, nom_p, premio_p, "Pirata sobreviviente 🏴‍☠️")
-            extra_p = f"\n+{premio_p} Robux 🟥 c/u" if premio_p else ""
-            await context.bot.send_message(chat_id=chat_id,
-                text=f"💥 ¡¡ZAZZZ!! 🚀\n\n**{nombre_usuario(user)}** metió la espada en la ranura {num_ranura}... ¡Y EL PIRATA SALTÓ! 💀\n\n"
-                     f"🏆 **¡GANADORES!:** {texto_ganadores}{extra_p}",
-                parse_mode="Markdown")
+            extra_p = f"\n+{premio_p} fichɑs 🟥 c/u" if premio_p else ""
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=f"💥 ¡¡ZAZZZ!! 🚀\n\n{nombre_usuario(user)} metió la espada en la ranura {num_ranura}... ¡Y EL PIRATA SALTÓ! 💀\n\n"
+                     f"🏆 ¡GANADORES!: {texto_ganadores}{extra_p}"
+            )
         else:
-            sesion_pirata["agujerosave"].append(num_ranura)
-            await context.bot.send_message(chat_id=chat_id,
-                text=f"🗡️ ¡*Click*! Ranura {num_ranura} a salvo. **{nombre_usuario(user)}** sobrevivió. 😮‍💨",
-                parse_mode="Markdown")
-            sesion_pirata["turno_actual"] = (sesion_pirata["turno_actual"] + 1) % len(sesion_pirata["sobrevivientes"])
+            sesion["agujerosave"].append(num_ranura)
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=f"🗡️ ¡Click! Ranura {num_ranura} a salvo. {nombre_usuario(user)} sobrevivió. 😮‍💨"
+            )
+            sesion["turno_actual"] = (sesion["turno_actual"] + 1) % len(sesion["sobrevivientes"])
             await enviar_turno_pirata(chat_id, context)
 
     elif query.data.startswith("ranura_ya_usada_"):
