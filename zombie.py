@@ -195,7 +195,7 @@ async def pasar_a_siguiente_ataque(chat_id, context):
         botones_ataque = [
             [InlineKeyboardButton(
                 f"𝖬𝗈𝗋𝖽𝖾𝗋 𝖺 {next(j for j in sesion_zombie['jugadores'] if j['id'] == humano_id)['name']}",
-                callback_data=f"𝖬𝗈𝗋𝖽𝖾𝗋:{humano_id}:{chat_id}"
+                callback_data=f"morder:{humano_id}:{chat_id}"
             )]
             for humano_id in sesion_zombie["vivos"]
         ]
