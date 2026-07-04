@@ -142,6 +142,10 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
                 text=f"¡𝗝𝗨𝗘𝗚𝗢 𝗙𝗜𝗡𝗔𝗟𝗜𝗭𝗔𝗗𝗢ⵑ\n\n{nombre_usuario(user)} 𝗂𝗇𝗌𝖾𝗋𝗍𝗈 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝖾𝗇 𝗅𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 {num_ranura}... ¡𝖸 𝖤𝖫 𝖯𝖨𝖱𝖠𝖳𝖠 𝖲𝖠𝖫𝖳𝖮!\n\n"
                      f"𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗡𝗧𝗘𝗦: {texto_ganadores}"
             )
+            await context.bot.send_sticker(
+                chat_id=chat_id,
+                sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ")
+
         else:
             sesion["agujerosave"].append(num_ranura)
             await context.bot.send_message(
