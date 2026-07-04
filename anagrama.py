@@ -267,11 +267,15 @@ async def _fin_rondas(context, chat_id: int):
     ganador_id, max_pts = tabla[0]
     ganador_nombre = _nombre_de(sesion, ganador_id)
     extra = f"\n+{premio} 𝖿𝗂𝖼𝗁𝖺𝗌 🟥" if premio else ""
-    msg += f"✨ {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌!{extra}"
+    msg += f"✨ {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌!"
     if premio:
         sumar_robux(ganador_id, ganador_nombre, premio, "𝖣𝖾𝗌𝗈𝗋𝖽𝖾𝗇 𝖽𝖾 𝖫𝖾𝗍𝗋𝖺𝗌 🔀")
 
     await context.bot.send_message(chat_id=chat_id, text=msg)
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
+    )
     sesion_anagrama.pop(chat_id, None)
 
 # =====================================================================
@@ -288,7 +292,7 @@ async def manejar_botones_anagrama(update: Update, context: ContextTypes.DEFAULT
 
         sesion = sesion_anagrama.get(chat_id)
         if not sesion or not sesion.get("fase_registro"):
-            await query.answer("¡Lo siento, el registro yɑ cerro!", show_alert=True)
+            await query.answer("𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋 𝖾𝗇 𝖾𝗌𝗍𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.", show_alert=True)
             return
         if any(j["id"] == user.id for j in sesion["jugadores"]):
             return
