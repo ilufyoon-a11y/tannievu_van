@@ -132,7 +132,7 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
         
         await context.bot.send_sticker(
-            chat_id=encubridor["id"],
+            chat_id=mod["id"],
             sticker="CAACAgEAAxkBA0WkVGpCeFxv3hOINwnldaJhBC_FXDhhAAIbCQAC-nQYRn3vKswkIhekPAQ"
         )
     
@@ -263,16 +263,13 @@ async def _fin_rondas(context, chat_id: int):
     premio = sesion_puntos.get("premio_actual", {}).get("anagrama", 0)
     max_pts = tabla[0][1]
 
-    msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝗈𝗋𝖽𝖾𝗇𝖺𝖽𝗈 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!"
-    for i, (uid_p, pts) in enumerate(tabla):
-        nombre_p = _nombre_de(sesion, uid_p)
-        dec = medallas[i] if i < 3 else "🔹"
-        # Solo el ganador (mayor puntaje) recibe fichas
-        robux_p = premio if pts == max_pts else 0
-        extra = f" — +{robux_p} fichɑs" if robux_p else ""
-        msg += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
-        if robux_p:
-            sumar_robux(uid_p, nombre_p, robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1} 🔀")
+    msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝗈𝗋𝖽𝖾𝗇𝖺𝖽𝗈 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!\n\n"
+    ganador_id, max_pts = tabla[0]
+    ganador_nombre = _nombre_de(sesion, ganador_id)
+    extra = f"\n+{premio} 𝖿𝗂𝖼𝗁𝖺𝗌 🟥" if premio else ""
+    msg += f"✨ {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌!{extra}"
+    if premio:
+        sumar_robux(ganador_id, ganador_nombre, premio, "𝖣𝖾𝗌𝗈𝗋𝖽𝖾𝗇 𝖽𝖾 𝖫𝖾𝗍𝗋𝖺𝗌 🔀")
 
     await context.bot.send_message(chat_id=chat_id, text=msg)
     sesion_anagrama.pop(chat_id, None)
