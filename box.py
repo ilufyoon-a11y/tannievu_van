@@ -12,7 +12,7 @@ esperando_elementos = {}   # user_id -> chat_id
 EMOJIS_PROHIBIDOS = {"🎳", "🎰", "🏀", "⚽", "🎲"}
 
 ERRORES_PROHIBIDOS = [
-    "Lo siento, ese emoji no podrɑ ser detectɑdo como respuestɑ, por fɑvor, pruebɑ con otro"
+    "𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗎𝗇𝗈 𝖽𝖾 𝖾𝗌𝗈𝗌 𝖾𝗆𝗈𝗃𝗂𝗌 𝗇𝗈 𝗉𝗈𝖽𝗋𝖺 𝗌𝖾𝗋 𝖽𝖾𝗍𝖾𝖼𝗍𝖺𝖽𝗈 𝖼𝗈𝗆𝗈 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺; 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝗎𝖾𝖻𝖺 𝖼𝗈𝗇 𝗈𝗍𝗋𝗈."
 ]
 
 # ================= CODIGO PRINCIPAL =================
@@ -189,7 +189,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_b}"
             dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
-            extra = f" — +{robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
+            extra = f" —› {robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
             msg += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌){extra}\n"
             if robux_p and jugador_obj:
                 sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1} 📦")
