@@ -137,7 +137,7 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
     
     except Exception:
-        await update.message.reply_text(f"𝖠𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {mod['name']}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍.")
+        await update.message.reply_text(f"𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {mod['name']}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍.")
         await update.message.reply_sticker(sticker=STICKER_ERROR)
         esperando_moderador.pop(mod["id"], None)
         sesion_anagrama.pop(chat_id, None)
@@ -269,7 +269,7 @@ async def _fin_rondas(context, chat_id: int):
     extra = f"\n+{premio} 𝖿𝗂𝖼𝗁𝖺𝗌 🟥" if premio else ""
     msg += f"✨ {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌!"
     if premio:
-        sumar_robux(ganador_id, ganador_nombre, premio, "𝖣𝖾𝗌𝗈𝗋𝖽𝖾𝗇 𝖽𝖾 𝖫𝖾𝗍𝗋𝖺𝗌 🔀")
+        sumar_robux(ganador_id, ganador_nombre, premio, "𝖩𝗎𝗆𝖻𝗅𝖾")
 
     await context.bot.send_message(chat_id=chat_id, text=msg)
     await context.bot.send_sticker(
