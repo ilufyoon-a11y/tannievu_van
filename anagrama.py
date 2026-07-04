@@ -37,13 +37,21 @@ def _sesion_base(modo_rondas: bool, creador_id: int, chat_id: int) -> dict:
 # =====================================================================
 
 def revolver(palabra: str) -> str:
-    letras = list(palabra.upper())
-    random.shuffle(letras)
-    intentos = 0
-    while "".join(letras) == palabra.upper() and intentos < 20:
+    """Revuelve cada palabra por separado, respetando los espacios.
+    Ej: 'criminal minds' → 'I R C A N I L M  D N M I S'  (dos bloques)
+    """
+    def _mezclar(letras: list) -> list:
+        original = list(letras)
         random.shuffle(letras)
-        intentos += 1
-    return " ".join(letras)
+        intentos = 0
+        while letras == original and intentos < 20:
+            random.shuffle(letras)
+            intentos += 1
+        return letras
+
+    partes = palabra.upper().split()
+    bloques = [" ".join(_mezclar(list(p))) for p in partes]
+    return "     ".join(bloques)   # 5 espacios entre palabras para que se note la separación
 
 def parsear_palabras(texto: str) -> list:
     import re
@@ -246,6 +254,11 @@ async def escuchar_anagrama_grupo(update: Update, context: ContextTypes.DEFAULT_
         return
 
     texto_limpio = texto.lower().strip()
+
+    # Advertencia si el moderador intenta responder
+    if user_id == sesion["moderador_id"]:
+        await update.message.reply_text("🔀 ¡Psst! Tu eres el moderɑdor, no puedes ɑdivinɑr lɑ respuestɑ 🧩")
+        return
 
     # Modo rondas
     if sesion["modo_rondas"]:
