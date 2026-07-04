@@ -30,7 +30,7 @@ async def unirse_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭  𝐔𝐍𝐈𝐑𝐌𝐄  !¡", callback_data="unirme_zombie_click")
     await update.message.reply_photo(
         photo=GIF_ZOMBIE,
-        caption="<b> ៹ ࣪  🧟 𝖫𝖺 𝗇𝗈𝖼𝗁𝖾 𝗁𝖺 𝗅𝗅𝖾𝗀𝖺𝖽𝗈 𝗒 𝗅𝗈𝗌 𝗓𝗈𝗆𝖻𝗂𝖾𝗌 𝖾𝗌𝗍𝖺́𝗇 𝗌𝖺𝗅𝗂𝖾𝗇𝖽𝗈. ¡𝖠𝗉𝗋𝖾𝗌𝗎́𝗋𝖺𝗍𝖾 𝖺 𝗌𝗎𝖻𝗂𝗋𝗍𝖾 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌!  ֪ \n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_zombie &lt;pz ps&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
+        caption="<b> ៹ ࣪  🧟 𝖫𝖺 𝗇𝗈𝖼𝗁𝖾 𝗁𝖺 𝗅𝗅𝖾𝗀𝖺𝖽𝗈 𝗒 𝗅𝗈𝗌 𝗓𝗈𝗆𝖻𝗂𝖾𝗌 𝖾𝗌𝗍𝖺́𝗇 𝗌𝖺𝗅𝗂𝖾𝗇𝖽𝗈. ¡𝖠𝗉𝗋𝖾𝗌𝗎́𝗋𝖺𝗍𝖾 𝖺 𝗌𝗎𝖻𝗂𝗋𝗍𝖾 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌!  ֪ <\b>\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_zombie &lt;pz ps&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -169,6 +169,10 @@ async def procesar_resultados_votacion(chat_id, context):
         extra_surv = f" (+{premio_surv} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖼/𝗎)" if premio_surv else ""
         await context.bot.send_message(chat_id=chat_id,
             text=f"¡𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗥𝗢𝗡ⵑ 𝖤𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝗒 𝖺𝗁𝗈𝗋𝖺 {', '.join(ganadores)} 𝗉𝗎𝖾𝖽𝖾𝗇 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝖼𝖺𝗌𝖺")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ")
+        
         sesion_zombie["activa"] = False
     elif len(sesion_zombie["vivos"]) <= 1:
         zombie_obj = next(j for j in sesion_zombie["jugadores"] if j["id"] == sesion_zombie["zombies"][0])
@@ -177,6 +181,10 @@ async def procesar_resultados_votacion(chat_id, context):
         extra_z2 = f" (+{premio_z2} 𝖿𝗂𝖼𝗁𝖺𝗌)" if premio_z2 else ""
         await context.bot.send_message(chat_id=chat_id,
             text=f"¡𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦ⵑ. {zombie_obj['name']} 𝗆𝗈𝗋𝖽𝗂𝗈 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗒 𝖼𝗈𝗇𝗏𝗂𝗋𝗍𝗂𝗈 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝖾𝗇 𝗈𝗍𝗋𝗈 𝖿𝗈𝖼𝗈 𝖽𝖾 𝗂𝗇𝖿𝖾𝖼𝖼𝗂𝗈𝗇 🧟‍♂️")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE")
+        
         sesion_zombie["activa"] = False
     else:
         await pasar_a_siguiente_ataque(chat_id, context)
