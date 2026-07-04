@@ -151,9 +151,15 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     texto = update.message.text.strip() if update.message.text else ""
 
     sesion = sesion_box[chat_id]
+    # Advertencia si el encubridor intenta adivinar
+    if user_id == sesion.get("encubridor_id"):
+        await update.message.reply_text("📦 ¡𝖧𝖾𝗒, 𝗍𝗎 𝖾𝗋𝖾𝗌 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗃𝗎𝗀𝖺𝗋!")
+        return
+
     emojis_enviados = extraer_emojis(texto)
     if not emojis_enviados:
         return
+
     emoji_enviado = normalizar_emoji(emojis_enviados[0])
     secretos_normalizados = [normalizar_emoji(e) for e in sesion.get("emojis_secretos", [])]
     adivinados_normalizados = [normalizar_emoji(e) for e in sesion.get("emojis_adivinados", [])]
