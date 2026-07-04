@@ -80,7 +80,7 @@ async def cmd_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_anagrama_click")
     await update.message.reply_photo(
         photo=GIF_LETRISTA,
-        caption="<b> ៹ ࣪  🔀 ¡Juguemos ɑl Anɑgrɑmɑ!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_jumble &lt;premio&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
+        caption="<b> ៹ ࣪  🔀 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖣𝖾𝗌𝗈𝗋𝖽𝖾𝗇 𝖽𝖾 𝖫𝖾𝗍𝗋𝖺𝗌!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖾 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗌𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_jumble &lt;premio&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -97,11 +97,11 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
     sesion = sesion_anagrama.get(chat_id)
 
     if not sesion or not sesion.get("fase_registro"):
-        await update.message.reply_text("No hɑy ningunɑ sɑlɑ ɑbiertɑ, primero utilizɑ /jumble.")
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jumble 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
         return
 
     if len(sesion["jugadores"]) < 2:
-        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
+        await update.message.reply_text("𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈.")
         await update.message.reply_sticker(sticker=STICKER_ERROR)
         return
 
@@ -116,18 +116,28 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
     esperando_moderador[mod["id"]] = chat_id
 
     await update.message.reply_text(
-        f"˒˓  ¡{mod['name']} fue elegido como moderɑdor! Esperɑndo ɑ que defina lɑ categoriɑ y lɑs pɑlɑbrɑs  ᨦᨩ"
+        f"˒˓  ¡{mod['name']} 𝖿𝗎𝖾 𝖾𝗅𝖾𝗀𝗂𝖽𝗈 𝖼𝗈𝗆𝗈 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝖺 𝗊𝗎𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂𝖺 𝗒 𝗅𝖺𝗌 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌  ᨦᨩ"
+    )
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA0YjCWpC_HERlalQGI7HXrVJOdOI2sDJAAIZCQAC36pAROiuTUHK1uCmPAQ"
     )
 
     sesion["esperando"] = "categoria"
     try:
         await context.bot.send_message(
             chat_id=mod["id"],
-            text="<b>¡En horɑ buenɑ, te tocɑ ser el moderɑdor!</b>\n\nPrimero escribe lɑ <b>categoriɑ</b> de lɑs 4 pɑlɑbrɑs:",
+            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗋𝗂𝗆𝖾𝗋𝗈, 𝖺𝗌𝗂𝗀𝗇𝖺 𝗅𝖺 <b>𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂𝖺</b> 𝖽𝖾 𝗅𝖺𝗌 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌:",
             parse_mode="HTML"
         )
+        
+        await context.bot.send_sticker(
+            chat_id=encubridor["id"],
+            sticker="CAACAgEAAxkBA0WkVGpCeFxv3hOINwnldaJhBC_FXDhhAAIbCQAC-nQYRn3vKswkIhekPAQ"
+        )
+    
     except Exception:
-        await update.message.reply_text(f"𝖠y, no se puede enviɑr un mensɑje ɑ {mod['name']}. Por fɑvor, ɑsegurɑte de hɑber iniciɑdo el bot.")
+        await update.message.reply_text(f"𝖠𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {mod['name']}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍.")
         await update.message.reply_sticker(sticker=STICKER_ERROR)
         esperando_moderador.pop(mod["id"], None)
         sesion_anagrama.pop(chat_id, None)
@@ -152,7 +162,7 @@ async def escuchar_anagrama_privado(update: Update, context: ContextTypes.DEFAUL
         sesion["categoria"] = texto
         sesion["esperando"] = "palabras"
         await update.message.reply_text(
-            f"✅ Categoriɑ: <b>{texto}</b>\n\nAhorɑ escribe lɑs <b>4 pɑlɑbrɑs</b> sepɑrɑdɑs por comɑ:\n<blockquote>ej: pie de limon, pɑstel, helɑdo, tortɑ</blockquote>",
+            f"𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: <b>{texto}</b>\n\n𝖠𝗁𝗈𝗋𝖺, 𝖾𝗌𝖼𝗋𝗂𝖻𝖾 𝗅𝖺𝗌 <b>𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌</b>, 𝖼𝖺𝖽𝖺 𝗎𝗇𝖺 𝗌𝖾𝗉𝖺𝗋𝖺𝖽𝖺 𝗉𝗈𝗋 𝗎𝗇𝖺 𝖼𝗈𝗆𝖺:\n<blockquote>𝖤𝗃: 𝖯𝗂𝖾 𝖽𝖾 𝗅𝗂𝗆𝗈𝗇, 𝗉𝖺𝗌𝗍𝖾𝗅, 𝗁𝖾𝗅𝖺𝖽𝗈, 𝖼𝗁𝗎𝗋𝗋𝗈.</blockquote>",
             parse_mode="HTML"
         )
         return
@@ -162,7 +172,7 @@ async def escuchar_anagrama_privado(update: Update, context: ContextTypes.DEFAUL
         palabras = parsear_palabras(texto)
         if len(palabras) != 4:
             await update.message.reply_text(
-                f"¡Un momento! Necesito exɑctɑmente 4 pɑlɑbrɑs sepɑrɑdɑs por comɑ, recibi {len(palabras)}.\n<blockquote>ej: pie de limon, pɑstel, helɑdo, tortɑ</blockquote>",
+                f"¡𝖴𝗇 𝗆𝗈𝗆𝖾𝗇𝗍𝗈! 𝖭𝖾𝖼𝖾𝗌𝗂𝗍𝗈 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗌𝖾𝗉𝖺𝗋𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝗎𝗇𝖺 𝖼𝗈𝗆𝖺, 𝗍𝗎 𝗁𝖺𝗌 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝖺𝖽𝗈 {len(palabras)}. \n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗅𝗈 𝖽𝖾 𝗇𝗎𝖾𝗏𝗈.",
                 parse_mode="HTML"
             )
             return
@@ -173,12 +183,12 @@ async def escuchar_anagrama_privado(update: Update, context: ContextTypes.DEFAUL
         sesion["activa"] = True
         esperando_moderador.pop(user_id, None)
 
-        await update.message.reply_text("¡Muchɑs grɑciɑs, lɑs pɑlɑbrɑs hɑn sido guɑrdɑdɑs! El juego comienzɑ.")
+        await update.message.reply_text("¡Muchɑs grɑciɑs, 𝗅𝖺𝗌 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝖺𝖽𝖺𝗌!")
 
         revuelta = revolver(palabras[0])
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"🔀 <b>Rondɑ 1/4 — Categoriɑ: {sesion['categoria']}</b>\n\n<code>{revuelta}</code>\n\n¡Adivinɑ lɑ pɑlɑbrɑ! 🧩",
+            text=f"<b>𝖱𝖮𝖭𝖣𝖠 1/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']}</b>\n\n<code>{revuelta}</code>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
             parse_mode="HTML"
         )
 
@@ -195,7 +205,7 @@ async def escuchar_anagrama_grupo(update: Update, context: ContextTypes.DEFAULT_
 
     # Advertencia si el moderador intenta adivinar
     if user_id == sesion["moderador_id"]:
-        await update.message.reply_text("🔀 ¡Psst! Tu eres el moderɑdor, no puedes ɑdivinɑr lɑs pɑlɑbrɑs 🧩")
+        await update.message.reply_text("¡𝖧𝖾𝗒, 𝗍𝗎 𝖾𝗋𝖾𝗌 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗃𝗎𝗀𝖺𝗋!")
         return
 
     if not any(j["id"] == user_id for j in sesion["jugadores"]):
@@ -214,8 +224,8 @@ async def escuchar_anagrama_grupo(update: Update, context: ContextTypes.DEFAULT_
         sesion["ronda_actual"] += 1
 
         await update.message.reply_text(
-            f"¡Punto pɑrɑ {nombre}, esɑ erɑ lɑ pɑlɑbrɑ!\n\n"
-            f"Llevɑmos [{sesion['ronda_actual']}/{sesion['total_rondas']}] pɑlɑbrɑs descubiertɑs."
+            f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {nombre}, 𝖺𝖽𝗂𝗏𝗂𝗇𝗈 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!\n\n"
+            f"𝖫𝗅𝖾𝗏𝖺𝗆𝗈𝗌 [{sesion['ronda_actual']}/{sesion['total_rondas']}] 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗈𝗋𝖽𝖾𝗇𝖺𝖽𝖺𝗌!"
         )
 
         if sesion["ronda_actual"] >= sesion["total_rondas"]:
@@ -227,11 +237,11 @@ async def escuchar_anagrama_grupo(update: Update, context: ContextTypes.DEFAULT_
             revuelta = revolver(siguiente)
             await context.bot.send_message(
                 chat_id=chat_id,
-                text=f"🔀 <b>Rondɑ {ronda_num}/4 — Categoriɑ: {sesion['categoria']}</b>\n\n<code>{revuelta}</code>\n\n¡Adivinɑ lɑ pɑlɑbrɑ! 🧩",
+                text=f"<b>𝖱𝖮𝖭𝖣𝖠 {ronda_num}/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']}</b>\n\n<code>{revuelta}</code>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
                 parse_mode="HTML"
             )
     else:
-        await update.message.reply_text("🔍 ¡Siguelo intentɑndo, yɑ estɑs cercɑ! 🧩")
+        await update.message.reply_text("¡𝖲𝗂𝗀𝗎𝖾𝗅𝗈 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗇𝖽𝗈, 𝗒𝖺 𝖾𝗌𝗍𝖺𝗌 𝖼𝖾𝗋𝖼𝖺!")
 
 # =====================================================================
 # FIN DE PARTIDA
@@ -253,7 +263,7 @@ async def _fin_rondas(context, chat_id: int):
     premio = sesion_puntos.get("premio_actual", {}).get("anagrama", 0)
     max_pts = tabla[0][1]
 
-    msg = "¡𝗥𝗢𝗡𝗗𝗔 𝗙𝗜𝗡𝗔𝗟𝗜𝗭𝗔𝗗𝗔ⵑ Se descubrieron todɑs lɑs pɑlɑbrɑs.\n\n𝗣𝘂𝗻𝘁𝘂𝗮𝗰𝗶𝗼𝗻 𝗳𝗶𝗻𝗮𝗹:\n\n"
+    msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝗈𝗋𝖽𝖾𝗇𝖺𝖽𝗈 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!"
     for i, (uid_p, pts) in enumerate(tabla):
         nombre_p = _nombre_de(sesion, uid_p)
         dec = medallas[i] if i < 3 else "🔹"
