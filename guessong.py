@@ -146,7 +146,7 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_voice(
                 chat_id=chat_id,
                 voice=audio,
-                caption=f"RONDA {sesion['ronda']}/5\n\n¿Lograste identificar que canción es?",
+                caption=f"¡𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/5ⵑ\n\n¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?",
                 reply_markup=reply_markup,
                 parse_mode="Markdown"
             )
@@ -176,7 +176,7 @@ async def unirse_adivina(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_adivina_click")
     await update.message.reply_photo(
         photo=GIF_CASERIA,
-        caption="<b> ៹ ࣪  📦 ¡Juguemos ɑ Adivinɑr lɑ cɑncion!</b>\n\nPor fɑvor, pulse el boton pɑrɑ unirse ɑ lɑ pɑrtidɑ.  ֪   𓂃\n\n<blockquote>Cuɑndo esten listos, utilicen <code>/start_guess &lt;premio&gt;</code> pɑrɑ inicɑr el juego</blockquote>",
+        caption="<b> ៹ ࣪  📦 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝖠𝖽𝗂𝗏𝗂𝗇𝖺 𝗅𝖺 𝖼𝖺𝗇𝖼𝗂𝗈𝗇!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖾 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗌𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_guess &lt;p1 p2 p3&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -195,7 +195,7 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
     sesion = sesion_song[chat_id]
 
     if sesion["activa"]:
-        await query.answer("¡Lo siento, yɑ hɑy unɑ pɑrtidɑ en curso!", show_alert=True)
+        await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
         return
 
     if any(j["id"] == user.id for j in sesion["jugadores"]):
@@ -209,7 +209,7 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
     chat_id = update.effective_chat.id
 
     if chat_id not in sesion_song or len(sesion_song[chat_id]["jugadores"]) < 2:
-        await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
+        await update.message.reply_text("𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈.")
         await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
@@ -232,6 +232,9 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
         chat_id=chat_id,
         text="🎧 ¡El juego hɑ comenzɑdo! Se estɑn extrɑyendo los clips, esten ɑtentos",
     )
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ")
 
     await enviar_siguiente_ronda(chat_id, context)
 
@@ -249,7 +252,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
     sesion = sesion_song[chat_id]
 
     if not any(j["id"] == user.id for j in sesion["jugadores"]):
-        await query.answer("🛑 Lo siento, yɑ hɑy unɑ rondɑ ejecutɑndose, esperɑ ɑ que se hɑgɑ unɑ nuevɑ", show_alert=True)
+        await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
         return
 
     cancion_elegida = query.data.replace("mu_", "").lower().strip()
@@ -257,10 +260,10 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
 
     # --- CASO 1: ¡ACERTÓ! (Termina la ronda) ---
     if cancion_elegida == cancion_correcta:
-        await query.answer(f"¡Acertɑste, {user_name}!")
+        await query.answer(f"¡𝖲𝗂, 𝖺𝖼𝖾𝗋𝗍𝖺𝗌𝗍𝖾, {user_name}!")
         sesion["puntajes"][user.id] = sesion["puntajes"].get(user.id, 0) + 1
 
-        texto_resultado = f"🎉 ¡Punto pɑrɑ {user_name}! \nLɑ cɑncion erɑ: {cancion_correcta.title()}"
+        texto_resultado = f"🎉 ¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}!\n\n𝖫𝖺 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗋𝖺: {cancion_correcta.title()}"
         await query.edit_message_caption(caption=texto_resultado)
 
         if sesion["ronda"] < 5:
@@ -276,14 +279,14 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
                 sesion_puntos.get("premio_actual", {}).get("adivina_3", 0),
             ]
 
-            texto_final = "¡𝗙𝗜𝗡 𝗗𝗘𝗟 𝗝𝗨𝗘𝗚𝗢ⵑ 🏁\n\n🏆 𝗣𝘂𝗲𝘀𝘁𝗼𝘀:\n\n"
+            texto_final = "¡𝖲𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋𝗈𝗇 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝖼𝖺𝗇𝖼𝗂𝗈𝗇𝖾𝗌!\n\n𝗣𝗨𝗡𝗧𝗨𝗔𝗖𝗜𝗢𝗡 𝗙𝗜𝗡𝗔𝗟:\n\n"
             for i, (uid_p, pts) in enumerate(tabla):
                 jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_p), None)
                 nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_p}"
                 dec = medallas[i] if i < 3 else "🔹"
                 robux_p = premios_adivina[i] if i < 3 else 0
-                extra = f" — +{robux_p} fichɑs" if robux_p else ""
-                texto_final += f"{dec} {nombre_p}: {pts} pt(s){extra}\n"
+                extra = f" —› {robux_p} fichɑs" if robux_p else ""
+                texto_final += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌){extra}\n"
                 if robux_p and jugador_obj:
                     sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1} 🎧")
             await context.bot.send_message(chat_id=chat_id, text=texto_final)
@@ -294,9 +297,8 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
 
     # --- CASO 2: SE EQUIVOCÓ (La ronda NO se muere, los demás continúan) ---
     else:
-        await query.answer(f"Esɑ no es lɑ respuestɑ, {user_name}...", show_alert=False)
 
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"Esɑ no es lɑ respuestɑ, {user_name}. ¡Sigue intentɑndo!",
+            text=f"¡𝖤𝗌𝖺 𝗇𝗈 𝖾𝗌 𝗅𝖺 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺, {user_name}!. ¡𝖳𝗎 𝗉𝗎𝖾𝖽𝖾𝗌, 𝗌𝗂𝗀𝗎𝖾 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗇𝖽𝗈!",
         )
