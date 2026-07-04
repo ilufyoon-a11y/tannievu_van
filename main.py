@@ -68,7 +68,7 @@ from anagrama import (
     cmd_anagrama, cmd_anagrama4, cmd_start_anagrama,
     manejar_botones_anagrama,
     escuchar_anagrama_privado, escuchar_anagrama_grupo,
-    sesion_anagrama,
+    sesion_anagrama, esperando_moderador,
 )
 
 # ── PIRATA ✔️  ─────────────────────────────────────────────────────────  
@@ -115,7 +115,7 @@ PAGINAS_INFO = [
     # ── PAGINA 1  ───────────────────
     ("<b>🐋    𖹭𖹭ㅤ𝗝𝗨𝗘𝗚𝗢𝗦 𝗗𝗜𝗦𝗣𝗢𝗡𝗜𝗕𝗟𝗘𝗦  ꒱꒱</b>\n\n"
      "<b>𝒊. 𝐁𝐨𝐱</b>\n\n"
-     "𝖨𝗇𝗌𝗉𝗂𝗋𝖺𝖽𝗈 𝖾𝗇 𝖵𝖺𝗋𝗂𝖾𝗍𝗒 𝖲𝗁𝗈𝗐𝗌 𝗈𝖿 𝖬𝖾𝗆𝗈𝗋𝗂𝖾𝗌: 𝖯𝖺𝗋𝗍 𝟣, 𝗍𝖾𝗇𝖽𝗋𝖺𝗇 𝗌𝗈𝗅𝗈 𝟩 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝗈𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!\n\n"
+     "𝖨𝗇𝗌𝗉𝗂𝗋𝖺𝖽𝗈 𝖾𝗇 𝖵𝖺𝗋𝗂𝖾𝗍𝗒 𝖲𝗁𝗈𝗐𝗌 𝗈𝖿 𝖬𝖾𝗆𝗈𝗋𝗂𝖾𝗌: 𝖯𝖺𝗋𝗍 𝟣, 𝗍𝖾𝗇𝖽𝗋𝖺𝗇 𝗌𝗈𝗅𝗈 𝟧 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗇𝗍𝗋𝗈 𝖽𝖾 𝗅𝖺 𝖼𝖺𝗃𝖺. ¡𝖠 𝗆𝖺𝗒𝗈𝗋 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝖽𝗈𝗌, 𝗆𝖺𝗒𝗈𝗋 𝗉𝗎𝗇𝗍𝖺𝗃𝖾!\n\n"
      "<blockquote>/box</blockquote>\n\n"
      "<b>𝒊𝒊. 𝐂𝐚𝐜𝐞𝐫𝐢𝐚</b>\n\n"
      "𝖴𝗇𝖺 𝗏𝖺𝗋𝗂𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖡𝗂𝗇𝗀𝗈, 𝗌𝖾 𝗉𝗋𝖾𝗌𝖾𝗇𝗍𝖺𝗋𝖺 𝗎𝗇 𝗍𝖺𝖻𝗅𝖾𝗋𝗈 𝗒 𝖼𝖺𝖽𝖺 𝗎𝗇𝗈 𝗈𝖻𝗍𝖾𝗇𝖽𝗋𝖺 𝗎𝗇𝖺 𝗉𝗅𝖺𝗇𝗍𝗂𝗅𝗅𝖺 𝖼𝗈𝗇 𝟨 𝗈𝖻𝗃𝖾𝗍𝗈𝗌. ¡𝖤𝗅 𝗉𝗋𝗂𝗆𝖾𝗋 𝖾𝗇 𝖾𝗇𝖼𝗈𝗇𝗍𝗋𝖺𝗋 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈 𝗒 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖺𝗋 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗀𝖺𝗇𝖺!\n\n"
@@ -201,6 +201,11 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not texto and update.message.dice:
         texto = update.message.dice.emoji
 
+    # ── PRIVADO: moderador anagrama escribe categoría/palabras ──
+    if chat_type == "private" and user_id in esperando_moderador:
+        await escuchar_anagrama_privado(update, context, user_id, texto)
+        return
+
     # ── PRIVADO: encubridor box envía emojis ──
     if chat_type == "private" and user_id in esperando_elementos:
         await manejar_mensajes_box(update, context)
@@ -209,7 +214,6 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ── PRIVADO: moderador charada envía nombre de equipo ──
     if chat_type == "private":
         await escuchar_charada_privado(update, context, user_id, texto)
-        await escuchar_anagrama_privado(update, context, user_id, texto)
         return
 
     # ── BOX: adivinar emojis en el grupo ──
