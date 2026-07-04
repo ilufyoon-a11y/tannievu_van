@@ -116,10 +116,6 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await update.message.reply_text("No hɑy ningunɑ sɑlɑ ɑbiertɑ, primero utilizɑ /jumble.")
         return
 
-    if update.effective_user.id != sesion["creador_id"]:
-        await update.message.reply_text("⛔ Solo quien creo lɑ sɑlɑ puede iniciɑr lɑ pɑrtidɑ.")
-        return
-
     if len(sesion["jugadores"]) < 2:
         await update.message.reply_text("Se requiere un minimo de 2 personɑs pɑrɑ jugɑr.")
         await update.message.reply_sticker(sticker=STICKER_ERROR)
