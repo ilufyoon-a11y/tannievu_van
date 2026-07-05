@@ -14,7 +14,7 @@ from telegram.ext import (ApplicationBuilder, CommandHandler, MessageHandler, Ca
 from utils import (
     GIF_BIENVENIDA, GIF_INFO, GIF_COMANDOS,
     sesion_puntos, nombre_usuario,
-    cmd_new_session, cmd_wallet, cmd_spent, cmd_reset,
+    cmd_new_session, cmd_wallet, cmd_spent, cmd_reset, cmd_saldo_final,
     detener_juegos,
 )
 
@@ -315,7 +315,8 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("new_session", cmd_new_session))
     application.add_handler(CommandHandler("wallet",      cmd_wallet))
     application.add_handler(CommandHandler("spent",       cmd_spent))
-    application.add_handler(CommandHandler("reset",       cmd_reset))
+    application.add_handler(CommandHandler("clean",       cmd_reset))
+    application.add_handler(CommandHandler("pay",  cmd_saldo_final))
 
     # Handlers generales
     application.add_handler(CallbackQueryHandler(manejar_botones_main))
