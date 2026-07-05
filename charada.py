@@ -281,4 +281,4 @@ async def manejar_botones_charada(update: Update, context: ContextTypes.DEFAULT_
             return
         if not any(j["id"] == user.id for j in sesion_charada["jugadores"]):
             sesion_charada["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-            await query.message.reply_text(f"🎭 ֹ  {nombre_usuario(user)} se unio 𓂃"")
+            await query.message.reply_text(f"🎭 ֹ  {nombre_usuario(user)} se unio 𓂃")
