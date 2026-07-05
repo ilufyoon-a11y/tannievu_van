@@ -153,7 +153,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion = sesion_box[chat_id]
     # Advertencia si el encubridor intenta adivinar
     if user_id == sesion.get("encubridor_id"):
-        await update.message.reply_text("📦 ¡𝖧𝖾𝗒, 𝗍𝗎 𝖾𝗋𝖾𝗌 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗃𝗎𝗀𝖺𝗋!")
+        await update.message.reply_text("¡𝖧𝖾𝗒, 𝗍𝗎 𝖾𝗋𝖾𝗌 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗃𝗎𝗀𝖺𝗋!")
         return
 
     emojis_enviados = extraer_emojis(texto)
@@ -189,7 +189,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion["activa"] = False
         tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
         medallas = ["🥇", "🥈", "🥉"]
-        msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝗍𝗈𝖽𝗈𝗌 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌!\n\n𝗣𝗨𝗡𝗧𝗨𝗔𝗖𝗜𝗢𝗡 𝗙𝗜𝗡𝗔𝗟:\n\n"
+        msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝗍𝗈𝖽𝗈𝗌 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌!\n\nっ⠀˖⠀꒰⠀𝗣𝗨𝗡𝗧𝗨𝗔𝗖𝗜𝗢𝗡 𝗙𝗜𝗡𝗔𝗟:⠀꒱\n\n"
         premios_box = [
             sesion_puntos.get("premio_actual", {}).get("box_1", 0),
             sesion_puntos.get("premio_actual", {}).get("box_2", 0),
@@ -221,7 +221,7 @@ async def manejar_botones_box(update: Update, context: ContextTypes.DEFAULT_TYPE
         if chat_id not in sesion_box:
             sesion_box[chat_id] = {"jugadores": [], "activa": False}
         if sesion_box[chat_id]["activa"]:
-            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+            await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈! ᵎᵎ", show_alert=True)
             return
         if not any(j["id"] == user.id for j in sesion_box[chat_id]["jugadores"]):
             sesion_box[chat_id]["jugadores"].append({"id": user.id, "name": nombre_usuario(user), "username": user.username})
