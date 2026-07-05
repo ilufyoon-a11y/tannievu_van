@@ -83,7 +83,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:    
         await context.bot.send_message(
             chat_id=encubridor["id"],
-            text="<b>𐑺 ࿁ ¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! ≀⠀⁺⠀˒</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖽𝖾𝗃𝖺𝗋 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...); 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾 𝗆𝗈𝗌𝗍𝗋𝖺𝗋𝖺𝗇 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote>𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
+            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖽𝖾𝗃𝖺𝗋 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...); 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾 𝗆𝗈𝗌𝗍𝗋𝖺𝗋𝖺𝗇 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote>𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
             parse_mode="HTML"
         )
     
@@ -109,7 +109,7 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
 
     emojis_originales = extraer_emojis(texto)
     if len(emojis_originales) != 6:
-        await update.message.reply_text("¡𝖴𝗇 𝗆𝗈𝗆𝖾𝗇𝗍𝗈! 𝖤𝗌𝗈𝗌 𝗇𝗈 𝗌𝗈𝗇 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌; 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗅𝗈 𝖽𝖾 𝗇𝗎𝖾𝗏𝗈.")
+        await update.message.reply_text("ⓘ ¡𝖴𝗇 𝗆𝗈𝗆𝖾𝗇𝗍𝗈! 𝖤𝗌𝗈𝗌 𝗇𝗈 𝗌𝗈𝗇 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌; 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗅𝗈 𝖽𝖾 𝗇𝗎𝖾𝗏𝗈.")
         return
 
     # Normalizar para comparación consistente
@@ -127,7 +127,7 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
         "activa": True,
     })
     del esperando_elementos[user_id]
-    await update.message.reply_text("¡Muchɑs grɑciɑs, los 6 elementos hɑn sido guɑrdɑdos!")
+    await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝗈𝗌 𝟨 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗀𝗎𝖺𝗋𝖽𝖺𝖽𝗈𝗌!")
     lista_visual = " ".join(emojis_originales)
     mensaje_flash = await context.bot.send_message(chat_id=gid,
         text=f"¡𝗔𝗧𝗘𝗡𝗖𝗜𝗢𝗡, 𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗔𝗕𝗜𝗘𝗥𝗧𝗔ⵑ\n\n¡𝖣𝖺𝗍𝖾 𝗉𝗋𝗂𝗌𝖺 𝗒 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌; 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝖼𝖾𝗋𝖺𝗇 𝖾𝗇 𝟩 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌!\n\n{lista_visual}")
