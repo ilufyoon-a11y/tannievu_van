@@ -200,10 +200,10 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_b}"
             dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
-            extra = f" —› {robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
+            extra = f" ➜ {robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
             msg += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌){extra}\n"
             if robux_p and jugador_obj:
-                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1} 📦")
+                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1}")
         await context.bot.send_message(chat_id=chat_id, text=msg)
         await context.bot.send_sticker(
                 chat_id=chat_id,
