@@ -73,7 +73,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     esperando_elementos[encubridor["id"]] = chat_id
     await context.bot.send_message(
         chat_id=chat_id,
-        text=f"Ꜥ · ¡{encubridor['name']} 𝖿𝗎𝖾 𝖾𝗅𝖾𝗀𝗂𝖽𝗈 𝖼𝗈𝗆𝗈 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝖺 𝗊𝗎𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 ⸝⸝",
+        text=f"Ꜥ ¡{encubridor['name']} 𝖿𝗎𝖾 𝖾𝗅𝖾𝗀𝗂𝖽𝗈 𝖼𝗈𝗆𝗈 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! ⸝⸝\n\n𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝖺 𝗊𝗎𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌.  .  .",
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
@@ -83,7 +83,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:    
         await context.bot.send_message(
             chat_id=encubridor["id"],
-            text="<b>⋆ ◞ ¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!  ๋࣭ ⭑</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖽𝖾𝗃𝖺𝗋 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...); 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾 𝗆𝗈𝗌𝗍𝗋𝖺𝗋𝖺𝗇 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote>𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
+            text="<b>𐑺 ࿁ ¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! ≀⠀⁺⠀˒</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖽𝖾𝗃𝖺𝗋 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...); 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾 𝗆𝗈𝗌𝗍𝗋𝖺𝗋𝖺𝗇 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote>𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
             parse_mode="HTML"
         )
     
