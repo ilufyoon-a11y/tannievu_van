@@ -46,9 +46,6 @@ def evaluar(ruletas: list, apuesta: int) -> tuple:
         return "💸 𝖲𝗂𝗇 𝗌𝗎𝖾𝗋𝗍𝖾...", 0
 
 def sala_txt(chat_id: int) -> str:
-    await context.bot.send_sticker(
-        chat_id=chat_id,
-        sticker="CAACAgEAAxkBA0urQGpJsaVbFkgF0QfZXwO_a7P4kHqiAAI5BQACwmFQRnvqQCAORooQPAQ")
     apuestas = sesion_slots[chat_id]["apuestas"]
     lineas = [
         "🎰 <b>SLOTS GRUPAL</b>\n",
@@ -59,7 +56,7 @@ def sala_txt(chat_id: int) -> str:
         for d in apuestas.values():
             lineas.append(f"  🎰 {d['nombre']} — {d['cantidad']} 𝖿𝗂𝖼𝗁𝖺𝗌")
     else:
-        lineas.append("<i>𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇..i>")
+        lineas.append("<i>𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇...</i>")
     return "\n".join(lineas)
 
 # =====================================================================
@@ -83,7 +80,11 @@ async def cmd_open_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "msg_id": None,
     }
 
-    msg = await update.message.reply_text(sala_txt(chat_id)")
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA0urQGpJsaVbFkgF0QfZXwO_a7P4kHqiAAI5BQACwmFQRnvqQCAORooQPAQ")
+
+    msg = await update.message.reply_text(sala_txt(chat_id), parse_mode="HTML")
     sesion_slots[chat_id]["msg_id"] = msg.message_id
 
 # =====================================================================
@@ -152,7 +153,8 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.edit_message_text(
             chat_id=chat_id,
             message_id=estado["msg_id"],
-            text=sala_txt(chat_id)
+            text=sala_txt(chat_id),
+            parse_mode="HTML"
         )
     except Exception:
         pass
