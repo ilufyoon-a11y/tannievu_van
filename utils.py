@@ -153,6 +153,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
     if sesion_puntos["activa"]:
         await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈́𝗇 𝖺𝖼𝗍𝗂𝗏𝖺. 𝖴𝗌𝖺 /clean 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗎𝗇 𝗇𝗎𝖾𝗏𝗈 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈.")
         return
@@ -170,6 +171,7 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
             sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
 
 async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
     if not sesion_puntos["activa"]:
         await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇. 𝖤𝗌𝗉𝖾𝗋𝖺 𝖺 𝗊𝗎𝖾 𝗎𝗇 𝖺𝖽𝗆𝗂𝗇 𝗊𝗎𝖾 𝗎𝗌𝖾 /𝗇𝖾𝗐_𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗉𝖺𝗋𝖺 𝖾𝗆𝗉𝖾𝗓𝖺𝗋 𝖼𝗈𝗇 𝖾𝗅 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈.")
         await context.bot.send_sticker(
@@ -195,6 +197,7 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
             sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
 
 async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
     if update.effective_chat.type != "private":
         await update.message.reply_text("𝖤𝗌𝗍𝖾 𝖼𝗈𝗆𝖺𝗇𝖽𝗈 𝗌𝗈𝗅𝗈 𝖿𝗎𝗇𝖼𝗂𝗈𝗇𝖺 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈 𝗒 𝖾𝗌 𝖽𝖾 𝗎𝗌𝗈 𝖾𝗑𝖼𝗅𝗎𝗌𝗂𝗏𝗈 𝖽𝖾 𝗅𝖺 𝗉𝖾𝗋𝗌𝗈𝗇𝖺 𝗊𝗎𝖾 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇, 𝗅𝗈 𝗌𝗂𝖾𝗇𝗍𝗈")
         return
@@ -224,6 +227,20 @@ async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_sticker(
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+
+async def cmd_saldo_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺.")
+        return
+    if not sesion_puntos["jugadores"]:
+        await update.message.reply_text("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝗀𝖺𝗇𝖺𝖽𝗈 𝖿𝗂𝖼𝗁𝖺𝗌 𝗍𝗈𝖽𝖺𝗏𝗂𝖺.")
+        return
+
+    tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
+    msg = "💰 𝗦𝗔𝗟𝗗𝗢 𝗙𝗜𝗡𝗔𝗟:\n\n"
+    for uid, datos in tabla:
+        msg += f"{datos['nombre']} -> {datos['robux']} fichas\n"
+    await update.message.reply_text(msg)
 
 async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["activa"] = False
