@@ -39,6 +39,7 @@ sesion_charada = {
     "mensaje_grupo_id": None,
     "puntos_rojo": 0,
     "puntos_azul": 0,
+    "ronda": 1,
 }
 
 # ================= CODIGO PRINCIPAL =================
@@ -53,6 +54,9 @@ async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_charada["equipo_azul"] = []
     sesion_charada["puntos_rojo"] = 0
     sesion_charada["puntos_azul"] = 0
+    sesion_charada["nombre_equipo_rojo"] = "Equipo Rojo 🔴"
+    sesion_charada["nombre_equipo_azul"] = "Equipo Azul 🔵"
+    sesion_charada["ronda"] = 1
     sesion_charada["fase_registro"] = True
     sesion_charada["activa"] = False
 
@@ -95,13 +99,26 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     nombres_rojo = [next(j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid) for uid in sesion_charada["equipo_rojo"]]
     nombres_azul = [next(j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid) for uid in sesion_charada["equipo_azul"]]
 
-    sesion_charada["nombre_equipo_rojo"] = "𝖤𝗊𝗎𝗂𝗉𝗈 𝖱𝗈𝗃𝗈🔴"
-    sesion_charada["nombre_equipo_azul"] = "𝖤𝗊𝗎𝗂𝗉𝗈 𝖠𝗓𝗎𝗅 🔵"
-
     bando_inicial = random.choice(["rojo", "azul"])
-    sesion_charada["bando_actual"] = bando_inicial
+    sesion_charada["ronda"] = 1
 
-    id_moderador = random.choice(sesion_charada["equipo_rojo"] if bando_inicial == "rojo" else sesion_charada["equipo_azul"])
+    await context.bot.send_message(
+        chat_id=chat_id,
+        text=f"⚔️ 𝗘𝗤𝗨𝗜𝗣𝗢𝗦 𝗙𝗢𝗥𝗠𝗔𝗗𝗢𝗦 ⚔️\n\n"
+             f"🔴 𝗘𝗤𝗨𝗜𝗣𝗢 𝗥𝗢𝗝𝗢: {', '.join(nombres_rojo)}\n"
+             f"🔵 𝗘𝗤𝗨𝗜𝗣𝗢 𝗔𝗭𝗨𝗟: {', '.join(nombres_azul)}\n\n"
+             f"📣 𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝗌𝖾 𝗃𝗎𝖾𝗀𝖺 𝖾𝗇 𝟤 𝗋𝗈𝗇𝖽𝖺𝗌: 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 𝗎𝗇 𝖾𝗊𝗎𝗂𝗉𝗈, 𝗅𝗎𝖾𝗀𝗈 𝖾𝗅 𝗈𝗍𝗋𝗈. ¡𝖦𝖺𝗇𝖺 𝗊𝗎𝗂𝖾𝗇 𝗍𝖾𝗇𝗀𝖺 𝗆𝖺𝗌 𝗉𝗎𝗇𝗍𝗈𝗌 𝖺𝗅 𝖿𝗂𝗇𝖺𝗅!"
+    )
+
+    await iniciar_ronda(chat_id, context, bando_inicial, 1)
+
+async def iniciar_ronda(chat_id, context, bando, numero_ronda):
+    """Prepara y arranca una ronda (1 o 2) para el equipo indicado."""
+    sesion_charada["bando_actual"] = bando
+    sesion_charada["ronda"] = numero_ronda
+
+    equipo_ids = sesion_charada["equipo_rojo"] if bando == "rojo" else sesion_charada["equipo_azul"]
+    id_moderador = random.choice(equipo_ids)
     nombre_moderador = next(j["name"] for j in sesion_charada["jugadores"] if j["id"] == id_moderador)
 
     categoria = random.choice(list(DICCIONARIOS_CHARADA.keys()))
@@ -113,10 +130,7 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await context.bot.send_message(
         chat_id=chat_id,
-        text=f"⚔️ 𝗘𝗤𝗨𝗜𝗣𝗢𝗦 𝗙𝗢𝗥𝗠𝗔𝗗𝗢𝗦 ⚔️\n\n"
-             f"🔴 𝗘𝗤𝗨𝗜𝗣𝗢 𝗥𝗢𝗝𝗢: {', '.join(nombres_rojo)}\n"
-             f"🔵 𝗘𝗤𝗨𝗜𝗣𝗢 𝗔𝗭𝗨𝗟: {', '.join(nombres_azul)}\n\n"
-             f"📣 𝗣𝗥𝗜𝗠𝗘𝗥𝗔 𝗥𝗢𝗡𝗗𝗔: 𝖩𝗎𝖾𝗀𝖺 𝖾𝗅 𝗘𝗤𝗨𝗜𝗣𝗢 {bando_inicial.upper()}.\n"
+        text=f"📣 𝗥𝗢𝗡𝗗𝗔 {numero_ronda}: 𝖩𝗎𝖾𝗀𝖺 𝖾𝗅 𝗘𝗤𝗨𝗜𝗣𝗢 {bando.upper()}.\n"
              f"🎙️ 𝗠𝗼𝗱𝗲𝗿𝗮𝗱𝗼𝗿: {nombre_moderador}\n\n"
              f"👀 ¡𝖠𝗍𝖾𝗇𝗍𝗈 𝖺𝗅 𝗉𝗋𝗂𝗏𝖺𝖽𝗈, 𝗍𝗂𝖾𝗇𝖾𝗌 𝟥𝟢 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗇𝗈𝗆𝖻𝗋𝖺𝗋 𝖺 𝗍𝗎 𝖾𝗊𝗎𝗂𝗉𝗈!"
     )
@@ -137,11 +151,10 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
         espera -= 0.5
 
     if not sesion_charada["nombre_recibido"]:
-        nombre_random = random.choice(["Equipo Rojo, Equipo Azul"])
-        if bando_inicial == "rojo":
-            sesion_charada["nombre_equipo_rojo"] = f"{nombre_random} (Rojo)"
+        if bando == "rojo":
+            sesion_charada["nombre_equipo_rojo"] = "Equipo Rojo 🔴"
         else:
-            sesion_charada["nombre_equipo_azul"] = f"{nombre_random} (Azul)"
+            sesion_charada["nombre_equipo_azul"] = "Equipo Azul 🔵"
 
     lista_texto = "\n".join([f"🔹 {p.upper()}" for p in palabras_elegidas])
     await context.bot.send_message(chat_id=id_moderador,
@@ -149,7 +162,7 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
              f"🗂️ 𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n{lista_texto}\n\n"
              f"¡𝖢𝗈𝗋𝗋𝖾 𝖺𝗅 𝗀𝗋𝗎𝗉𝗈, 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗌𝖺𝗋 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗈 𝖾𝗆𝗈𝗃𝗂𝗌 𝗉𝖺𝗋𝖺 𝗅𝗈𝗀𝗋𝖺𝗋 𝗊𝗎𝖾 𝗍𝗎 𝖾𝗊𝗎𝗂𝗉𝗈 𝖺𝖽𝗂𝗏𝗂𝗇𝖾! 𝖭𝗈 𝖾𝗌𝖼𝗋𝗂𝖻𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝖽𝗂𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 💀")
 
-    nombre_bando_jugando = sesion_charada["nombre_equipo_rojo"] if bando_inicial == "rojo" else sesion_charada["nombre_equipo_azul"]
+    nombre_bando_jugando = sesion_charada["nombre_equipo_rojo"] if bando == "rojo" else sesion_charada["nombre_equipo_azul"]
     sesion_charada["activa"] = True
 
     await context.bot.send_message(
@@ -193,17 +206,52 @@ async def reloj_charada(chat_id, context):
                  f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} 𝗉𝗍𝗌\n\n"
         )
 
-        # Pagar robux al equipo con más puntos
+        await avanzar_o_finalizar(chat_id, context)
+
+async def avanzar_o_finalizar(chat_id, context):
+    """Si acaba de terminar la ronda 1, arranca la ronda 2 con el otro equipo.
+    Si ya se jugaron las 2 rondas, determina al ganador y reparte el premio."""
+    if sesion_charada["ronda"] == 1:
+        bando_anterior = sesion_charada["bando_actual"]
+        siguiente_bando = "azul" if bando_anterior == "rojo" else "rojo"
+        await iniciar_ronda(chat_id, context, siguiente_bando, 2)
+    else:
+        await finalizar_juego(chat_id, context)
+
+async def finalizar_juego(chat_id, context):
+    pts_r = sesion_charada["puntos_rojo"]
+    pts_a = sesion_charada["puntos_azul"]
+
+    if pts_r == pts_a:
+        await context.bot.send_message(
+            chat_id=chat_id,
+            text=f"🤝 ¡𝗘𝗠𝗣𝗔𝗧𝗘ⵑ 🤝\n\n"
+                 f"📊 𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗙𝗜𝗡𝗔𝗟:\n"
+                 f"🔴 {sesion_charada['nombre_equipo_rojo']}: {pts_r} 𝗉𝗍𝗌\n"
+                 f"🔵 {sesion_charada['nombre_equipo_azul']}: {pts_a} 𝗉𝗍𝗌\n\n"
+                 f"¡𝖭𝗈 𝗁𝗎𝖻𝗈 𝗋𝖾𝗉𝖺𝗋𝗍𝗈 𝖽𝖾 𝖿𝗂𝖼𝗁𝖺𝗌, 𝖾𝗆𝗉𝖺𝗍𝖺𝗋𝗈𝗇!"
+        )
+    else:
+        equipo_ganador_ids = sesion_charada["equipo_rojo"] if pts_r > pts_a else sesion_charada["equipo_azul"]
+        nombre_ganador = sesion_charada["nombre_equipo_rojo"] if pts_r > pts_a else sesion_charada["nombre_equipo_azul"]
+
+        await context.bot.send_message(
+            chat_id=chat_id,
+            text=f"🏆 ¡𝗝𝗨𝗘𝗚𝗢 𝗧𝗘𝗥𝗠𝗜𝗡𝗔𝗗𝗢ⵑ 🏆\n\n"
+                 f"📊 𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗙𝗜𝗡𝗔𝗟:\n"
+                 f"🔴 {sesion_charada['nombre_equipo_rojo']}: {pts_r} 𝗉𝗍𝗌\n"
+                 f"🔵 {sesion_charada['nombre_equipo_azul']}: {pts_a} 𝗉𝗍𝗌\n\n"
+                 f"✨ ¡𝖦𝖺𝗇𝖺𝖽𝗈𝗋: {nombre_ganador.upper()}! ✨"
+        )
+
         premio = sesion_puntos.get("premio_actual", {}).get("charada", 0)
         if premio > 0:
-            pts_r = sesion_charada["puntos_rojo"]
-            pts_a = sesion_charada["puntos_azul"]
-            if pts_r != pts_a:
-                equipo_ganador_ids = sesion_charada["equipo_rojo"] if pts_r > pts_a else sesion_charada["equipo_azul"]
-                nombre_ganador = sesion_charada["nombre_equipo_rojo"] if pts_r > pts_a else sesion_charada["nombre_equipo_azul"]
-                for uid in equipo_ganador_ids:
-                    nombre = next((j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid), str(uid))
-                    sumar_robux(uid, nombre, premio, f"𝖢𝗁𝖺𝗋𝖺𝖽𝖺 🎭 ({nombre_ganador})")
+            for uid in equipo_ganador_ids:
+                nombre = next((j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid), str(uid))
+                sumar_robux(uid, nombre, premio, f"𝖢𝗁𝖺𝗋𝖺𝖽𝖺 🎭 ({nombre_ganador})")
+
+    sesion_charada["activa"] = False
+    sesion_charada["fase_registro"] = False
 
 # ================= MANEJO DE MENSAJES =================
 
@@ -258,12 +306,7 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
                      f"🔴 {sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} 𝗉𝗍𝗌\n"
                      f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} 𝗉𝗍𝗌")
 
-            # Pagar robux al equipo que acaba de jugar (puntaje perfecto)
-            premio = sesion_puntos.get("premio_actual", {}).get("charada", 0)
-            if premio > 0:
-                for uid in lista_equipo_valido:
-                    nombre = next((j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid), str(uid))
-                    sumar_robux(uid, nombre, premio, f"𝖢𝗁𝖺𝗋𝖺𝖽𝖺 𝗉𝗎𝗇𝗍𝖺𝗃𝖾 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝗈")
+            await avanzar_o_finalizar(chat_id, context)
 
 # ================= MANEJO DE BOTONES =================
 
