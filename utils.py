@@ -154,7 +154,7 @@ from telegram.ext import ContextTypes
 
 async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if sesion_puntos["activa"]:
-        await update.message.reply_text("⚠️ Ya hay una sesión activa. Usa /reset antes de abrir una nueva.")
+        await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈́𝗇 𝖺𝖼𝗍𝗂𝗏𝖺. 𝖴𝗌𝖺 /clean 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗎𝗇 𝗇𝗎𝖾𝗏𝗈 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈.")
         return
     sesion_puntos["activa"] = True
     sesion_puntos["jugadores"] = {}
@@ -162,64 +162,75 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["admin_id"] = update.effective_user.id
     _guardar_sesion()
     await update.message.reply_text(
-        "✅ **¡Sesión iniciada!** 🟥\n\n"
-        "Los Robux ganados a partir de ahora se irán acumulando.\n"
-        "Recuerda poner el premio al iniciar cada juego:\n\n"
-        "`.start_zombie 5 15` → 5 sobrevivientes / 15 zombie\n"
-        "`.start_caseria 10` → 10 al ganador\n"
-        "`.start_cipher 8` → 8 al ganador\n"
-        "`.start_box 6` → 6 al ganador\n"
-        "`.start_pirata 5` → 5 a los sobrevivientes",
-        parse_mode="Markdown"
+        "¡𝖲𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺!\n\n"
+        "𝖲𝖾 𝖾𝗆𝗉𝖾𝗓𝖺𝗋𝖺𝗇 𝖺 𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝗅𝖺𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 𝗀𝖺𝗇𝖺𝖽𝖺𝗌 𝖾𝗇 𝖼𝖺𝖽𝖺 𝗃𝗎𝖾𝗀𝗈.\n"
     )
+    await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
 
 async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("No hay ninguna sesión activa aún. Pide a un admin que use /new_session.")
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇. 𝖤𝗌𝗉𝖾𝗋𝖺 𝖺 𝗊𝗎𝖾 𝗎𝗇 𝖺𝖽𝗆𝗂𝗇 𝗊𝗎𝖾 𝗎𝗌𝖾 /𝗇𝖾𝗐_𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗉𝖺𝗋𝖺 𝖾𝗆𝗉𝖾𝗓𝖺𝗋 𝖼𝗈𝗇 𝖾𝗅 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈.")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
     uid = update.effective_user.id
     datos = sesion_puntos["jugadores"].get(uid)
     if not datos or datos["robux"] == 0:
-        await update.message.reply_text("👛 Aún no tienes Robux acumulados en esta sesión. ¡A jugar!")
+        await update.message.reply_text("¡𝖠𝗎𝗇 𝗇𝗈 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌, 𝗌𝖾𝗀𝗎𝗋𝗈 𝗊𝗎𝖾 𝖾𝗇 𝖾𝗅 𝗉𝗋𝗈𝗑𝗂𝗆𝗈 𝗃𝗎𝖾𝗀𝗈 𝖼𝗈𝗇𝗌𝗂𝗀𝗎𝖾𝗌, 𝖻𝗎𝖾𝗇𝖺 𝗌𝗎𝖾𝗋𝗍𝖾!")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
     detalle = "\n".join(datos["detalle"])
     await update.message.reply_text(
-        f"👛 **Tu cartera, {nombre_usuario(update.effective_user)}:**\n\n"
+        f"𝖧𝗈𝗅𝖺, {nombre_usuario(update.effective_user)}:\n\n"
         f"{detalle}\n\n"
-        f"**Total: {datos['robux']} Robux 🟥**",
-        parse_mode="Markdown"
+        f"𝖳𝗎 𝖿𝗈𝗋𝗍𝗎𝗇𝖺 𝖺𝗌𝖼𝗂𝖾𝗇𝖽𝖾 𝖺 {datos['robux']} 𝖿𝗂𝖼𝗁𝖺𝗌"
     )
+    await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
 
 async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_chat.type != "private":
-        await update.message.reply_text("⛔ Este comando solo funciona en privado.")
+        await update.message.reply_text("𝖤𝗌𝗍𝖾 𝖼𝗈𝗆𝖺𝗇𝖽𝗈 𝗌𝗈𝗅𝗈 𝖿𝗎𝗇𝖼𝗂𝗈𝗇𝖺 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈 𝗒 𝖾𝗌 𝖽𝖾 𝗎𝗌𝗈 𝖾𝗑𝖼𝗅𝗎𝗌𝗂𝗏𝗈 𝖽𝖾 𝗅𝖺 𝗉𝖾𝗋𝗌𝗈𝗇𝖺 𝗊𝗎𝖾 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇, 𝗅𝗈 𝗌𝗂𝖾𝗇𝗍𝗈")
         return
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("No hay ninguna sesión activa.")
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺.")
         return
     if update.effective_user.id != sesion_puntos.get("admin_id"):
-        await update.message.reply_text("⛔ Solo quien inició la sesión puede ver esto.")
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗏𝖾𝗋 𝖾𝗌𝗍𝗈.")
+        await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+
         return
     if not sesion_puntos["jugadores"]:
-        await update.message.reply_text("Nadie ha ganado Robux todavía en esta sesión.")
+        await update.message.reply_text("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝗀𝖺𝗇𝖺𝖽𝗈 𝗋𝗈𝖻𝗎𝗑 𝗍𝗈𝖽𝖺𝗏𝗂𝖺.")
         return
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
     medallas = ["🥇", "🥈", "🥉"]
-    msg = "💰 **Resumen de la sesión:**\n\n"
+    msg = "𝗥𝗲𝘀𝘂𝗺𝗲𝗻 𝗱𝗲 𝗹𝗼𝘀 𝗴𝗮𝗻𝗮𝗱𝗼𝗿𝗲𝘀 𝗽𝗼𝗿 𝗷𝘂𝗲𝗴𝗼:\n\n"
     total = 0
     for i, (uid, datos) in enumerate(tabla):
         dec = medallas[i] if i < 3 else "🔹"
         msg += f"{dec} {datos['nombre']}: **{datos['robux']} Robux**\n"
         total += datos["robux"]
-    msg += f"\n**Total a pagar: {total} Robux 🟥**"
-    await update.message.reply_text(msg, parse_mode="Markdown")
+    msg += f"\n𝖣𝖾𝗌𝖾𝗆𝖻𝗈𝗅𝗌𝖺 𝖾𝗌𝗈𝗌 {total} 𝗋𝗈𝖻𝗎𝗑 𝖼𝗁𝗂𝗄𝗂"
+    await update.message.reply_text(msg)
+    await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
 
 async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["activa"] = False
     sesion_puntos["jugadores"] = {}
     sesion_puntos["premio_actual"] = {}
     _guardar_sesion()
-    await update.message.reply_text("🗑️ Sesión reseteada. Los datos han sido borrados.")
+    await update.message.reply_text("¡𝖫𝗈𝗌 𝖽𝖺𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝖻𝗈𝗋𝗋𝖺𝖽𝗈𝗌 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾, 𝖾𝗌𝗉𝖾𝗋𝗈 𝗏𝖾𝗋𝗇𝗈𝗌 𝗉𝗋𝗈𝗇𝗍𝗈!")
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from zombie import sesion_zombie
@@ -260,6 +271,7 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reset_anagrama_chat(chat_id)
     reset_guessong_chat(chat_id)
 
-    await update.message.reply_photo(
-        photo=GIF_OFFVAN,
-        caption="¡CLOSE VAN!\n\nSe cerraron todas las rondas existentes.")
+    await update.message.reply_text("𝖲𝖾 𝖼𝖾𝗋𝗋𝖺𝗋𝗈𝗇 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗋𝗍𝗂𝖽𝖺𝗌 𝖺𝖼𝗍𝗂𝗏𝖺𝗌")
+    await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
