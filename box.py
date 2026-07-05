@@ -189,7 +189,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion["activa"] = False
         tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
         medallas = ["🥇", "🥈", "🥉"]
-        msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝗍𝗈𝖽𝗈𝗌 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌!\n\nっ⠀˖⠀꒰⠀𝗣𝗨𝗡𝗧𝗨𝗔𝗖𝗜𝗢𝗡 𝗙𝗜𝗡𝗔𝗟:⠀꒱\n\n"
+        msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈 𝗍𝗈𝖽𝗈𝗌 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈𝗌!\n\nっ⠀˖⠀꒰⠀𝗣𝗨𝗡𝗧𝗨𝗔𝗖𝗜𝗢𝗡 𝗙𝗜𝗡𝗔𝗟⠀꒱\n\n"
         premios_box = [
             sesion_puntos.get("premio_actual", {}).get("box_1", 0),
             sesion_puntos.get("premio_actual", {}).get("box_2", 0),
@@ -201,7 +201,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
             extra = f" ➜ {robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
-            msg += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌){extra}\n"
+            msg += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌)\n"
             if robux_p and jugador_obj:
                 sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1}")
         await context.bot.send_message(chat_id=chat_id, text=msg)
