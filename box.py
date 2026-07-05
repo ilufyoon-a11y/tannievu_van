@@ -225,4 +225,4 @@ async def manejar_botones_box(update: Update, context: ContextTypes.DEFAULT_TYPE
             return
         if not any(j["id"] == user.id for j in sesion_box[chat_id]["jugadores"]):
             sesion_box[chat_id]["jugadores"].append({"id": user.id, "name": nombre_usuario(user), "username": user.username})
-            await query.message.reply_text(f"˖ — ۫ ּ {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
+            await query.message.reply_text(f"˖ — ۫ {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
