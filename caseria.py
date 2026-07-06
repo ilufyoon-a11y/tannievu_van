@@ -20,7 +20,7 @@ POOL_EMOJIS_CASERIA = [
     "🎱", "🎣", "🩰", "⛳", "🏹", "🪃", "🪁", "🎃", "🎄", "🎋", "🎍", "🎑", "🎏", "🎐", "🪩", 
     "🪅", "🪔", "🧧", "🎁", "🎀", "🎂", "🎈", "🧨", "🧳", "🗺️", "⛺", "🏟️", "🎪", "🎠", "🎡", 
     "🛸", "🚀", "✈️", "⛵", "🧭", "🥢", "🍶", "🍹", "🍸", "🍷", "🍾", "🍺", "🧉", "🫖", "☕", 
-    "🍵", "🧋", "🧃", "🥤", "🫙", "🍿", "🧀", "🥚", "🍞", "🫓", "🥜", "🍳", "🥞", "🌰", " waffle ", 
+    "🍵", "🧋", "🧃", "🥤", "🫙", "🍿", "🧀", "🥚", "🍞", "🫓", "🥜", "🍳", "🥞", "🌰", "🥳", 
     "🥯", "🥖", "🧄", "🧅", "🫒", "🥔", "🥥", "🥑", "🍠", "🥝", "🍏", "🍆", "🍇", "🫐", "🥒", 
     "🫛", "🍊", "🍐", "🍑", "🍈", "🍉", "🍋", "🌶️", "🌽", "🍅", "🍌", "🍍", "🍎", "🍒", "🥭", 
     "🍓", "🥕", "🐾", "🐛", "🦋", "🐞", "🐝", "🦗", "🐌", "🐚", "🕸️", "🫧", "🪸", "🦪", "🪼", 
@@ -76,7 +76,7 @@ async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_caseria_click")
     await update.message.reply_photo(
         photo=GIF_CASERIA,
-        caption="<b>໑ ' ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝗅𝖺 𝖢𝖺𝖼𝖾𝗋𝗂𝖺! ⑅</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖾 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗌𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_hunt &lt;cantidad&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
+        caption="<b>๑ ꞈ ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺 𝗅𝖺 𝖢𝖺𝖼𝖾𝗋𝗂𝖺! ⋆ ٠</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖾 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗌𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_hunt &lt;cantidad&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -151,7 +151,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
             return
         sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-        await query.message.reply_text(f"˖ — {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
+        await query.message.reply_text(f"— {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
 
     elif query.data.startswith("caseria_tablero_"):
         sesion = sesion_caseria.get(chat_id)
@@ -195,10 +195,14 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             premio_cas = sesion_puntos.get("premio_actual", {}).get("caseria", 0)
             sumar_robux(user.id, jugador["name"], premio_cas, "Caceria 🔎")
             extra_cas = f"\n\n+{premio_cas} fichɑs" if premio_cas else ""
+            await context.bot.send_sticker(
+                chat_id=chat_id,
+                sticker="CAACAgEAAxkBA0zRRmpLKoWCq3L-8eG58lH9nCLMVe0jAALYCAAC9qBYRq1em0vd00mlPAQ"
+            )
             await context.bot.send_message(
                 chat_id=chat_id,
                 text=f"¡𝗣𝗔𝗥𝗧𝗜𝗗𝗔 𝗙𝗜𝗡𝗔𝗟𝗜𝗭𝗔𝗗𝗔, 𝗬𝗔 𝗧𝗘𝗡𝗘𝗠𝗢𝗦 𝗨𝗡 𝗚𝗔𝗡𝗔𝗗𝗢𝗥/𝗔ⵑ\n\n"
-                     f"🏆 {jugador['name']} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝗈 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗉𝗋𝗂𝗆𝖾𝗋𝗈. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌! 🎉"
+                     f"( 𐃯 ) — {jugador['name']} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝗈 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗉𝗋𝗂𝗆𝖾𝗋𝗈. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌! 🎉"
             )
             await context.bot.send_sticker(
                 chat_id=chat_id,
