@@ -110,12 +110,12 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for jugador in sesion["jugadores"]:
         await context.bot.send_sticker(
                 chat_id=chat_id,
-                sticker="CAACAgEAAxkBA0zbgmpLOYYFamzLve6biuyi-nI_N-y7AAJhCAAC0jRgRq_-yxkKjiJlPAQ"
+                sticker="CAACAgEAAxkBA0zRRmpLKoWCq3L-8eG58lH9nCLMVe0jAALYCAAC9qBYRq1em0vd00mlPAQ"
         )
         texto_cartilla = construir_texto_cartilla(jugador["cartilla"], jugador["marcados"])
         msg_cartilla = await context.bot.send_message(
             chat_id=chat_id,
-            text=f"\n𔓕 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']}\n\n{texto_cartilla}"
+            text=f"\n🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n\n{texto_cartilla}"
         )
         jugador["cartilla_msg_id"] = msg_cartilla.message_id
         
@@ -169,7 +169,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
                 await context.bot.edit_message_text(
                     chat_id=chat_id,
                     message_id=jugador["cartilla_msg_id"],
-                    text=f"\n𔓕 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']}\n\n{texto_cartilla}"
+                    text=f"\n🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n\n{texto_cartilla}"
                 )
             except Exception:
                 pass
