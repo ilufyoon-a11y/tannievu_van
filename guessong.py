@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_CASERIA
+from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_SONG
 
 # ================= DICCIONARIOS Y CONFIG =================
 
