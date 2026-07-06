@@ -108,16 +108,16 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion["tablero_msg_id"] = msg.message_id
 
     for jugador in sesion["jugadores"]:
+        await context.bot.send_sticker(
+                chat_id=chat_id,
+                sticker="CAACAgEAAxkBA0zK7WpLIDmIcyMLLkzZomM9NktbY_SxAAKcBgACby5ZRvwkTRxQF5-kPAQ"
+        )
         texto_cartilla = construir_texto_cartilla(jugador["cartilla"], jugador["marcados"])
         msg_cartilla = await context.bot.send_message(
             chat_id=chat_id,
             text=f"\n🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 {jugador['name']}:\n\n{texto_cartilla}"
         )
         jugador["cartilla_msg_id"] = msg_cartilla.message_id
-        await context.bot.send_sticker(
-                chat_id=chat_id,
-                sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
-        )
         
 # ================= MANEJO DE BOTONES =================
 
