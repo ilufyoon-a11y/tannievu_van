@@ -25,10 +25,11 @@ def reset_guessong_chat(chat_id: int):
 
 def obtener_canciones(excluir_ids=None):
     excluir_ids = excluir_ids or set()
-    seleccionados = random.sample(lovers, 4)
     all_songs = []
 
-    for artista in seleccionados:
+    # Se busca en TODOS los miembros (no solo 4 random) para tener pool
+    # suficiente y que aguante las 10 rondas sin quedarse sin canciones.
+    for artista in lovers:
         try:
             url = f"https://itunes.apple.com/search?term={artista}&entity=song&limit=25"
             response = requests.get(url).json()
@@ -82,7 +83,14 @@ def obtener_canciones(excluir_ids=None):
     if len(falsas_filtradas) < 3:
         falsas_filtradas = [c for c in all_songs if c['trackId'] != correcta['trackId']]
 
-    falsas = random.sample(falsas_filtradas, 3)
+    # Guard final: si aun asi no alcanzan 3 opciones distintas, se rellena
+    # con reemplazo para que el sample de abajo nunca truene.
+    if len(falsas_filtradas) < 3:
+        faltan = 3 - len(falsas_filtradas)
+        relleno_pool = [c for c in all_songs if c['trackId'] != correcta['trackId']] or [correcta]
+        falsas_filtradas += random.choices(relleno_pool, k=faltan)
+
+    falsas = random.sample(falsas_filtradas, 3) if len(falsas_filtradas) >= 3 else falsas_filtradas
     opciones = [correcta] + falsas
     random.shuffle(opciones)
     return correcta, opciones
@@ -110,9 +118,11 @@ def _es_artista_valido(artist_name: str) -> bool:
     return False
 
 
-def descargar_y_recortar_audio(url_audio):
-    archivo_temporal = "temp_itunes.m4a"
-    archivo_final = "reto_van.mp3"
+def descargar_y_recortar_audio(url_audio, chat_id):
+    # Nombres de archivo únicos por chat para evitar que dos partidas
+    # simultáneas se pisen entre sí.
+    archivo_temporal = f"temp_itunes_{chat_id}.m4a"
+    archivo_final = f"reto_van_{chat_id}.mp3"
 
     audio_data = requests.get(url_audio).content
     with open(archivo_temporal, "wb") as f:
@@ -135,11 +145,15 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
         correcta, opciones = obtener_canciones(excluir_ids=usadas)
         usadas.add(correcta['trackId'])
 
-        archivo_reto = descargar_y_recortar_audio(correcta['previewUrl'])
+        archivo_reto = descargar_y_recortar_audio(correcta['previewUrl'], chat_id)
 
         sesion["correcta"] = correcta['trackName'].lower().strip()
+        # callback_data usa índice en vez del nombre completo de la canción,
+        # porque Telegram limita callback_data a 64 bytes y algunos nombres
+        # (feats, colaboraciones, etc.) se pasan de eso.
+        sesion["opciones_nombres"] = {str(i): c['trackName'].lower().strip() for i, c in enumerate(opciones)}
 
-        botones = [[InlineKeyboardButton(cancion['trackName'], callback_data=f"mu_{cancion['trackName']}")] for cancion in opciones]
+        botones = [[InlineKeyboardButton(cancion['trackName'], callback_data=f"mu_{i}")] for i, cancion in enumerate(opciones)]
         reply_markup = InlineKeyboardMarkup(botones)
 
         with open(archivo_reto, 'rb') as audio:
@@ -187,9 +201,8 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
     user = query.from_user
     chat_id = query.message.chat.id
 
-    await query.answer()
-
     if chat_id not in sesion_song:
+        await query.answer()
         return
 
     sesion = sesion_song[chat_id]
@@ -199,9 +212,11 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
         return
 
     if any(j["id"] == user.id for j in sesion["jugadores"]):
+        await query.answer()
         return
 
     sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user), "username": user.username})
+    await query.answer()
     await query.message.reply_text(f"🎧  {nombre_usuario(user)} se unio 𓂃")
 
 async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -255,7 +270,8 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
         await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
         return
 
-    cancion_elegida = query.data.replace("mu_", "").lower().strip()
+    idx = query.data.replace("mu_", "")
+    cancion_elegida = sesion.get("opciones_nombres", {}).get(idx, "")
     cancion_correcta = sesion["correcta"]
 
     # --- CASO 1: ¡ACERTÓ! (Termina la ronda) ---
@@ -297,7 +313,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
 
     # --- CASO 2: SE EQUIVOCÓ (La ronda NO se muere, los demás continúan) ---
     else:
-
+        await query.answer()
         await context.bot.send_message(
             chat_id=chat_id,
             text=f"¡𝖤𝗌𝖺 𝗇𝗈 𝖾𝗌 𝗅𝖺 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺, {user_name}!. ¡𝖳𝗎 𝗉𝗎𝖾𝖽𝖾𝗌, 𝗌𝗂𝗀𝗎𝖾 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗇𝖽𝗈!",
