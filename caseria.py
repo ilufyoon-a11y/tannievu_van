@@ -102,7 +102,7 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     markup = construir_teclado_tablero(pool)
     msg = await context.bot.send_message(
         chat_id=chat_id,
-        text="🎯 ¡𝗧𝗔𝗕𝗟𝗘𝗥𝗢 𝗗𝗘 𝗖𝗔𝗖𝗘𝗥𝗜𝗔ⵑ\n\n𝖡𝗎𝗌𝖼𝖺 𝗅𝗈𝗌 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝖽𝖾 𝗍𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗒 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺𝗅𝗈𝗌. ¡𝖤𝗅 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 𝖾𝗇 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖺𝗋 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗀𝖺𝗇𝖺!",
+        text="𐑺 ៸ 🎯 𝗧𝗔𝗕𝗟𝗘𝗥𝗢 𝗗𝗘 𝗖𝗔𝗖𝗘𝗥𝗜𝗔 ◝ .\n\n𝖡𝗎𝗌𝖼𝖺 𝗅𝗈𝗌 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝖽𝖾 𝗍𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗒 𝗉𝗋𝖾𝗌𝗂𝗈𝗇𝖺𝗅𝗈𝗌. ¡𝖤𝗅 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 𝖾𝗇 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖺𝗋 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗀𝖺𝗇𝖺!",
         reply_markup=markup
     )
     sesion["tablero_msg_id"] = msg.message_id
@@ -114,7 +114,11 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=f"\n🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 {jugador['name']}:\n\n{texto_cartilla}"
         )
         jugador["cartilla_msg_id"] = msg_cartilla.message_id
-
+        await context.bot.send_sticker(
+                chat_id=chat_id,
+                sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
+        )
+        
 # ================= MANEJO DE BOTONES =================
 
 async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
