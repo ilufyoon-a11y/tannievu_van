@@ -110,7 +110,7 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for jugador in sesion["jugadores"]:
         await context.bot.send_sticker(
                 chat_id=chat_id,
-                sticker="CAACAgEAAxkBA0zK7WpLIDmIcyMLLkzZomM9NktbY_SxAAKcBgACby5ZRvwkTRxQF5-kPAQ"
+                sticker="CAACAgEAAxkBA0zP0mpLKF3_ddTyg_-4ELBE-K-_aXjLAALaCAACLmVYRiyNHgIv66JBPAQ"
         )
         texto_cartilla = construir_texto_cartilla(jugador["cartilla"], jugador["marcados"])
         msg_cartilla = await context.bot.send_message(
@@ -135,7 +135,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
             return
         sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-        await query.message.reply_text(f"🎰 ֹ  {nombre_usuario(user)} se unio 𓂃")
+        await query.message.reply_text(f"˖ — {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
 
     elif query.data.startswith("caseria_tablero_"):
         sesion = sesion_caseria.get(chat_id)
