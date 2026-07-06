@@ -110,7 +110,7 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for jugador in sesion["jugadores"]:
         await context.bot.send_sticker(
                 chat_id=chat_id,
-                sticker="CAACAgEAAxkBA0zP0mpLKF3_ddTyg_-4ELBE-K-_aXjLAALaCAACLmVYRiyNHgIv66JBPAQ"
+                sticker="CAACAgEAAxkBA0zPjGpLJ_8axCEnpUQruDoPdLiMxkN0AAKJBwACIatZRmZdbgdHkwv1PAQ"
         )
         texto_cartilla = construir_texto_cartilla(jugador["cartilla"], jugador["marcados"])
         msg_cartilla = await context.bot.send_message(
@@ -132,7 +132,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
         if not sesion:
             return
         if sesion.get("activa"):
-            await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+            await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
             return
         sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
         await query.message.reply_text(f"˖ — {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
@@ -140,12 +140,12 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
     elif query.data.startswith("caseria_tablero_"):
         sesion = sesion_caseria.get(chat_id)
         if not sesion or not sesion.get("activa"):
-            await query.answer("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /𝗁𝗎𝗇𝗍 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.", show_alert=True)
+            await query.answer("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /𝗁𝗎𝗇𝗍 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ", show_alert=True)
             return
 
         jugador = next((j for j in sesion["jugadores"] if j["id"] == user.id), None)
         if not jugador:
-            await query.answer("𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋 𝖾𝗇 𝖾𝗌𝗍𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.", show_alert=True)
+            await query.answer("ⓘ ˖ ࣪ 𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋 𝖾𝗇 𝖾𝗌𝗍𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 ᵎᵎ", show_alert=True)
             return
 
         idx = int(query.data.split("_")[2])
