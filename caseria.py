@@ -181,7 +181,7 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             extra_cas = f"\n\n+{premio_cas} fichɑs" if premio_cas else ""
             await context.bot.send_message(
                 chat_id=chat_id,
-                text=f"⏖ ¡𝗣𝗔𝗥𝗧𝗜𝗗𝗔 𝗙𝗜𝗡𝗔𝗟𝗜𝗭𝗔𝗗𝗔, 𝗬𝗔 𝗧𝗘𝗡𝗘𝗠𝗢𝗦 𝗨𝗡 𝗚𝗔𝗡𝗔𝗗𝗢𝗥/𝗔ⵑ ∿\n\n"
+                text=f"¡𝗣𝗔𝗥𝗧𝗜𝗗𝗔 𝗙𝗜𝗡𝗔𝗟𝗜𝗭𝗔𝗗𝗔, 𝗬𝗔 𝗧𝗘𝗡𝗘𝗠𝗢𝗦 𝗨𝗡 𝗚𝗔𝗡𝗔𝗗𝗢𝗥/𝗔ⵑ\n\n"
                      f"🏆 {jugador['name']} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝗈 𝗌𝗎 𝖼𝖺𝗋𝗍𝗂𝗅𝗅𝖺 𝗉𝗋𝗂𝗆𝖾𝗋𝗈. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌! 🎉"
             )
             await context.bot.send_sticker(
