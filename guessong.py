@@ -146,7 +146,7 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_voice(
                 chat_id=chat_id,
                 voice=audio,
-                caption=f"¡𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/5ⵑ\n\n¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?",
+                caption=f"¡𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/10ⵑ\n\n¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?",
                 reply_markup=reply_markup,
                 parse_mode="Markdown"
             )
@@ -266,7 +266,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
         texto_resultado = f"🎉 ¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}!\n\n𝖫𝖺 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗋𝖺: {cancion_correcta.title()}"
         await query.edit_message_caption(caption=texto_resultado)
 
-        if sesion["ronda"] < 5:
+        if sesion["ronda"] < 10:
             sesion["ronda"] += 1
             await enviar_siguiente_ronda(chat_id, context)
         else:
