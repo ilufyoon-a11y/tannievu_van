@@ -50,7 +50,7 @@ GIF_LETRISTA   = "https://i.postimg.cc/Zndk78XB/Airbrush-IMAGE-ENHANCER-17793035
 GIF_RECHAZADO  = "https://i.postimg.cc/MTXZnXd8/1000005045.jpg"
 GIF_COMANDOS   = "https://i.postimg.cc/6qjQHnqv/1000005043-(1).jpg"
 GIF_CHARADA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
-GIF_CASERIA    = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
+GIF_CASERIA    = "https://i.postimg.cc/K8Y95C9Y/upscalemedia-transformed-(9).jpg"
 GIF_PIRATA     = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 GIF_MAYOROMENOR = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 
