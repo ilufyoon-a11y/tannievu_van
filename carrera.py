@@ -66,7 +66,7 @@ def sala_apuestas_txt(chat_id: int) -> str:
         else:
             lineas.append(f"{emoji}")
     lineas.append(
-        "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/apostar_carrera &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
+        "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/rider &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
         "𝖤𝗃: <code>/rider 🐰 50</code>\n\n"
         "<b>𝗖𝗼𝗿𝗿𝗲𝗱𝗼𝗿𝗲𝘀:</b> 🐨 · 🐹 · 🐱 · 🐿️ · 🐥 · 🐻 · 🐰</blockquote>"
     )
@@ -127,8 +127,8 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
     args = context.args or []
     if len(args) < 2:
         await update.message.reply_text(
-            "❌ 𝖴𝗌𝗈: <code>/apostar_carrera &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
-            "𝖤𝗃: <code>/apostar_carrera 🐰 50</code>",
+            "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/rider &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
+            "𝖤𝗃: <code>/rider 🐰 50</code>",
             parse_mode="HTML"
         )
         return
@@ -138,7 +138,7 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
 
     if not corredor_key:
         await update.message.reply_text(
-            "𝖤𝗆𝗈𝗃𝗂 𝗂𝗇𝗏𝖺𝗅𝗂𝖽𝗈. 𝖫𝗈𝗌 𝖼𝗈𝗋𝗋𝖾𝖽𝗈𝗋𝖾𝗌 𝗌𝗈𝗇:\n🦋 · 🐹 · 🐱 · 🌻 · 🐥 · 🐻 · 🐰",
+            "𝖤𝗆𝗈𝗃𝗂 𝗂𝗇𝗏𝖺𝗅𝗂𝖽𝗈. 𝖫𝗈𝗌 𝖼𝗈𝗋𝗋𝖾𝖽𝗈𝗋𝖾𝗌 𝗌𝗈𝗇:\n🐨 · 🐹 · 🐱 · 🐿️ · 🐥 · 🐻 · 🐰",
         )
         return
 
@@ -155,9 +155,8 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
     saldo = get_saldo(user_id)
     if saldo < cantidad:
         await update.message.reply_text(
-            f"❌ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌\n"
-            f"𝖳𝗎 𝗌𝖺𝗅𝖽𝗈:{saldo} 𝖿𝗂𝖼𝗁𝖺𝗌\n"
-            f"𝖣𝗂𝗇𝖾𝗋𝗈 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈: {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n"
+            f"𝗦𝗮𝗹𝗱𝗼: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
         return
 
@@ -168,7 +167,7 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
     }
 
     await update.message.reply_text(
-        f"✅ {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖺 {emoji_arg}"
+        f"— {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖺 {emoji_arg} 𝅄 𖹭' ა"
     )
 
     try:
@@ -189,11 +188,11 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     estado = sesion_carrera.get(chat_id)
     if not estado or not estado["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺 ᵎᵎ")
         return
 
     if estado["corriendo"]:
-        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝗒𝖺 𝖾𝗌𝗍𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖫𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝗒𝖺 𝖾𝗌𝗍𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ")
         return
 
     if not estado["apuestas"]:
@@ -207,7 +206,7 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.edit_message_text(
             chat_id=chat_id,
             message_id=estado["msg_id"],
-            text="🏁 ¡𝖫𝖺𝗌 𝖺𝗉𝗎𝖾𝗌𝗍𝖺𝗌 𝖾𝗌𝗍𝖺𝗇 𝖼𝖾𝗋𝗋𝖺𝖽𝖺𝗌! 𝖫𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖾𝗌𝗍𝖺 𝗉𝗈𝗋 𝖼𝗈𝗆𝖾𝗇𝗓𝖺𝗋... 💨"
+            text="¡𝖫𝖺𝗌 𝖺𝗉𝗎𝖾𝗌𝗍𝖺𝗌 𝖾𝗌𝗍𝖺𝗇 𝖼𝖾𝗋𝗋𝖺𝖽𝖺𝗌! 𝖫𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖾𝗌𝗍𝖺 𝗉𝗈𝗋 𝖼𝗈𝗆𝖾𝗇𝗓𝖺𝗋..."
         )
     except Exception:
         pass
@@ -252,18 +251,18 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if corredor_apostado == ganador_key:
             ganancia = cantidad * 2
-            sumar_robux(user_id, nombre, ganancia, f"𝖢𝖺𝗋𝗋𝖾𝗋𝖺: (+x2)")
-            ganadores_txt.append(f"  {nombre} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            sumar_robux(user_id, nombre, ganancia, f"𝗖𝗔𝗥𝗥𝗘𝗥𝗔 (+x2)")
+            ganadores_txt.append(f"— {nombre} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა")
         else:
-            restar_robux(user_id, cantidad, f"𝖢𝖺𝗋𝗋𝖾𝗋𝖺: -{cantidad} 🟥")
-            perdedores_txt.append(f"  {nombre} 𝖺𝗉𝗈𝗌𝗍𝗈 𝖺 {CORREDORES[corredor_apostado]}")
+            restar_robux(user_id, cantidad, f"𝗖𝗔𝗥𝗥𝗘𝗥𝗔: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            perdedores_txt.append(f"— {nombre} 𝖺𝗉𝗈𝗌𝗍𝗈 𝖺 {CORREDORES[corredor_apostado]} 𝅄 𖹭' ა")
 
-    resultado = [f"🏆 ¡{emoji_ganador} 𝗚𝗔𝗡𝗢 𝗟𝗔 𝗖𝗔𝗥𝗥𝗘𝗥𝗔ⵑ 💜\n\n"]
+    resultado = [f"( 𐃯 ) — ¡{emoji_ganador} 𝗚𝗔𝗡𝗢 𝗟𝗔 𝗖𝗔𝗥𝗥𝗘𝗥𝗔ⵑ 🎉\n\n"]
     if ganadores_txt:
-        resultado.append("𝗚𝗔𝗡𝗔𝗗𝗢𝗥𝗘𝗦:\n")
+        resultado.append("っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗗𝗢𝗥𝗘𝗦⠀꒱\n")
         resultado.extend(ganadores_txt)
     if perdedores_txt:
-        resultado.append("\n💸 𝗣𝗘𝗥𝗗𝗘𝗗𝗢𝗥𝗘𝗦:\n\n")
+        resultado.append("\n\nっ⠀˖⠀꒰⠀𝗣𝗘𝗥𝗗𝗘𝗗𝗢𝗥𝗘𝗦⠀꒱")
         resultado.extend(perdedores_txt)
 
     await context.bot.send_message(
@@ -282,12 +281,12 @@ async def cmd_cancelar_carrera(update: Update, context: ContextTypes.DEFAULT_TYP
 
     estado = sesion_carrera.get(chat_id)
     if not estado or not estado["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖺𝖼𝗍𝗂𝗏𝖺")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖺𝖼𝗍𝗂𝗏𝖺 ᵎᵎ")
         return
 
     if estado["corriendo"]:
-        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝗒𝖺 𝖾𝗌𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾 𝗌𝖾𝗋 𝖼𝖺𝗇𝖼𝖾𝗅𝖺𝖽𝖺")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖫𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝗒𝖺 𝖾𝗌𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾 𝗌𝖾𝗋 𝖼𝖺𝗇𝖼𝖾𝗅𝖺𝖽𝖺 ᵎᵎ")
         return
 
     del sesion_carrera[chat_id]
-    await update.message.reply_text("𝖢𝖺𝗋𝗋𝖾𝗋𝖺 𝖼𝖺𝗇𝖼𝖾𝗅𝖺𝖽𝖺. 𝖭𝗈 𝗌𝖾 𝖽𝖾𝗌𝖼𝗈𝗇𝗍𝗈 𝗇𝖺𝖽𝖺 𝖺 𝗇𝖺𝖽𝗂𝖾.")
+    await update.message.reply_text("ⓘ ˖ ࣪ 𝖢𝖺𝗋𝗋𝖾𝗋𝖺 𝖼𝖺𝗇𝖼𝖾𝗅𝖺𝖽𝖺. 𝖭𝗈 𝗌𝖾 𝖽𝖾𝗌𝖼𝗈𝗇𝗍𝗈 𝗇𝖺𝖽𝖺 𝖺 𝗇𝖺𝖽𝗂𝖾 ᵎᵎ")
