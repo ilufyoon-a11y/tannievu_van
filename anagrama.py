@@ -1,7 +1,7 @@
 import random
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_LETRISTA
+from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_AHORCADO
 
 # =====================================================================
 # SESIONES
@@ -72,15 +72,15 @@ async def cmd_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_actual = sesion_anagrama.get(chat_id)
 
     if sesion_actual and (sesion_actual.get("activa") or sesion_actual.get("fase_registro")):
-        await update.message.reply_text("¡Yɑ hɑy unɑ pɑrtidɑ de ɑnɑgrɑmɑ en curso en este grupo!")
+        await update.message.reply_text("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ")
         return
 
     sesion_anagrama[chat_id] = _sesion_base(creador_id=update.effective_user.id, chat_id=chat_id)
 
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_anagrama_click")
     await update.message.reply_photo(
-        photo=GIF_LETRISTA,
-        caption="<b> ៹ ࣪  🔀 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖣𝖾𝗌𝗈𝗋𝖽𝖾𝗇 𝖽𝖾 𝖫𝖾𝗍𝗋𝖺𝗌!</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖾 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗌𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺  ֪   𓂃\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_jumble &lt;premio&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
+        photo=GIF_AHORCADO,
+        caption="<b>๑ ꞈ ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖣𝖾𝗌𝗈𝗋𝖽𝖾𝗇 𝖽𝖾 𝖫𝖾𝗍𝗋𝖺𝗌! ⋆ ٠</b>\n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗉𝗎𝗅𝗌𝖾 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗌𝖾 𝖺 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺\n\n<blockquote>𝖢𝗎𝖺𝗇𝖽𝗈 𝖾𝗌𝗍𝖾𝗇 𝗅𝗂𝗌𝗍𝗈𝗌, 𝗎𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/start_jumble &lt;premio&gt;</code> 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈</blockquote>",
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[boton]])
     )
@@ -97,12 +97,12 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
     sesion = sesion_anagrama.get(chat_id)
 
     if not sesion or not sesion.get("fase_registro"):
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jumble 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jumble 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ")
         return
 
     if len(sesion["jugadores"]) < 2:
-        await update.message.reply_text("𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈.")
-        await update.message.reply_sticker(sticker=STICKER_ERROR)
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
         return
 
     args = context.args or []
@@ -116,7 +116,7 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
     esperando_moderador[mod["id"]] = chat_id
 
     await update.message.reply_text(
-        f"˒˓  ¡{mod['name']} 𝖿𝗎𝖾 𝖾𝗅𝖾𝗀𝗂𝖽𝗈 𝖼𝗈𝗆𝗈 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝖺 𝗊𝗎𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂𝖺 𝗒 𝗅𝖺𝗌 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌  ᨦᨩ"
+        f"Ꜥ ¡{mod['name']} 𝖿𝗎𝖾 𝖾𝗅𝖾𝗀𝗂𝖽𝗈 𝖼𝗈𝗆𝗈 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝖺 𝗊𝗎𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂𝖺 𝗒 𝗅𝖺𝗌 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 ⸝⸝"
     )
     await context.bot.send_sticker(
         chat_id=chat_id,
@@ -137,7 +137,7 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
     
     except Exception:
-        await update.message.reply_text(f"𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {mod['name']}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍.")
+        await update.message.reply_text(f"ⓘ ˖ ࣪ 𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {mod['name']}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 ᵎᵎ")
         await update.message.reply_sticker(sticker=STICKER_ERROR)
         esperando_moderador.pop(mod["id"], None)
         sesion_anagrama.pop(chat_id, None)
@@ -172,7 +172,7 @@ async def escuchar_anagrama_privado(update: Update, context: ContextTypes.DEFAUL
         palabras = parsear_palabras(texto)
         if len(palabras) != 4:
             await update.message.reply_text(
-                f"¡𝖴𝗇 𝗆𝗈𝗆𝖾𝗇𝗍𝗈! 𝖭𝖾𝖼𝖾𝗌𝗂𝗍𝗈 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗌𝖾𝗉𝖺𝗋𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝗎𝗇𝖺 𝖼𝗈𝗆𝖺, 𝗍𝗎 𝗁𝖺𝗌 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝖺𝖽𝗈 {len(palabras)}. \n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗅𝗈 𝖽𝖾 𝗇𝗎𝖾𝗏𝗈.",
+                f"ⓘ ¡𝖴𝗇 𝗆𝗈𝗆𝖾𝗇𝗍𝗈! 𝖭𝖾𝖼𝖾𝗌𝗂𝗍𝗈 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗌𝖾𝗉𝖺𝗋𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝗎𝗇𝖺 𝖼𝗈𝗆𝖺, 𝗍𝗎 𝗁𝖺𝗌 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝖺𝖽𝗈 {len(palabras)}. \n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗅𝗈 𝖽𝖾 𝗇𝗎𝖾𝗏𝗈.",
                 parse_mode="HTML"
             )
             return
@@ -183,12 +183,12 @@ async def escuchar_anagrama_privado(update: Update, context: ContextTypes.DEFAUL
         sesion["activa"] = True
         esperando_moderador.pop(user_id, None)
 
-        await update.message.reply_text("¡Muchɑs grɑciɑs, 𝗅𝖺𝗌 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝖺𝖽𝖺𝗌!")
+        await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝖺𝗌 𝟦 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝖺𝖽𝖺𝗌!")
 
         revuelta = revolver(palabras[0])
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"<b>𝖱𝖮𝖭𝖣𝖠 1/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']}</b>\n\n<code>{revuelta}</code>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
+            text=f"<b>𐑺 ៸ 𝖱𝖮𝖭𝖣𝖠 1/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']} ◝ .</b>\n\n<code>{revuelta}</code>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
             parse_mode="HTML"
         )
 
@@ -237,7 +237,7 @@ async def escuchar_anagrama_grupo(update: Update, context: ContextTypes.DEFAULT_
             revuelta = revolver(siguiente)
             await context.bot.send_message(
                 chat_id=chat_id,
-                text=f"<b>𝖱𝖮𝖭𝖣𝖠 {ronda_num}/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']}</b>\n\n<code>{revuelta}</code>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
+                text=f"<b>𐑺 ៸ 𝖱𝖮𝖭𝖣𝖠 {ronda_num}/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']} ◝ .</b>\n\n<code>{revuelta}</code>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
                 parse_mode="HTML"
             )
     else:
@@ -267,9 +267,9 @@ async def _fin_rondas(context, chat_id: int):
     ganador_id, max_pts = tabla[0]
     ganador_nombre = _nombre_de(sesion, ganador_id)
     extra = f"\n+{premio} 𝖿𝗂𝖼𝗁𝖺𝗌 🟥" if premio else ""
-    msg += f"✨ {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌!"
+    msg += f"( 𐃯 ) — {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌! 🎉"
     if premio:
-        sumar_robux(ganador_id, ganador_nombre, premio, "𝖩𝗎𝗆𝖻𝗅𝖾")
+        sumar_robux(ganador_id, ganador_nombre, premio, "𝐉𝐮𝐦𝐛𝐥𝐞: ")
 
     await context.bot.send_message(chat_id=chat_id, text=msg)
     await context.bot.send_sticker(
@@ -292,10 +292,10 @@ async def manejar_botones_anagrama(update: Update, context: ContextTypes.DEFAULT
 
         sesion = sesion_anagrama.get(chat_id)
         if not sesion or not sesion.get("fase_registro"):
-            await query.answer("𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋 𝖾𝗇 𝖾𝗌𝗍𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺.", show_alert=True)
+            await query.answer("ⓘ ˖ ࣪ 𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋 𝖾𝗇 𝖾𝗌𝗍𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 ᵎᵎ", show_alert=True)
             return
         if any(j["id"] == user.id for j in sesion["jugadores"]):
             return
 
         sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-        await query.message.reply_text(f"🔀  {nombre_usuario(user)} se unio 𓂃")
+        await query.message.reply_text(f"— {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
