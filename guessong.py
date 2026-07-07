@@ -303,8 +303,10 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
             for i, (uid_p, pts) in enumerate(tabla):
                 jugador_obj = next((j for j in sesion["jugadores"] if j["id"] == uid_p), None)
                 nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_p}"
-                dec = medallas[i] if i < 3 else "🔹"
-                robux_p = premios_adivina[i] if i < 3 else 0
+                # Solo hay medalla y fichas si realmente sumó puntos;
+                # si quedó en 0 no cuenta como "puesto" premiado.
+                dec = medallas[i] if (i < 3 and pts > 0) else "🔹"
+                robux_p = premios_adivina[i] if (i < 3 and pts > 0) else 0
                 extra = f" —› {robux_p} fichɑs" if robux_p else ""
                 texto_final += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌){extra}\n"
                 if robux_p and jugador_obj:
