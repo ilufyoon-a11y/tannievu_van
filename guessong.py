@@ -314,7 +314,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
             await context.bot.send_message(chat_id=chat_id, text=texto_final)
             await context.bot.send_sticker(
                 chat_id=chat_id,
-                sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
+                sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ"
             )
 
     # --- CASO 2: SE EQUIVOCÓ (La ronda NO se muere, los demás continúan) ---
