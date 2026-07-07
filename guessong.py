@@ -245,7 +245,7 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
 
     await context.bot.send_message(
         chat_id=chat_id,
-        text="🎧 ¡El juego hɑ comenzɑdo! Se estɑn extrɑyendo los clips, esten ɑtentos",
+        text="¡𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝗁𝖺 𝖼𝗈𝗆𝖾𝗇𝗓𝖺𝖽𝗈! 𝖲𝖾 𝖾𝗌𝗍𝖺𝗇 𝖾𝗑𝗍𝗋𝖺𝗒𝖾𝗇𝖽𝗈 𝗅𝗈𝗌 𝖼𝗅𝗂𝗉𝗌, 𝖾𝗌𝗍𝖾𝗇 𝖺𝗍𝖾𝗇𝗍𝗈𝗌",
     )
     await context.bot.send_sticker(
         chat_id=chat_id,
