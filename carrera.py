@@ -70,6 +70,11 @@ def sala_apuestas_txt(chat_id: int) -> str:
         "𝖤𝗃: <code>/rider 🐰 50</code>\n\n"
         "<b>𝗖𝗼𝗿𝗿𝗲𝗱𝗼𝗿𝗲𝘀:</b> 🐨 · 🐹 · 🐱 · 🐿️ · 🐥 · 🐻 · 🐰</blockquote>"
     )
+    return "\n".join(lineas)
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA04RwWpMkC27bUF48TBO3DayV8s5iu51AAICCAACuHdpRhhAS7wawALXPAQ"
+    ) 
 
 # =====================================================================
 # /carrera — Abre la sala
