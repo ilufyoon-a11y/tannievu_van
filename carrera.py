@@ -10,12 +10,12 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
 CORREDORES = {
     "rm":       "🐨",
-    "jin":      "🦙",
-    "suga":     "🍪",
+    "jin":      "🐹",
+    "suga":     "🐱",
     "jhope":    "🐿️",
-    "jimin":    "🐕",
-    "v":        "🛸",
-    "jungkook": "🐇",
+    "jimin":    "🐥",
+    "v":        "🐻",
+    "jungkook": "🐰",
 }
 
 # Mapa emoji -> key para parsear /apostar_carrera con emoji
@@ -44,7 +44,7 @@ def restar_robux(user_id: int, cantidad: int, detalle: str):
         guardar_sesion()
 
 def build_pista(posiciones: dict) -> str:
-    lineas = ["🏁 CARRERA 💜\n"]
+    lineas = ["๑ ꞈ 𝗟𝗔 𝗖𝗔𝗥𝗥𝗘𝗥𝗔 𝗖𝗢𝗠𝗘𝗡𝗭𝗢 ⋆ ٠\n"]
     for key, emoji in CORREDORES.items():
         pos = posiciones.get(key, 0)
         avance = "█" * pos
@@ -55,24 +55,21 @@ def build_pista(posiciones: dict) -> str:
 def sala_apuestas_txt(chat_id: int) -> str:
     apuestas = sesion_carrera[chat_id]["apuestas"]
     lineas = [
-        "🏇 <b>CARRERA BTS</b> 💜",
-        "¡𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 𝗍𝗎 𝖿𝖺𝗏𝗈𝗋𝗂𝗍𝗈 𝗒 𝖽𝗎𝗉𝗅𝗂𝖼𝖺 𝗍𝗎 𝖽𝗂𝗇𝖾𝗋𝗈!\n",
-        "𝖢𝗈𝗋𝗋𝖾𝖽𝗈𝗋𝖾𝗌:",
+        "🏇 <b>๑ ꞈ 𝗖𝗔𝗥𝗥𝗘𝗥𝗔𝗦 ⋆ ٠</b> 💜",
+        "¡𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 𝗍𝗎 𝖿𝖺𝗏𝗈𝗋𝗂𝗍𝗈 𝗒 𝖽𝗎𝗉𝗅𝗂𝖼𝖺 𝗍𝗎 𝖽𝗂𝗇𝖾𝗋𝗈!\n\n",
+        "𝗖𝗼𝗿𝗿𝗲𝗱𝗼𝗿𝗲𝘀:\n",
     ]
     for key, emoji in CORREDORES.items():
         apostadores = [d["nombre"] for d in apuestas.values() if d["corredor"] == key]
         if apostadores:
-            lineas.append(f"{emoji} — {', '.join(apostadores)}")
+            lineas.append(f"{emoji} — {', '.join(apostadores)} 𝅄 𖹭' ა")
         else:
             lineas.append(f"{emoji}")
     lineas.append(
-        "\n<blockquote>📝 ¿𝖢𝗈́𝗆𝗈 𝖺𝗉𝗈𝗌𝗍𝖺𝗋?\n\n"
-        "𝖴𝗍𝗂𝗅𝗂𝖼𝖾𝗇 <code>/apostar_carrera &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
-        "𝖤𝗃: <code>/apostar_carrera 🐰 50</code>\n\n"
-        "<b>Corredores:</b> 🐨 · 🦙 · 🍪 · 🐿️ · 🐕 · 🛸 · 🐇</blockquote>"
+        "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/apostar_carrera &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
+        "𝖤𝗃: <code>/rider 🐰 50</code>\n\n"
+        "<b>𝗖𝗼𝗿𝗿𝗲𝗱𝗼𝗿𝗲𝘀:</b> 🐨 · 🐹 · 🐱 · 🐿️ · 🐥 · 🐻 · 🐰</blockquote>"
     )
-    lineas.append("\n⏳ 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌... 𝖤𝗅 𝗁𝗈𝗌𝗍 𝖺𝗋𝗋𝖺𝗇𝖼𝖺 𝖼𝗈𝗇 <code>/start_carrera</code>")
-    return "\n".join(lineas)
 
 # =====================================================================
 # /carrera — Abre la sala
@@ -82,11 +79,11 @@ async def cmd_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋. 𝖴𝗌𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n𝖴𝗌𝖺 `/new_session` 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
         return
 
     if chat_id in sesion_carrera and sesion_carrera[chat_id]["activa"]:
-        await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖺𝖼𝗍𝗂𝗏𝖺")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖺𝖼𝗍𝗂𝗏𝖺 ᵎᵎ")
         return
 
     sesion_carrera[chat_id] = {
@@ -111,16 +108,16 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
     user_id = user.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /carrera 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 `/carrera` 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ")
         return
 
     estado = sesion_carrera.get(chat_id)
     if not estado or not estado["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /carrera 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 `/carrera` 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ")
         return
 
     if estado["corriendo"]:
-        await update.message.reply_text("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝖺𝗉𝗈𝗌𝗍𝖺𝗋!")
+        await update.message.reply_text("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝖼𝖺𝗋𝗋𝖾𝗋𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈, 𝗇𝗈 𝗉𝗎𝖾𝖽𝖾𝗌 𝖺𝗉𝗈𝗌𝗍𝖺𝗋 ᵎᵎ")
         return
 
     if user_id in estado["apuestas"]:
