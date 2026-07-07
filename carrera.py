@@ -66,8 +66,10 @@ def sala_apuestas_txt(chat_id: int) -> str:
         else:
             lineas.append(f"{emoji}")
     lineas.append(
-        "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/rider &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
-        "𝖤𝗃: <code>/rider 🐰 50</code>"
+        "<blockquote>\n𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇:\n"
+        "<pre>/rider &lt;emoji&gt; &lt;cantidad&gt;</pre>\n"
+        "𝖤𝗃:\n"
+        "<pre>/rider 🐰 50</pre></blockquote>"
     )
     return "\n".join(lineas)
 
@@ -133,8 +135,10 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
     args = context.args or []
     if len(args) < 2:
         await update.message.reply_text(
-            "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/rider &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
-            "𝖤𝗃: <code>/rider 🐰 50</code>",
+            "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇:\n"
+            "<pre>/rider &lt;emoji&gt; &lt;cantidad&gt;</pre>\n"
+            "𝖤𝗃:\n"
+            "<pre>/rider 🐰 50</pre></blockquote>",
             parse_mode="HTML"
         )
         return
