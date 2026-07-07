@@ -307,7 +307,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("jumble4",      cmd_anagrama4))
     application.add_handler(CommandHandler("start_jumble", cmd_start_anagrama))
     application.add_handler(CommandHandler("carrera",          cmd_carrera))
-    application.add_handler(CommandHandler("apostar_carrera",  cmd_apostar_carrera))
+    application.add_handler(CommandHandler("rider",  cmd_apostar_carrera))
     application.add_handler(CommandHandler("start_carrera",    cmd_start_carrera))
     application.add_handler(CommandHandler("cancelar_carrera", cmd_cancelar_carrera))
 
