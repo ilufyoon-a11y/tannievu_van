@@ -8,18 +8,18 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 # =====================================================================
 
 DECK = [
-    {"valor": 1,  "nombre": "1",  "sticker": "CAACAgEAAxkBA0JOY2o-CCpcElDKsSfaDRQDffJYgmnfAALeCAACMPnxRZH_1aP_xSgFPAQ"},
-    {"valor": 2,  "nombre": "2",  "sticker": "CAACAgEAAxkBA0K6vWo-gOdDrp6tlzKPco6tvcn9aflkAAIbCAACQArwRV0usVlcD-HVPAQ"},
-    {"valor": 3,  "nombre": "3",  "sticker": "CAACAgEAAxkBA0K6ymo-gPdXtp1ougXumlvIuIbfN4jlAAJLBwAC25XxRSXnl8LF2KdaPAQ"},
-    {"valor": 4,  "nombre": "4",  "sticker": "CAACAgEAAxkBA0K63Go-gQLB0AetwN5qzd7OeM_v8iHKAAKFCgACrDnwRVE0GUO8TyYJPAQ"},
-    {"valor": 5,  "nombre": "5",  "sticker": "CAACAgEAAxkBA0K65mo-gQyxEBlka9ZvUbS7o8ZXLEmOAAKzDAACphTwRWEp3q1JY49mPAQ"},
-    {"valor": 6,  "nombre": "6",  "sticker": "CAACAgEAAxkBA0K672o-gRVMgV4c-5xqnjMSxzCNQKs5AAJPBwACRAAB8UXacZU9f28nuDwE"},
-    {"valor": 7,  "nombre": "7",  "sticker": "CAACAgEAAxkBA0K6-mo-gR3YU2ZiIIja5frkYxv-q0LiAAIqCQACuYzwRUo7MslPG1yHPAQ"},
-    {"valor": 8,  "nombre": "8",  "sticker": "CAACAgEAAxkBA0K7A2o-gSVH1OSp9C599u1z4EUjQWxWAAKMCAACQv3wReN0rglTopGjPAQ"},
-    {"valor": 9,  "nombre": "9",  "sticker": "CAACAgEAAxkBA0K7Cmo-gS6b_HIa1X_lt-340qbkK53vAAKcCQACdpzwRY3foSjUNu9TPAQ"},
-    {"valor": 10, "nombre": "10", "sticker": "CAACAgEAAxkBA0K7Fmo-gTaXMNgAAT_53mVAnFNHa6fQzQAC7AgAAiT68UVXXU7fF4fpuDwE"},
-    {"valor": 11, "nombre": "11", "sticker": "CAACAgEAAxkBA0K7IWo-gT3M-ujSwPBNWRNVKRNG4kZMAAIrDgACspzwRdGMkNjlex7wPAQ"},
-    {"valor": 12, "nombre": "12", "sticker": "CAACAgEAAxkBA0K7LGo-gUTBUZmL56rD-pEF-t_Z96mhAAKECAAChMDxRT_nWpG6uKBmPAQ"},
+    {"valor": 1,  "nombre": "1",  "sticker": "CAACAgEAAxkBA06XtWpNDS11VmwviUkjHjFx35IKkcyXAAJuBwAC3-tpRuYEP-zDFRyDPAQ"},
+    {"valor": 2,  "nombre": "2",  "sticker": "CAACAgEAAxkBA06XxmpNDTUhAtaCwUnwz0JuVbh0ckiXAAKFBwACMD9pRmvNtf0SvmsiPAQ"},
+    {"valor": 3,  "nombre": "3",  "sticker": "CAACAgEAAxkBA06XzWpNDTkR92uIL-sJmAABAVYYdslLKAACOAcAAuoZYUanP913qO_KyjwE"},
+    {"valor": 4,  "nombre": "4",  "sticker": "CAACAgEAAxkBA06Xz2pNDTtufesmFIgnTQnQpwAB8_uJ5AACiAcAAuYgaEa3q89_azqK1TwE"},
+    {"valor": 5,  "nombre": "5",  "sticker": "CAACAgEAAxkBA06X12pNDTwCn4qvpkg_NVtPSAHSCWySAAJvCAACNVlgRmVRHb-o5woLPAQ"},
+    {"valor": 6,  "nombre": "6",  "sticker": "CAACAgEAAxkBA06X22pNDT1Q2daV20-c2uCAlLRXZUI6AAJiBgACf0hgRqXl_7f0Q4dtPAQ"},
+    {"valor": 7,  "nombre": "7",  "sticker": "CAACAgEAAxkBA06X3WpNDT5my8VxNmOrrKZgOStwt9J1AALvBwACH5NgRtwEsYKUjiA3PAQ"},
+    {"valor": 8,  "nombre": "8",  "sticker": "CAACAgEAAxkBA06X4GpNDUC4SclZrbhkNM3hMGnHiFRVAAIlCAACRXVgRtMor_JJcvVwPAQ"},
+    {"valor": 9,  "nombre": "9",  "sticker": "CAACAgEAAxkBA06X42pNDUEgacDeoUyRVdctmqLXZaT8AAICCgAClrtpRmIg7SNkYkZLPAQ"},
+    {"valor": 10, "nombre": "10", "sticker": "CAACAgEAAxkBA06X5mpNDUPDNKnCq2U8BPKni9q9f5KyAAIBCAACwLNgRh4AAZicbHgWmjwE"},
+    {"valor": 11, "nombre": "11", "sticker": "CAACAgEAAxkBA06X6GpNDUTe67UwkJa6Zvb9Nw7vojnHAAJ4BgACyPVoRuaMKS0JGRjRPAQ"},
+    {"valor": 12, "nombre": "12", "sticker": "CAACAgEAAxkBA06X6mpNDUV26bGTWqxN1wWcaNYFq-PlAAKBCAACHCRoRhKxD7xMFZYpPAQ"},
 ]
 
 # =====================================================================
