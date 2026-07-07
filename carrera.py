@@ -66,10 +66,8 @@ def sala_apuestas_txt(chat_id: int) -> str:
         else:
             lineas.append(f"{emoji}")
     lineas.append(
-        "<blockquote>\n𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇:\n"
-        "<pre>/rider &lt;emoji&gt; &lt;cantidad&gt;</pre>\n"
-        "𝖤𝗃:\n"
-        "<pre>/rider 🐰 50</pre></blockquote>"
+        "<blockquote>\n𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: /rider &lt;emoji&gt; &lt;cantidad&gt;\n"
+        "𝖤𝗃:/rider 🐰 10\n</blockquote>"
     )
     return "\n".join(lineas)
 
