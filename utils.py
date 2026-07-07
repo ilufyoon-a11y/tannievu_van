@@ -37,6 +37,7 @@ def _init_db():
 GIF_BIENVENIDA = "https://i.postimg.cc/T1jPgpDX/upscalemedia-transformed-(3).jpg"
 GIF_INFO       = "https://i.postimg.cc/9XgrQHCd/upscalemedia-transformed-(1).jpg"
 GIF_AHORCADO   = "https://i.postimg.cc/6qg3jBTv/1000004761.jpg"
+GIF_PIRATA = "https://i.postimg.cc/y6p2R9Cg/upscalemedia-transformed-(12).jpg"
 GIF_SNOWBALL   = "https://i.postimg.cc/ryb94Wgj/1000004755.jpg"
 GIF_RATONES    = "https://i.postimg.cc/wMmHBLTM/1000004766.jpg"
 GIF_RITMOAGO   = "https://i.postimg.cc/CMXk6g3n/upscalemedia-transformed.jpg"
