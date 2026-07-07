@@ -48,13 +48,13 @@ def evaluar(ruletas: list, apuesta: int) -> tuple:
 def sala_txt(chat_id: int) -> str:
     apuestas = sesion_slots[chat_id]["apuestas"]
     lineas = [
-        "🎰 <b>SLOTS GRUPAL</b>\n",
-        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/apostar &lt;cantidad&gt;</code></blockquote>\n",
+        "<b>๑ ꞈ 𝗧𝗥𝗔𝗚𝗔𝗠𝗢𝗡𝗘𝗗𝗔𝗦 ⋆ ٠</b>\n",
+        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/slot &lt;cantidad&gt;</code></blockquote>\n",
     ]
     if apuestas:
         lineas.append("<b>Jugadores:</b>")
         for d in apuestas.values():
-            lineas.append(f"  🎰 {d['nombre']} — {d['cantidad']} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            lineas.append(f"— {d['nombre']} — {d['cantidad']} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა")
     else:
         lineas.append("<i>𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇...</i>")
     return "\n".join(lineas)
@@ -67,11 +67,11 @@ async def cmd_open_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋. 𝖴𝗌𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n\n𝖴𝗌𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
         return
 
     if chat_id in sesion_slots and sesion_slots[chat_id]["activa"]:
-        await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖽𝖾 𝗌𝗅𝗈𝗍𝗌 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. 𝖴𝗌𝖺 /girar 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖽𝖾 𝗌𝗅𝗈𝗍𝗌 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. 𝖴𝗌𝖺 /girar 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋 ᵎᵎ")
         return
 
     sesion_slots[chat_id] = {
@@ -97,13 +97,13 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /apostar 𝗉𝖺𝗋𝖺 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /slots 𝗉𝖺𝗋𝖺 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋 ᵎᵎ")
         return
 
     estado = sesion_slots.get(chat_id)
     if not estado or not estado["activa"]:
         await update.message.reply_text(
-            "𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jackpot 𝗉𝖺𝗋𝖺 𝖺𝖻𝗋𝗂𝗋 𝗎𝗇𝖺, 𝗒 𝗅𝗎𝖾𝗀𝗈 /apostar &lt;cantidad&gt; 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋."
+            "ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jackpot 𝗉𝖺𝗋𝖺 𝖺𝖻𝗋𝗂𝗋 𝗎𝗇𝖺, 𝗒 𝗅𝗎𝖾𝗀𝗈 /slots &lt;cantidad&gt; 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋 ᵎᵎ"
         )
         return
 
@@ -120,25 +120,25 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         cantidad = int(args[0])
     except ValueError:
-        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 ᵎᵎ")
         return
 
     if cantidad <= 0:
-        await update.message.reply_text("𝖫𝖺 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗆𝖺𝗒𝗈𝗋 𝖺 𝟢")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖫𝖺 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗆𝖺𝗒𝗈𝗋 𝖺 𝟢 ᵎᵎ")
         return
 
     saldo = get_saldo(user_id)
     if saldo < cantidad:
         await update.message.reply_text(
-            f"❌ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌\n"
-            f"𝖳𝗎 𝗌𝖺𝗅𝖽𝗈: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n"
+            f"𝗦𝗮𝗹𝗱𝗼: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
         return
 
     if user_id in estado["apuestas"]:
         estado["apuestas"][user_id]["cantidad"] = cantidad
         await update.message.reply_text(
-            f"🔄 {nombre_usuario(user)} 𝖺𝖼𝗍𝗎𝖺𝗅𝗂𝗓𝗈 𝗌𝗎 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"— {nombre_usuario(user)} 𝖺𝖼𝗍𝗎𝖺𝗅𝗂𝗓𝗈 𝗌𝗎 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა"
         )
     else:
         estado["apuestas"][user_id] = {
@@ -146,7 +146,7 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "cantidad": cantidad,
         }
         await update.message.reply_text(
-            f"✅ {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"— {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა"
         )
 
     try:
@@ -168,7 +168,7 @@ async def cmd_spin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     estado = sesion_slots.get(chat_id)
     if not estado or not estado["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖻𝗂𝖾𝗋𝗍𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖻𝗂𝖾𝗋𝗍𝖺 ᵎᵎ")
         return
 
     apuestas_validas = {uid: d for uid, d in estado["apuestas"].items() if d["cantidad"] > 0}
@@ -202,7 +202,7 @@ async def cmd_spin(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             if user_id in sesion_puntos["jugadores"]:
                 sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
-                sesion_puntos["jugadores"][user_id]["detalle"].append(f"Slots 🎰: -{cantidad} 🟥")
+                sesion_puntos["jugadores"][user_id]["detalle"].append(f"Slots 🎰: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
             resultado_lines.append(f"{nombre}\n[ {display} ]\n{resultado_txt} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌\n")
 
     guardar_sesion()
