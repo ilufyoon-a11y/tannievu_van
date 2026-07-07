@@ -201,25 +201,25 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if gano:
             ganancia = cantidad * 2
-            sumar_robux(user_id, nombre, ganancia, "Mayor o Menor 🃏 (+x2)")
-            ganadores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → +{ganancia} Robux 🟥")
+            sumar_robux(user_id, nombre, ganancia, "𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏 (x2)")
+            ganadores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌")
         else:
             if user_id in sesion_puntos["jugadores"]:
                 sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
-                sesion_puntos["jugadores"][user_id]["detalle"].append(f"Mayor o Menor 🃏: -{cantidad} 🟥")
-            perdedores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → -{cantidad} Robux 🟥")
+                sesion_puntos["jugadores"][user_id]["detalle"].append(f"𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            perdedores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
 
     guardar_sesion()
 
     resultado = [
-        f"🃏 Carta anterior: {carta_anterior['nombre']} (valor {carta_anterior['valor']})\n"
-        f"🃏 Carta nueva: {carta_nueva['nombre']} (valor {carta_nueva['valor']})\n"
+        f"🃏 𝗖𝗮𝗿𝘁𝗮 𝗮𝗻𝘁𝗲𝗿𝗶𝗼𝗿: {carta_anterior['nombre']} (valor {carta_anterior['valor']})\n"
+        f"🃏 𝗖𝗮𝗿𝘁𝗮 𝗻𝘂𝗲𝘃𝗮: {carta_nueva['nombre']} (valor {carta_nueva['valor']})\n"
     ]
     if ganadores:
-        resultado.append("🎉 𝗚𝗔𝗡𝗔𝗗𝗢𝗥𝗘𝗦:")
+        resultado.append("っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗗𝗢𝗥𝗘𝗦⠀꒱\n")
         resultado.extend(ganadores)
     if perdedores:
-        resultado.append("\n💸 𝗣𝗘𝗥𝗗𝗘𝗗𝗢𝗥𝗘𝗦:")
+        resultado.append("\n\nっ⠀˖⠀꒰⠀𝗣𝗘𝗥𝗗𝗘𝗗𝗢𝗥𝗘𝗦⠀꒱")
         resultado.extend(perdedores)
 
     await context.bot.send_message(
