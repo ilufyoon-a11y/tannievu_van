@@ -52,17 +52,9 @@ def texto_sala(chat_id: int) -> str:
     carta = estado["carta_actual"]
     apuestas = estado["apuestas"]
     lineas = [
-        f"💜 <b>𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥</b> — 𝖢𝖠𝖱𝖳𝖠: <b>{carta['nombre']}</b>\n",
+        f"<b>๑ ꞈ 𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 ⋆ ٠\n</b>",
         "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/beat mayor &lt;cantidad&gt;</code> 𝗈 <code>/beat menor &lt;cantidad&gt;</code></blockquote>\n",
     ]
-    if apuestas:
-        lineas.append("*Jugadores:*")
-        for d in apuestas.values():
-            flecha = "⬆️" if d["eleccion"] == "mayor" else "⬇️"
-            lineas.append(f"{flecha} {d['nombre']} — {d['cantidad']} 𝖿𝗂𝖼𝗁𝖺𝗌")
-    else:
-        lineas.append("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇...")
-    return "\n".join(lineas)
 
 # =====================================================================
 # /mayoromenor — Host abre la ronda
@@ -72,11 +64,11 @@ async def cmd_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋. 𝖴𝗌𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n𝖴𝗌𝖺 `/new_session` 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
         return
 
     if chat_id in sesion_mom and sesion_mom[chat_id]["activa"]:
-        await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. 𝖴𝗌𝖺 /out_card 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. \n𝖴𝗌𝖺 `/out_card` 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋 ᵎᵎ")
         return
 
     carta = carta_aleatoria()
@@ -106,42 +98,42 @@ async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /mom 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 `/mom` 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ")
         return
 
     estado = sesion_mom.get(chat_id)
     if not estado or not estado["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /mom 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 `/mom` 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ")
         return
 
     args = context.args or []
     if len(args) < 2:
         await update.message.reply_text(
-            "<blockquote>𝖴𝗌𝗈: <code>/beat mayor &lt;cantidad&gt;</code> 𝗈 <code>/beat menor &lt;cantidad&gt;</code></blockquote>",
+            "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/beat mayor &lt;cantidad&gt;</code> 𝗈 <code>/beat menor &lt;cantidad&gt;</code></blockquote>",
             parse_mode="HTML"
         )
         return
 
     eleccion = args[0].lower()
     if eleccion not in ("mayor", "menor"):
-        await update.message.reply_text("𝖣𝖾𝖻𝖾𝗌 𝖾𝗌𝖼𝗋𝗂𝖻𝗂𝗋 `mayor` 𝗈 `menor`.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖣𝖾𝖻𝖾𝗌 𝖾𝗌𝖼𝗋𝗂𝖻𝗂𝗋 `mayor` 𝗈 `menor` ᵎᵎ")
         return
 
     try:
         cantidad = int(args[1])
     except ValueError:
-        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 ᵎᵎ")
         return
 
     if cantidad <= 0:
-        await update.message.reply_text("𝖫𝖺 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗆𝖺𝗒𝗈𝗋 𝖺 𝟢")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖫𝖺 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗆𝖺𝗒𝗈𝗋 𝖺 𝟢 ᵎᵎ")
         return
 
     saldo = get_saldo(user_id)
     if saldo < cantidad:
         await update.message.reply_text(
-            f"❌ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌\n"
-            f"𝖳𝗎 𝗌𝖺𝗅𝖽𝗈: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n"
+            f"𝗦𝗮𝗹𝗱𝗼: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
         return
 
@@ -150,8 +142,8 @@ async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         estado["apuestas"][user_id]["eleccion"] = eleccion
         estado["apuestas"][user_id]["cantidad"] = cantidad
         await update.message.reply_text(
-            f"🔄 {nombre_usuario(user)} 𝖺𝖼𝗍𝗎𝖺𝗅𝗂𝗓𝗈 𝗌𝗎 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 "
-            f"{'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'} — {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"— {nombre_usuario(user)} 𝖺𝖼𝗍𝗎𝖺𝗅𝗂𝗓𝗈 𝗌𝗎 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 "
+            f"{'MAYOR' if eleccion == 'mayor' else 'MENOR'} — {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა"
         )
     else:
         estado["apuestas"][user_id] = {
@@ -160,8 +152,8 @@ async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "cantidad": cantidad,
         }
         await update.message.reply_text(
-            f"✅ {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖺 "
-            f"{'⬆️ MAYOR' if eleccion == 'mayor' else '⬇️ MENOR'}"
+            f"— {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖺 "
+            f"{'MAYOR' if eleccion == 'mayor' else 'MENOR'} 𝅄 𖹭' ა"
         )
 
     # Actualizar mensaje de sala
@@ -183,7 +175,7 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     estado = sesion_mom.get(chat_id)
     if not estado or not estado["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖻𝗂𝖾𝗋𝗍𝖺.")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖻𝗂𝖾𝗋𝗍𝖺 ᵎᵎ")
         return
 
     apuestas_validas = {uid: d for uid, d in estado["apuestas"].items() if d["cantidad"] > 0}
