@@ -49,7 +49,7 @@ def sala_txt(chat_id: int) -> str:
     apuestas = sesion_slots[chat_id]["apuestas"]
     lineas = [
         "🎰 <b>SLOTS GRUPAL</b>\n",
-        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/slots &lt;cantidad&gt;</code></blockquote>\n",
+        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/apostar &lt;cantidad&gt;</code></blockquote>\n",
     ]
     if apuestas:
         lineas.append("<b>Jugadores:</b>")
@@ -60,7 +60,7 @@ def sala_txt(chat_id: int) -> str:
     return "\n".join(lineas)
 
 # =====================================================================
-# /open_slots — Host abre la sala
+# /jackpot — Host abre la sala
 # =====================================================================
 
 async def cmd_open_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -71,7 +71,7 @@ async def cmd_open_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if chat_id in sesion_slots and sesion_slots[chat_id]["activa"]:
-        await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖽𝖾 𝗌𝗅𝗈𝗍𝗌 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. 𝖴𝗌𝖺 /spin 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋.")
+        await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖽𝖾 𝗌𝗅𝗈𝗍𝗌 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. 𝖴𝗌𝖺 /girar 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋.")
         return
 
     sesion_slots[chat_id] = {
@@ -88,7 +88,7 @@ async def cmd_open_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_slots[chat_id]["msg_id"] = msg.message_id
 
 # =====================================================================
-# /slots <cantidad> — Apostar
+# /apostar <cantidad> — Apostar
 # =====================================================================
 
 async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -97,13 +97,13 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /slots 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /apostar 𝗉𝖺𝗋𝖺 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋.")
         return
 
     estado = sesion_slots.get(chat_id)
     if not estado or not estado["activa"]:
         await update.message.reply_text(
-            "𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /slots 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺."
+            "𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jackpot 𝗉𝖺𝗋𝖺 𝖺𝖻𝗋𝗂𝗋 𝗎𝗇𝖺, 𝗒 𝗅𝗎𝖾𝗀𝗈 /apostar &lt;cantidad&gt; 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋."
         )
         return
 
@@ -160,7 +160,7 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pass
 
 # =====================================================================
-# /spin — Host revela
+# /girar — Host revela
 # =====================================================================
 
 async def cmd_spin(update: Update, context: ContextTypes.DEFAULT_TYPE):
