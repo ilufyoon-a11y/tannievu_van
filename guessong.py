@@ -160,7 +160,9 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_voice(
                 chat_id=chat_id,
                 voice=audio,
-                caption=f"¡𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/10ⵑ\n\n¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?",
+                caption=f"      » [𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/10] «
+ 0:00 ─〇───── 0:00
+     ⇄   ◃◃   ⅠⅠ   ▹▹   ↻\n\n¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?",
                 reply_markup=reply_markup,
                 parse_mode="Markdown"
             )
