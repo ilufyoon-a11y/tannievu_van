@@ -129,7 +129,7 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
                 next(j["name"] for j in sesion["jugadores"] if j["id"] == uid)
                 for uid in sesion["sobrevivientes"] if uid != autor_id
             ]
-            texto_ganadores = f"✨ {', '.join(ganadores)} ✨" if ganadores else "¡Nɑdie! El pirata se quedó solo en el mar 🌊"
+            texto_ganadores = f"{', '.join(ganadores)}" if ganadores else "¡Nɑdie! El pirata se quedó solo en el mar 🌊"
             premio_p = sesion_puntos.get("premio_actual", {}).get("pirata", 0)
             if premio_p:
                 for uid_p in sesion["sobrevivientes"]:
