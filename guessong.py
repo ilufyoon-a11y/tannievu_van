@@ -162,7 +162,6 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
                 voice=audio,
                 caption=(
                     f"      » 𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/10 «\n"
-                    " 0:00 ─〇───── 0:00\n"
                     "     ⇄   ◃◃   ⅠⅠ   ▹▹   ↻\n\n"
                     "¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?"
                 ),
@@ -213,7 +212,7 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
     sesion = sesion_song[chat_id]
 
     if sesion["activa"]:
-        await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+        await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
         return
 
     if any(j["id"] == user.id for j in sesion["jugadores"]):
@@ -250,7 +249,7 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
 
     await context.bot.send_message(
         chat_id=chat_id,
-        text="Ꜥ ¡𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝗁𝖺 𝖼𝗈𝗆𝖾𝗇𝗓𝖺𝖽𝗈! 𝖲𝖾 𝖾𝗌𝗍𝖺𝗇 𝖾𝗑𝗍𝗋𝖺𝗒𝖾𝗇𝖽𝗈 𝗅𝗈𝗌 𝖼𝗅𝗂𝗉𝗌, 𝖾𝗌𝗍𝖾𝗇 𝖺𝗍𝖾𝗇𝗍𝗈𝗌 ⸝⸝",
+        text="Ꜥ ¡𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝗁𝖺 𝖼𝗈𝗆𝖾𝗇𝗓𝖺𝖽𝗈!\n\n𝖲𝖾 𝖾𝗌𝗍𝖺𝗇 𝖾𝗑𝗍𝗋𝖺𝗒𝖾𝗇𝖽𝗈 𝗅𝗈𝗌 𝖼𝗅𝗂𝗉𝗌, 𝖾𝗌𝗍𝖾𝗇 𝖺𝗍𝖾𝗇𝗍𝗈𝗌 ⸝⸝",
     )
     await context.bot.send_sticker(
         chat_id=chat_id,
@@ -272,7 +271,7 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
     sesion = sesion_song[chat_id]
 
     if not any(j["id"] == user.id for j in sesion["jugadores"]):
-        await query.answer("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!", show_alert=True)
+        await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
         return
 
     idx = query.data.replace("mu_", "")
