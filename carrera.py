@@ -67,8 +67,7 @@ def sala_apuestas_txt(chat_id: int) -> str:
             lineas.append(f"{emoji}")
     lineas.append(
         "𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/rider &lt;emoji&gt; &lt;cantidad&gt;</code>\n"
-        "𝖤𝗃: <code>/rider 🐰 50</code>\n\n"
-        "<b>𝗖𝗼𝗿𝗿𝗲𝗱𝗼𝗿𝗲𝘀:</b> 🐨 · 🐹 · 🐱 · 🐿️ · 🐥 · 🐻 · 🐰</blockquote>"
+        "𝖤𝗃: <code>/rider 🐰 50</code>"
     )
     return "\n".join(lineas)
 
@@ -95,7 +94,8 @@ async def cmd_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     msg = await update.message.reply_text(
-        sala_apuestas_txt(chat_id)
+        sala_apuestas_txt(chat_id),
+        parse_mode="HTML"
     )
     sesion_carrera[chat_id]["msg_id"] = msg.message_id
 
@@ -180,7 +180,8 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
         await context.bot.edit_message_text(
             chat_id=chat_id,
             message_id=estado["msg_id"],
-            text=sala_apuestas_txt(chat_id)
+            text=sala_apuestas_txt(chat_id),
+            parse_mode="HTML"
         )
     except Exception:
         pass
