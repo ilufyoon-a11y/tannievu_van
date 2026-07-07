@@ -32,7 +32,7 @@ def obtener_canciones(excluir_ids=None):
     for artista in lovers:
         try:
             url = f"https://itunes.apple.com/search?term={artista}&entity=song&limit=25"
-            response = requests.get(url).json()
+            response = requests.get(url, timeout=10).json()
             canciones_validas = [
                 track for track in response.get('results', [])
                 if track.get('previewUrl') and _es_artista_valido(track.get('artistName', ''))
@@ -43,7 +43,7 @@ def obtener_canciones(excluir_ids=None):
 
     if len(all_songs) < 6:
         url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=50"
-        response = requests.get(url).json()
+        response = requests.get(url, timeout=10).json()
         extra = [
             track for track in response.get('results', [])
             if track.get('previewUrl') and _es_artista_valido(track.get('artistName', ''))
@@ -54,7 +54,7 @@ def obtener_canciones(excluir_ids=None):
         # Último recurso: traer canciones de BTS sin filtrar para que el
         # juego no se rompa, aunque sea menos preciso.
         url = "https://itunes.apple.com/search?term=BTS&entity=song&limit=50"
-        response = requests.get(url).json()
+        response = requests.get(url, timeout=10).json()
         all_songs = [track for track in response.get('results', []) if track.get('previewUrl')]
 
     # Quitar duplicados (mismo trackId puede salir varias veces al combinar búsquedas)
@@ -124,7 +124,7 @@ def descargar_y_recortar_audio(url_audio, chat_id):
     archivo_temporal = f"temp_itunes_{chat_id}.m4a"
     archivo_final = f"reto_van_{chat_id}.mp3"
 
-    audio_data = requests.get(url_audio).content
+    audio_data = requests.get(url_audio, timeout=15).content
     with open(archivo_temporal, "wb") as f:
         f.write(audio_data)
 
@@ -156,18 +156,32 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
         botones = [[InlineKeyboardButton(cancion['trackName'], callback_data=f"mu_{i}")] for i, cancion in enumerate(opciones)]
         reply_markup = InlineKeyboardMarkup(botones)
 
-        with open(archivo_reto, 'rb') as audio:
-            await context.bot.send_voice(
-                chat_id=chat_id,
-                voice=audio,
-                caption=(
-                    f"      » 𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/10 «\n"
-                    "     ⇄   ◃◃   ⅠⅠ   ▹▹   ↻\n\n"
-                    "¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?"
-                ),
-                reply_markup=reply_markup,
-                parse_mode="Markdown"
-            )
+        caption_ronda = (
+            f"      » 𝗥𝗢𝗡𝗗𝗔 {sesion['ronda']}/10 «\n"
+            "     ⇄   ◃◃   ⅠⅠ   ▹▹   ↻\n\n"
+            "¿𝖫𝗈𝗀𝗋𝖺𝗌𝗍𝖾 𝗂𝖽𝖾𝗇𝗍𝗂𝖿𝗂𝖼𝖺𝗋 𝗊𝗎𝖾 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗌?"
+        )
+
+        intentos_envio = 0
+        while True:
+            try:
+                with open(archivo_reto, 'rb') as audio:
+                    await context.bot.send_voice(
+                        chat_id=chat_id,
+                        voice=audio,
+                        caption=caption_ronda,
+                        reply_markup=reply_markup,
+                        parse_mode="Markdown",
+                        read_timeout=60,
+                        write_timeout=60,
+                        connect_timeout=30,
+                        pool_timeout=30,
+                    )
+                break
+            except Exception:
+                intentos_envio += 1
+                if intentos_envio >= 3:
+                    raise
 
         if os.path.exists(archivo_reto):
             os.remove(archivo_reto)
