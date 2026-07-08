@@ -195,8 +195,8 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
         if len(marcados) == 6:
             sesion["activa"] = False
             premio_cas = sesion_puntos.get("premio_actual", {}).get("caseria", 0)
-            sumar_robux(user.id, jugador["name"], premio_cas, "Caceria 🔎")
-            extra_cas = f"\n\n+{premio_cas} fichɑs" if premio_cas else ""
+            sumar_robux(user.id, jugador["name"], premio_cas, "𝗖𝗮𝗰𝗲𝗿𝗶𝗮: ")
+            extra_cas = f"\n\n+{premio_cas} 𝖿𝗂𝖼𝗁𝖺𝗌" if premio_cas else ""
             await context.bot.send_sticker(
                 chat_id=chat_id,
                 sticker="CAACAgEAAxkBA0zRRmpLKoWCq3L-8eG58lH9nCLMVe0jAALYCAAC9qBYRq1em0vd00mlPAQ"
