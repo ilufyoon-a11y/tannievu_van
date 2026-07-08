@@ -38,10 +38,10 @@ def evaluar(ruletas: list, apuesta: int) -> tuple:
     a, b, c = ruletas
     if a == b == c:
         ganancia = int(apuesta * PAGO_3)
-        return f"🎉 ¡𝖳𝖱𝖨𝖯𝖫𝖤 {a}! 𝗑{PAGO_3}", ganancia
+        return f"¡𝗧𝗥𝗜𝗣𝗟𝗘 {a}ⵑ 𝗑{PAGO_3}", ganancia
     elif a == b or b == c or a == c:
         ganancia = int(apuesta * PAGO_2)
-        return f"✨ ¡𝖯𝖠𝖱 𝗑{PAGO_2}!", ganancia
+        return f"¡𝗣𝗔𝗥 𝗑{PAGO_2}ⵑ", ganancia
     else:
         return "💸 𝖲𝗂𝗇 𝗌𝗎𝖾𝗋𝗍𝖾...", 0
 
@@ -51,13 +51,7 @@ def sala_txt(chat_id: int) -> str:
         "<b>๑ ꞈ 𝗧𝗥𝗔𝗚𝗔𝗠𝗢𝗡𝗘𝗗𝗔𝗦 ⋆ ٠</b>\n",
         "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/slot &lt;cantidad&gt;</code></blockquote>\n",
     ]
-    if apuestas:
-        lineas.append("<b>Jugadores:</b>")
-        for d in apuestas.values():
-            lineas.append(f"— {d['nombre']} — {d['cantidad']} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა")
-    else:
-        lineas.append("<i>𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇...</i>")
-    return "\n".join(lineas)
+
 
 # =====================================================================
 # /jackpot — Host abre la sala
@@ -110,10 +104,10 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args or []
     if not args:
         await update.message.reply_text(
-            "𝗣𝗿𝗲𝗺𝗶𝗼𝘀:\n"
-            "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 → 𝗑𝟥 💰\n"
-            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 → 𝗑𝟣.𝟧 ✨\n"
-            "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 → 𝗉𝗂𝖾𝗋𝖽𝖾𝗌 💸"
+            "𝗣𝗿𝗲𝗺𝗶𝗼𝘀:\n\n"
+            "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟥 💰\n"
+            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟣.𝟧 ✨\n"
+            "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 ➜ 𝗉𝗂𝖾𝗋𝖽𝖾𝗌 💸"
         )
         return
 
