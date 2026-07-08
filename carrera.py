@@ -55,8 +55,8 @@ def build_pista(posiciones: dict) -> str:
 def sala_apuestas_txt(chat_id: int) -> str:
     apuestas = sesion_carrera[chat_id]["apuestas"]
     lineas = [
-        "🏇 <b>๑ ꞈ 𝗖𝗔𝗥𝗥𝗘𝗥𝗔𝗦 ⋆ ٠</b> 💜",
-        "¡𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 𝗍𝗎 𝖿𝖺𝗏𝗈𝗋𝗂𝗍𝗈 𝗒 𝖽𝗎𝗉𝗅𝗂𝖼𝖺 𝗍𝗎 𝖽𝗂𝗇𝖾𝗋𝗈!\n\n",
+        "<b>๑ ꞈ 𝗖𝗔𝗥𝗥𝗘𝗥𝗔𝗦 ⋆ ٠</b>",
+        "¡𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 𝗍𝗎 𝖿𝖺𝗏𝗈𝗋𝗂𝗍𝗈 𝗒 𝖽𝗎𝗉𝗅𝗂𝖼𝖺 𝗍𝗎 𝖽𝗂𝗇𝖾𝗋𝗈!\n",
         "𝗖𝗼𝗿𝗿𝗲𝗱𝗼𝗿𝗲𝘀:\n",
     ]
     for key, emoji in CORREDORES.items():
@@ -66,8 +66,8 @@ def sala_apuestas_txt(chat_id: int) -> str:
         else:
             lineas.append(f"{emoji}")
     lineas.append(
-        "<blockquote>\n𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: /rider &lt;emoji&gt; &lt;cantidad&gt;\n"
-        "𝖤𝗃:/rider 🐰 10\n</blockquote>"
+        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: /rider &lt;emoji&gt; &lt;cantidad&gt;\n\n"
+        "𝗘𝗷: <code>/rider &lt;🐰 10&gt;</code></blockquote>"
     )
     return "\n".join(lineas)
 
@@ -133,10 +133,8 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
     args = context.args or []
     if len(args) < 2:
         await update.message.reply_text(
-            "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇:\n"
-            "<pre>/rider &lt;emoji&gt; &lt;cantidad&gt;</pre>\n"
-            "𝖤𝗃:\n"
-            "<pre>/rider 🐰 50</pre></blockquote>",
+            "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: /rider &lt;emoji&gt; &lt;cantidad&gt;\n\n"
+            "𝗘𝗷: <code>/rider &lt;🐰 10&gt;</code></blockquote>",
             parse_mode="HTML"
         )
         return
@@ -261,10 +259,10 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if corredor_apostado == ganador_key:
             ganancia = cantidad * 2
             sumar_robux(user_id, nombre, ganancia, f"𝗖𝗔𝗥𝗥𝗘𝗥𝗔 (+x2)")
-            ganadores_txt.append(f"— {nombre} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა")
+            ganadores_txt.append(f"— {nombre} ➜ +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌")
         else:
             restar_robux(user_id, cantidad, f"𝗖𝗔𝗥𝗥𝗘𝗥𝗔: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
-            perdedores_txt.append(f"— {nombre} 𝖺𝗉𝗈𝗌𝗍𝗈 𝖺 {CORREDORES[corredor_apostado]} 𝅄 𖹭' ა")
+            perdedores_txt.append(f"— {nombre} 𝖺𝗉𝗈𝗌𝗍𝗈 𝖺 {CORREDORES[corredor_apostado]}")
 
     resultado = [f"( 𐃯 ) — ¡{emoji_ganador} 𝗚𝗔𝗡𝗢 𝗟𝗔 𝗖𝗔𝗥𝗥𝗘𝗥𝗔ⵑ 🎉\n\n"]
     if ganadores_txt:
