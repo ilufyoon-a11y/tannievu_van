@@ -115,7 +115,7 @@ def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
     if user_id not in sesion_puntos["jugadores"]:
         sesion_puntos["jugadores"][user_id] = {"nombre": nombre, "robux": 0, "detalle": []}
     sesion_puntos["jugadores"][user_id]["robux"] += cantidad
-    sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad} \U0001f7e5")
+    sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad}")
     sesion_puntos["jugadores"][user_id]["nombre"] = nombre
     _guardar_sesion()
 
@@ -216,13 +216,13 @@ async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
     medallas = ["🥇", "🥈", "🥉"]
-    msg = "っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦 𝗙𝗜𝗡𝗔𝗟𝗘𝗦⠀꒱\n\n"
+    msg = "っ⠀˖⠀꒰⠀𝗥𝗘𝗦𝗨𝗠𝗘𝗡 𝗗𝗘 𝗣𝗥𝗘𝗠𝗜𝗢𝗦⠀꒱\n\n"
     total = 0
     for i, (uid, datos) in enumerate(tabla):
         dec = medallas[i] if i < 3 else "🔹"
-        msg += f"{dec} —  {datos['nombre']}:{datos['robux']} 𝗋𝗈𝖻𝗎𝗑 𝅄 𖹭' ა\n"
+        msg += f"{dec} —  {datos['nombre']}:{datos['robux']} 𝗋𝗈𝖻𝗎𝗑\n"
         total += datos["robux"]
-    msg += f"\n𝖣𝖾𝗌𝖾𝗆𝖻𝗈𝗅𝗌𝖺 𝖾𝗌𝗈𝗌 {total} 𝗋𝗈𝖻𝗎𝗑, 𝖼𝗁𝗂𝗄𝗂"
+    msg += f"\n𝗗𝗲𝘀𝗲𝗺𝗯𝗼𝗹𝘀𝗮 𝗲𝘀𝗼𝘀 {total} 𝗿𝗼𝗯𝘂𝘅, 𝗰𝗵𝗶𝗸𝗶"
     await update.message.reply_text(msg)
     await context.bot.send_sticker(
             chat_id=chat_id,
@@ -239,8 +239,11 @@ async def cmd_saldo_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
     msg = "っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦 𝗙𝗜𝗡𝗔𝗟𝗘𝗦⠀꒱\n\n"
     for uid, datos in tabla:
-        msg += f"— {datos['nombre']} ➜ {datos['robux']} fichas 𝅄 𖹭' ა\n"
+        msg += f"— {datos['nombre']} ➜ {datos['robux']} fichas 𝅄 𖹭' ა\n\n¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗉𝗈𝗋 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗋𝖾𝖼𝗅𝖺𝗆𝖾𝗇 𝗅𝗈 𝗀𝖺𝗇𝖺𝖽𝗈 𝖼𝗈𝗇 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈!"
     await update.message.reply_text(msg)
+    await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA084ympNu_8ccj9qrD_aWTX6fLypcZr1AAKVBgACrWlBRBiHVFfRtYNMPAQ")
 
 async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["activa"] = False
