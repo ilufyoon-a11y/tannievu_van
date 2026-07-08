@@ -43,7 +43,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if len(sesion_box[chat_id]["jugadores"]) < 2:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
-        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
 
     args = context.args or []
@@ -96,7 +96,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"ⓘ ˖ ࣪ 𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {encubridor['name']}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 ᵎᵎ")
         await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
+            sticker="CAACAgEAAxkBA08s3mpNqQrISXcnzmYG_9fOSF9e-8cBAAKNBwAC7QJBRHEkAAHybHUSQDwE")
         return
 
 # ================= MANEJO DE MENSAJES =================
@@ -201,9 +201,9 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
             extra = f" ➜ {robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
-            msg += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌)\n"
+            msg += f"{dec} — {nombre_p}: {pts} 𝗉𝗍(𝗌)\n"
             if robux_p and jugador_obj:
-                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1}")
+                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼 - 𝗯𝗼𝘅 : {i+1}")
         await context.bot.send_message(chat_id=chat_id, text=msg)
         await context.bot.send_sticker(
                 chat_id=chat_id,
