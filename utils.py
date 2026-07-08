@@ -164,11 +164,11 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["admin_id"] = update.effective_user.id
     _guardar_sesion()
     await update.message.reply_text(
-        "˖࣪⠀𝖲𝗂𝗌𝗍𝖾𝗆𝖺 𝗅𝗂𝗌𝗍𝗈 𝗉𝖺𝗋𝖺 𝗋𝖾𝖼𝗈𝗉𝗂𝗅𝖺𝖼𝗂𝗈𝗇 𝗒 𝗌𝗂𝗇𝖼𝗋𝗈𝗇𝗂𝗓𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖽𝖺𝗍𝗈𝗌 ¡!⠀▬▭\n\n"
+        "˖࣪⠀𝖲𝗂𝗌𝗍𝖾𝗆𝖺 𝗅𝗂𝗌𝗍𝗈 𝗉𝖺𝗋𝖺 𝗋𝖾𝖼𝗈𝗉𝗂𝗅𝖺𝖼𝗂𝗈𝗇 𝗒 𝗌𝗂𝗇𝖼𝗋𝗈𝗇𝗂𝗓𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖽𝖺𝗍𝗈𝗌⠀▬▭⠀¡!\n\n"
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA06XrmpNDSr7FM4q-qVdZ_qZWv06JWJ3AALcBgACcl5oRniYYEXl3jjrPAQ")
+            sticker="CAACAgEAAxkBA08swWpNqNnZt1zzMtnHo2C7O4H2dURHAAIgBwACYSZoRojECEp9-LYLPAQ")
 
 async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -176,7 +176,7 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇. 𝖤𝗌𝗉𝖾𝗋𝖺 𝖺 𝗊𝗎𝖾 𝗎𝗇 𝖺𝖽𝗆𝗂𝗇 𝗊𝗎𝖾 𝗎𝗌𝖾 /𝗇𝖾𝗐_𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗉𝖺𝗋𝖺 𝖾𝗆𝗉𝖾𝗓𝖺𝗋 𝖼𝗈𝗇 𝖾𝗅 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈.")
         await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+            sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
     uid = update.effective_user.id
     datos = sesion_puntos["jugadores"].get(uid)
@@ -184,7 +184,7 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("¡𝖠𝗎𝗇 𝗇𝗈 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌, 𝗌𝖾𝗀𝗎𝗋𝗈 𝗊𝗎𝖾 𝖾𝗇 𝖾𝗅 𝗉𝗋𝗈𝗑𝗂𝗆𝗈 𝗃𝗎𝖾𝗀𝗈 𝖼𝗈𝗇𝗌𝗂𝗀𝗎𝖾𝗌, 𝖻𝗎𝖾𝗇𝖺 𝗌𝗎𝖾𝗋𝗍𝖾!")
         await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+            sticker="CAACAgEAAxkBA08sLmpNp_zFlMtSCQUHA4XfcbSUu3BvAAIcCAACHgVIRPqP67GwLA_qPAQ")
         return
     detalle = "\n".join(datos["detalle"])
     await update.message.reply_text(
@@ -194,7 +194,7 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+            sticker="CAACAgEAAxkBA08sxGpNqNvqTh7KObC6Y_5trgHOEJxnAAJhCAACNtxpRjEwBjeRfUDAPAQ")
 
 async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -208,11 +208,11 @@ async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗏𝖾𝗋 𝖾𝗌𝗍𝗈.")
         await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+            sticker="CAACAgEAAxkBA08s3mpNqQrISXcnzmYG_9fOSF9e-8cBAAKNBwAC7QJBRHEkAAHybHUSQDwE")
 
         return
     if not sesion_puntos["jugadores"]:
-        await update.message.reply_text("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝗀𝖺𝗇𝖺𝖽𝗈 𝗋𝗈𝖻𝗎𝗑 𝗍𝗈𝖽𝖺𝗏𝗂𝖺.")
+        await update.message.reply_text("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝗀𝖺𝗇𝖺𝖽𝗈 𝖿𝗂𝖼𝗁𝖺𝗌 𝗍𝗈𝖽𝖺𝗏𝗂𝖺.")
         return
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
     medallas = ["🥇", "🥈", "🥉"]
