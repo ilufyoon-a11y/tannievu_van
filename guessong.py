@@ -243,7 +243,7 @@ async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TY
 
     if chat_id not in sesion_song or len(sesion_song[chat_id]["jugadores"]) < 2:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
-        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
 
     sesion = sesion_song[chat_id]
@@ -294,10 +294,9 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
 
     # --- CASO 1: ¡ACERTÓ! (Termina la ronda) ---
     if cancion_elegida == cancion_correcta:
-        await query.answer(f"¡𝖲𝗂, 𝖺𝖼𝖾𝗋𝗍𝖺𝗌𝗍𝖾, {user_name}!")
         sesion["puntajes"][user.id] = sesion["puntajes"].get(user.id, 0) + 1
 
-        texto_resultado = f"🎉 ¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}!\n\n𝖫𝖺 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗋𝖺: {cancion_correcta.title()}"
+        texto_resultado = f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}!\n\n𝖫𝖺 𝖼𝖺𝗇𝖼𝗂𝗈𝗇 𝖾𝗋𝖺: {cancion_correcta.title()}"
         await query.edit_message_caption(caption=texto_resultado)
 
         if sesion["ronda"] < 10:
@@ -321,10 +320,10 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
                 # si quedó en 0 no cuenta como "puesto" premiado.
                 dec = medallas[i] if (i < 3 and pts > 0) else "🔹"
                 robux_p = premios_adivina[i] if (i < 3 and pts > 0) else 0
-                extra = f" ➜ {robux_p} fichɑs" if robux_p else ""
-                texto_final += f"{dec} {nombre_p}: {pts} 𝗉𝗍(𝗌)\n"
+                extra = f" ➜ {robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
+                texto_final += f"{dec} — {nombre_p}: {pts} 𝗉𝗍(𝗌)\n"
                 if robux_p and jugador_obj:
-                    sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼: {i+1}")
+                    sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼 - 𝗴𝘂𝗲𝘀𝘀: {i+1}")
             await context.bot.send_message(chat_id=chat_id, text=texto_final)
             await context.bot.send_sticker(
                 chat_id=chat_id,
@@ -336,5 +335,5 @@ async def verificar_respuesta_musica(update: Update, context: ContextTypes.DEFAU
         await query.answer()
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"¡𝖤𝗌𝖺 𝗇𝗈 𝖾𝗌 𝗅𝖺 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺, {user_name}!. ¡𝖳𝗎 𝗉𝗎𝖾𝖽𝖾𝗌, 𝗌𝗂𝗀𝗎𝖾 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗇𝖽𝗈!",
+            text=f"¡𝖤𝗌𝖺 𝗇𝗈 𝖾𝗌 𝗅𝖺 𝗋𝖾𝗌𝗉𝗎𝖾𝗌𝗍𝖺, {user_name}!.\n\n¡𝖳𝗎 𝗉𝗎𝖾𝖽𝖾𝗌, 𝗌𝗂𝗀𝗎𝖾 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗇𝖽𝗈!",
         )
