@@ -172,8 +172,8 @@ async def procesar_resultados_votacion(chat_id, context):
         ganadores = [j["name"] for j in ganadores_obj]
         premio_surv = sesion_puntos.get("premio_actual", {}).get("zombie_surv", 0)
         for j in ganadores_obj:
-            sumar_robux(j["id"], j["name"], premio_surv, "𝖲𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝖾𝗇𝗍𝖾 𝖽𝖾𝗅 𝗓𝗈𝗆𝖻𝗂𝖾")
-        extra_surv = f" (+{premio_surv} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖼/𝗎)" if premio_surv else ""
+            sumar_robux(j["id"], j["name"], premio_surv, "𝗦𝗼𝗯𝗿𝗲𝘃𝗶𝘃𝗶𝗲𝗻𝘁𝗲 𝗲𝗻 𝘇𝗼𝗺𝗯𝗶𝗲:")
+        extra_surv = f" (+{premio_surv} 𝖿𝗂𝖼𝗁𝖺𝗌)" if premio_surv else ""
         await context.bot.send_message(chat_id=chat_id,
             text=f"𐑺 ៸ 𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗥𝗢𝗡 ◝ .\n\n𝖤𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝗒 𝖺𝗁𝗈𝗋𝖺 {', '.join(ganadores)} 𝗉𝗎𝖾𝖽𝖾𝗇 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝖼𝖺𝗌𝖺")
         await context.bot.send_sticker(
@@ -184,7 +184,7 @@ async def procesar_resultados_votacion(chat_id, context):
     elif len(sesion_zombie["vivos"]) <= 1:
         zombie_obj = next(j for j in sesion_zombie["jugadores"] if j["id"] == sesion_zombie["zombies"][0])
         premio_z2 = sesion_puntos.get("premio_actual", {}).get("zombie_zombie", 0)
-        sumar_robux(zombie_obj["id"], zombie_obj["name"], premio_z2, "𝖹𝗈𝗆𝖻𝗂𝖾:")
+        sumar_robux(zombie_obj["id"], zombie_obj["name"], premio_z2, "𝗭𝗼𝗺𝗯𝗶𝗲: ")
         extra_z2 = f" (+{premio_z2} 𝖿𝗂𝖼𝗁𝖺𝗌)" if premio_z2 else ""
         await context.bot.send_message(chat_id=chat_id,
             text=f"𐑺 ៸ 𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦 ◝ .\n\n{zombie_obj['name']} 𝗆𝗈𝗋𝖽𝗂𝗈 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗒 𝖼𝗈𝗇𝗏𝗂𝗋𝗍𝗂𝗈 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝖾𝗇 𝗈𝗍𝗋𝗈 𝖿𝗈𝖼𝗈 𝖽𝖾 𝗂𝗇𝖿𝖾𝖼𝖼𝗂𝗈𝗇 🧟‍♂️")
