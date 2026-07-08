@@ -164,12 +164,11 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["admin_id"] = update.effective_user.id
     _guardar_sesion()
     await update.message.reply_text(
-        "¡𝖲𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺!\n\n"
-        "𝖲𝖾 𝖾𝗆𝗉𝖾𝗓𝖺𝗋𝖺𝗇 𝖺 𝗀𝗎𝖺𝗋𝖽𝖺𝗋 𝗅𝖺𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 𝗀𝖺𝗇𝖺𝖽𝖺𝗌 𝖾𝗇 𝖼𝖺𝖽𝖺 𝗃𝗎𝖾𝗀𝗈.\n"
+        "˖࣪⠀𝖲𝗂𝗌𝗍𝖾𝗆𝖺 𝗅𝗂𝗌𝗍𝗈 𝗉𝖺𝗋𝖺 𝗋𝖾𝖼𝗈𝗉𝗂𝗅𝖺𝖼𝗂𝗈𝗇 𝗒 𝗌𝗂𝗇𝖼𝗋𝗈𝗇𝗂𝗓𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖽𝖺𝗍𝗈𝗌 ¡!⠀✽\n\n"
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+            sticker="CAACAgEAAxkBA06XrmpNDSr7FM4q-qVdZ_qZWv06JWJ3AALcBgACcl5oRniYYEXl3jjrPAQ")
 
 async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
