@@ -64,11 +64,11 @@ async def cmd_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n𝖴𝗌𝖺 `/new_session` 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n\n𝖴𝗌𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
         return
 
     if chat_id in sesion_mom and sesion_mom[chat_id]["activa"]:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. \n𝖴𝗌𝖺 `/out_card` 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋 ᵎᵎ")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. \n\n𝖴𝗌𝖺 /out_card 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋 ᵎᵎ")
         return
 
     carta = carta_aleatoria()
@@ -116,7 +116,7 @@ async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     eleccion = args[0].lower()
     if eleccion not in ("mayor", "menor"):
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖣𝖾𝖻𝖾𝗌 𝖾𝗌𝖼𝗋𝗂𝖻𝗂𝗋 `mayor` 𝗈 `menor` ᵎᵎ")
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖣𝖾𝖻𝖾𝗌 𝖾𝗌𝖼𝗋𝗂𝖻𝗂𝗋 mayor 𝗈 menor ᵎᵎ")
         return
 
     try:
@@ -202,12 +202,12 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if gano:
             ganancia = cantidad * 2
             sumar_robux(user_id, nombre, ganancia, "𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏 (x2)")
-            ganadores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            ganadores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} ➜ +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌")
         else:
             if user_id in sesion_puntos["jugadores"]:
                 sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
                 sesion_puntos["jugadores"][user_id]["detalle"].append(f"𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
-            perdedores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            perdedores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} ➜ -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
 
     guardar_sesion()
 
