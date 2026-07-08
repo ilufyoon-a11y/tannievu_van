@@ -10,7 +10,7 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_AHORCADO
 sesion_anagrama = {}   # chat_id -> {...}
 esperando_moderador = {}   # user_id -> chat_id
 
-STICKER_ERROR = "CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ"
+STICKER_ERROR = "CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ"
 
 def _sesion_base(creador_id: int, chat_id: int) -> dict:
     return {
@@ -102,7 +102,7 @@ async def cmd_start_anagrama(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     if len(sesion["jugadores"]) < 2:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
-        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
 
     args = context.args or []
@@ -237,7 +237,7 @@ async def escuchar_anagrama_grupo(update: Update, context: ContextTypes.DEFAULT_
             revuelta = revolver(siguiente)
             await context.bot.send_message(
                 chat_id=chat_id,
-                text=f"<b>𐑺 ៸ 𝖱𝖮𝖭𝖣𝖠 {ronda_num}/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']} ◝ .</b>\n\n<code>{revuelta}</code>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
+                text=f"<b>𐑺 ៸ 𝖱𝖮𝖭𝖣𝖠 {ronda_num}/4 — 𝖢𝖠𝖳𝖤𝖦𝖮𝖱𝖨𝖠: {sesion['categoria']} ◝ .</b>\n\n<blockquote>{revuelta}</blockquote>\n\n¡𝖠𝗉𝗋𝖾𝗌𝗎𝗋𝖺𝗍𝖾, 𝗈𝗋𝖽𝖾𝗇𝖺 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!",
                 parse_mode="HTML"
             )
     else:
@@ -266,10 +266,10 @@ async def _fin_rondas(context, chat_id: int):
     msg = "¡𝖲𝖾 𝗁𝖺𝗇 𝗈𝗋𝖽𝖾𝗇𝖺𝖽𝗈 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!\n\n"
     ganador_id, max_pts = tabla[0]
     ganador_nombre = _nombre_de(sesion, ganador_id)
-    extra = f"\n+{premio} 𝖿𝗂𝖼𝗁𝖺𝗌 🟥" if premio else ""
+    extra = f"\n+{premio} 𝖿𝗂𝖼𝗁𝖺𝗌" if premio else ""
     msg += f"( 𐃯 ) — {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌! 🎉"
     if premio:
-        sumar_robux(ganador_id, ganador_nombre, premio, "𝐉𝐮𝐦𝐛𝐥𝐞: ")
+        sumar_robux(ganador_id, ganador_nombre, premio, "𝗝𝘂𝗺𝗯𝗹𝗲: ")
 
     await context.bot.send_message(chat_id=chat_id, text=msg)
     await context.bot.send_sticker(
