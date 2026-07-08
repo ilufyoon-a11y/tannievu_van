@@ -47,7 +47,7 @@ async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if len(sesion["jugadores"]) < 2:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
-        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
 
     sesion["activa"] = True
@@ -84,6 +84,10 @@ async def enviar_turno_pirata(chat_id, context):
     ]
     botones = [todos_los_botones[i:i+4] for i in range(0, len(todos_los_botones), 4)]
 
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA0zRRmpLKoWCq3L-8eG58lH9nCLMVe0jAALYCAAC9qBYRq1em0vd00mlPAQ"
+    )
     await context.bot.send_message(
         chat_id=chat_id,
         text=f"¡{nombre_actual} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!",
@@ -135,12 +139,12 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
                 for uid_p in sesion["sobrevivientes"]:
                     if uid_p != autor_id:
                         nom_p = next((j["name"] for j in sesion["jugadores"] if j["id"] == uid_p), f"ID{uid_p}")
-                        sumar_robux(uid_p, nom_p, premio_p, "𝖯𝗂𝗋𝖺𝗍𝖺 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝖾𝗇𝗍𝖾")
-            extra_p = f"\n{premio_p} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖼/𝗎" if premio_p else ""
+                        sumar_robux(uid_p, nom_p, premio_p, "𝗣𝗶𝗿𝗮𝘁𝗮 𝘀𝗼𝗯𝗿𝗲𝘃𝗶𝘃𝗶𝗲𝗻𝘁𝗲: ")
+            extra_p = f"\n{premio_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if premio_p else ""
             await context.bot.send_message(
                 chat_id=chat_id,
                 text=f"¡𝗝𝗨𝗘𝗚𝗢 𝗙𝗜𝗡𝗔𝗟𝗜𝗭𝗔𝗗𝗢ⵑ\n\n{nombre_usuario(user)} 𝗂𝗇𝗌𝖾𝗋𝗍𝗈 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝖾𝗇 𝗅𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 {num_ranura}... ¡𝖸 𝖤𝖫 𝖯𝖨𝖱𝖠𝖳𝖠 𝖲𝖠𝖫𝖳𝖮!\n\n"
-                     f"っ⠀˖⠀꒰⠀𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗡𝗧𝗘𝗦⠀꒱\n\n{texto_ganadores}"
+                     f"っ⠀˖⠀꒰⠀𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗡𝗧𝗘𝗦⠀꒱\n\n{', '.join(texto_ganadores)}"
             )
             await context.bot.send_sticker(
                 chat_id=chat_id,
