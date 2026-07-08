@@ -216,17 +216,17 @@ async def cmd_spent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
     medallas = ["🥇", "🥈", "🥉"]
-    msg = "𝗥𝗲𝘀𝘂𝗺𝗲𝗻 𝗱𝗲 𝗹𝗼𝘀 𝗴𝗮𝗻𝗮𝗱𝗼𝗿𝗲𝘀 𝗽𝗼𝗿 𝗷𝘂𝗲𝗴𝗼:\n\n"
+    msg = "っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦 𝗙𝗜𝗡𝗔𝗟𝗘𝗦⠀꒱\n\n"
     total = 0
     for i, (uid, datos) in enumerate(tabla):
         dec = medallas[i] if i < 3 else "🔹"
-        msg += f"{dec} {datos['nombre']}: **{datos['robux']} Robux**\n"
+        msg += f"{dec} —  {datos['nombre']}:{datos['robux']} 𝗋𝗈𝖻𝗎𝗑 𝅄 𖹭' ა\n"
         total += datos["robux"]
-    msg += f"\n𝖣𝖾𝗌𝖾𝗆𝖻𝗈𝗅𝗌𝖺 𝖾𝗌𝗈𝗌 {total} 𝗋𝗈𝖻𝗎𝗑 𝖼𝗁𝗂𝗄𝗂"
+    msg += f"\n𝖣𝖾𝗌𝖾𝗆𝖻𝗈𝗅𝗌𝖺 𝖾𝗌𝗈𝗌 {total} 𝗋𝗈𝖻𝗎𝗑, 𝖼𝗁𝗂𝗄𝗂"
     await update.message.reply_text(msg)
     await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+            sticker="CAACAgQAAxkBA08uqmpNq7Z8jVuQ-zOcVFy86rQyyTPiAAI6VQAC46ddBWxuGIaRjHldPAQ")
 
 async def cmd_saldo_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not sesion_puntos["activa"]:
@@ -237,9 +237,9 @@ async def cmd_saldo_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
-    msg = "💰 𝗦𝗔𝗟𝗗𝗢 𝗙𝗜𝗡𝗔𝗟:\n\n"
+    msg = "っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦 𝗙𝗜𝗡𝗔𝗟𝗘𝗦⠀꒱\n\n"
     for uid, datos in tabla:
-        msg += f"{datos['nombre']} -> {datos['robux']} fichas\n"
+        msg += f"— {datos['nombre']} ➜ {datos['robux']} fichas 𝅄 𖹭' ა\n"
     await update.message.reply_text(msg)
 
 async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -248,6 +248,9 @@ async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["premio_actual"] = {}
     _guardar_sesion()
     await update.message.reply_text("¡𝖫𝗈𝗌 𝖽𝖺𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝖻𝗈𝗋𝗋𝖺𝖽𝗈𝗌 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾, 𝖾𝗌𝗉𝖾𝗋𝗈 𝗏𝖾𝗋𝗇𝗈𝗌 𝗉𝗋𝗈𝗇𝗍𝗈!")
+    await context.bot.send_sticker(
+            chat_id=chat_id,
+            sticker="CAACAgEAAxkBA08u8GpNrCMaUmuuofvcc7Jo5f7XxFs3AAKvBgAClVRARLXKsDTGQm-JPAQ")
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from zombie import sesion_zombie
@@ -291,4 +294,4 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("𝖲𝖾 𝖼𝖾𝗋𝗋𝖺𝗋𝗈𝗇 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗋𝗍𝗂𝖽𝖺𝗌 𝖺𝖼𝗍𝗂𝗏𝖺𝗌")
     await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjA2pC_GvuE3HlS-TBssS4FfvQWCQhAAKIBQAChFVARKjsu2IDSstPPAQ")
+            sticker="CAACAgEAAxkBA08vPmpNrIF3Ven653wxH2yZyRwD4Yg3AAJQBwACu_FARNSa1F-Mh_NKPAQ")
