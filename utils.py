@@ -13,7 +13,7 @@ from telegram.ext import ContextTypes
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def _get_conn():
-    return psycopg2.connect(DATABASE_URL)
+    return psycopg2.connect(DATABASE_URL, connect_timeout=10)
 
 def _init_db():
     """Crea la tabla si no existe."""
