@@ -232,18 +232,19 @@ async def cmd_saldo_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not sesion_puntos["jugadores"]:
         await update.message.reply_text("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝗀𝖺𝗇𝖺𝖽𝗈 𝖿𝗂𝖼𝗁𝖺𝗌 𝗍𝗈𝖽𝖺𝗏𝗂𝖺.")
         return
-
+ 
     admin_tag = sesion_puntos.get("admin_username", "la admin")
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
-   msg = (f"¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗉𝗈𝗋 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, "
-          f"𝗋𝖾𝖼𝗅𝖺𝗆𝖾𝗇 𝗅𝗈 𝗀𝖺𝗇𝖺𝖽𝗈 𝖼𝗈𝗇 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 {admin_tag}!\n\n")
+    msg = (
+        f"¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗉𝗈𝗋 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, "
+        f"𝗋𝖾𝖼𝗅𝖺𝗆𝖾𝗇 𝗅𝗈 𝗀𝖺𝗇𝖺𝖽𝗈 𝖼𝗈𝗇 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 {admin_tag}!\n\n")
     for uid, datos in tabla:
         msg += f"— {datos['nombre']} ➜ {datos['robux']} 𝗋𝗈𝖻𝗎𝗑 𝅄 𖹭' ა\n"
     await update.message.reply_text(msg)
     await context.bot.send_sticker(
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA084ympNu_8ccj9qrD_aWTX6fLypcZr1AAKVBgACrWlBRBiHVFfRtYNMPAQ")
-
+    
 async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     sesion_puntos["activa"] = False
