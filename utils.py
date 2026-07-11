@@ -65,10 +65,10 @@ def _sesion_default():
         "jugadores": {},
         "premio_actual": {},
         "admin_id": None,
+        "admin_username": None,
     }
 
 def _cargar_sesion():
-    """Carga la sesión desde Supabase."""
     try:
         _init_db()
         conn = _get_conn()
@@ -86,15 +86,14 @@ def _cargar_sesion():
     return _sesion_default()
 
 def _guardar_sesion():
-    """Guarda la sesión en Supabase."""
+#GUARDADO DE DATOS EN LA DB
     try:
         conn = _get_conn()
         cur = conn.cursor()
-        cur.execute("""
-            INSERT INTO sesion (id, datos)
-            VALUES ('principal', %s::jsonb)
-            ON CONFLICT (id) DO UPDATE SET datos = EXCLUDED.datos
-        """, (json.dumps(sesion_puntos, ensure_ascii=False),))
+        cur.execute("""INSERT INTO sesion (id, datos)
+        VALUES ('principal', %s::jsonb)
+        ON CONFLICT (id) DO UPDATE SET datos = EXCLUDED.datos""", 
+                    (json.dumps(sesion_puntos, ensure_ascii=False),))
         conn.commit()
         cur.close()
         conn.close()
@@ -105,19 +104,17 @@ def _guardar_sesion():
 sesion_puntos = _cargar_sesion()
 
 def guardar_sesion():
-    """Wrapper público para guardar la sesión desde otros módulos."""
     _guardar_sesion()
 
 def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
-    """Suma robux al jugador si hay sesión activa."""
     if not sesion_puntos["activa"] or cantidad <= 0:
         return
     if user_id not in sesion_puntos["jugadores"]:
         sesion_puntos["jugadores"][user_id] = {"nombre": nombre, "robux": 0, "detalle": []}
-    sesion_puntos["jugadores"][user_id]["robux"] += cantidad
-    sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad}")
-    sesion_puntos["jugadores"][user_id]["nombre"] = nombre
-    _guardar_sesion()
+        sesion_puntos["jugadores"][user_id]["robux"] += cantidad
+        sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad}")
+        sesion_puntos["jugadores"][user_id]["nombre"] = nombre
+        _guardar_sesion()
 
 # !!  AUXILIARES  ───  ♥︎
 
@@ -127,7 +124,6 @@ def nombre_usuario(user):
 def extraer_emojis(texto):
     import regex
     # Detecta todos los emojis sin diccionarios:
-    # banderas, emojis compuestos (ZWJ), skin tones, símbolos, etc.
     patron_emoji = regex.compile(r'\p{Emoji}+', regex.UNICODE)
     patron_grafemas = regex.compile(r'\X', regex.UNICODE)
     grafemas = patron_grafemas.findall(texto)
@@ -150,22 +146,23 @@ def dibujar_pantalla_code(codigo_secreto, intento_usuario):
 # COMANDOS ROBUX / WALLET
 # =====================================================================
 
-from telegram import Update
-from telegram.ext import ContextTypes
-
 async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if sesion_puntos["activa"]:
         await update.message.reply_text("𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈́𝗇 𝖺𝖼𝗍𝗂𝗏𝖺. 𝖴𝗌𝖺 /clean 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗎𝗇 𝗇𝗎𝖾𝗏𝗈 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈.")
         return
+    user = update.effective_user
     sesion_puntos["activa"] = True
     sesion_puntos["jugadores"] = {}
     sesion_puntos["premio_actual"] = {}
     sesion_puntos["admin_id"] = update.effective_user.id
+    sesion_puntos["admin_username"] = f"@{user.username}" if user.username else user.first_name
     _guardar_sesion()
     await update.message.reply_text(
+        f"Hola {user.username}!\n\n"
         "˖࣪⠀𝖲𝗂𝗌𝗍𝖾𝗆𝖺 𝗅𝗂𝗌𝗍𝗈 𝗉𝖺𝗋𝖺 𝗋𝖾𝖼𝗈𝗉𝗂𝗅𝖺𝖼𝗂𝗈𝗇 𝗒 𝗌𝗂𝗇𝖼𝗋𝗈𝗇𝗂𝗓𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖽𝖺𝗍𝗈𝗌⠀¡!\n\n"
     )
+
     await context.bot.send_sticker(
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA08swWpNqNnZt1zzMtnHo2C7O4H2dURHAAIgBwACYSZoRojECEp9-LYLPAQ")
