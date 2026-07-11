@@ -236,9 +236,9 @@ async def cmd_saldo_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tabla = sorted(sesion_puntos["jugadores"].items(), key=lambda x: x[1]["robux"], reverse=True)
     msg = "っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦 𝗙𝗜𝗡𝗔𝗟𝗘𝗦⠀꒱\n\n"
     for uid, datos in tabla:
+        msg = f"\n¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗉𝗈𝗋 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗋𝖾𝖼𝗅𝖺𝗆𝖾𝗇 𝗅𝗈 𝗀𝖺𝗇𝖺𝖽𝗈 𝖼𝗈𝗇 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 {admin_tag}!"
         msg += f"— {datos['nombre']} ➜ {datos['robux']} 𝗋𝗈𝖻𝗎𝗑 𝅄 𖹭' ა\n"
     await update.message.reply_text(msg)
-    await update.message.reply_text(f"\n¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗉𝗈𝗋 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗋𝖾𝖼𝗅𝖺𝗆𝖾𝗇 𝗅𝗈 𝗀𝖺𝗇𝖺𝖽𝗈 𝖼𝗈𝗇 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 {admin_tag}!")
     await context.bot.send_sticker(
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA084ympNu_8ccj9qrD_aWTX6fLypcZr1AAKVBgACrWlBRBiHVFfRtYNMPAQ")
