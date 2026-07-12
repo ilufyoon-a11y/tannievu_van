@@ -1,7 +1,7 @@
 import random
 from telegram import Update, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion, migrar_si_existe_fake
+from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
 # =====================================================================
 # DECK BTS 💜
@@ -55,6 +55,8 @@ def texto_sala(chat_id: int) -> str:
         f"<b>๑ ꞈ 𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 ⋆ ٠\n</b>",
         "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇: <code>/beat mayor &lt;cantidad&gt;</code> 𝗈 <code>/beat menor &lt;cantidad&gt;</code></blockquote>\n",
     ]
+    
+    return "\n".join(lineas)
 
 # =====================================================================
 # /mayoromenor — Host abre la ronda
@@ -84,7 +86,8 @@ async def cmd_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_mom[chat_id]["sticker_msg_id"] = sticker_msg.message_id
 
     msg = await update.message.reply_text(
-        texto_sala(chat_id)
+        texto_sala(chat_id),
+        parse_mode="HTML"
     )
     sesion_mom[chat_id]["sala_msg_id"] = msg.message_id
 
@@ -94,7 +97,7 @@ async def cmd_mayoromenor(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    user_id = migrar_si_existe_fake(user)
+    user_id = user.id
     chat_id = update.effective_chat.id
 
     if not sesion_puntos["activa"]:
@@ -133,7 +136,7 @@ async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if saldo < cantidad:
         await update.message.reply_text(
             f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n"
-            f"𝗦𝗮𝗹𝗱𝗼: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"𝗦𝗮𝗹𝗱𝗼: {saldo} 𝗋𝗈𝖻𝗎𝗑"
         )
         return
 
@@ -143,7 +146,7 @@ async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         estado["apuestas"][user_id]["cantidad"] = cantidad
         await update.message.reply_text(
             f"— {nombre_usuario(user)} 𝖺𝖼𝗍𝗎𝖺𝗅𝗂𝗓𝗈 𝗌𝗎 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 "
-            f"{'MAYOR' if eleccion == 'mayor' else 'MENOR'} — {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა"
+            f"{'MAYOR' if eleccion == 'mayor' else 'MENOR'} — {cantidad} 𝗋𝗈𝖻𝗎𝗑 𝅄 𖹭' ა"
         )
     else:
         estado["apuestas"][user_id] = {
@@ -152,11 +155,10 @@ async def cmd_beat(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "cantidad": cantidad,
         }
         await update.message.reply_text(
-            f"— {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝖺 "
+            f"— {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝗋𝗈𝖻𝗎𝗑 𝖺 "
             f"{'MAYOR' if eleccion == 'mayor' else 'MENOR'} 𝅄 𖹭' ა"
         )
 
-    # Actualizar mensaje de sala
     try:
         await context.bot.edit_message_text(
             chat_id=chat_id,
@@ -201,13 +203,13 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if gano:
             ganancia = cantidad * 2
-            sumar_robux(user_id, nombre, ganancia, "𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏 (x2)")
-            ganadores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} ➜ +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            sumar_robux(user_id, nombre, ganancia, "𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏 (𝘅𝟮)")
+            ganadores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} ➜ +{ganancia} 𝗋𝗈𝖻𝗎𝗑")
         else:
             if user_id in sesion_puntos["jugadores"]:
                 sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
-                sesion_puntos["jugadores"][user_id]["detalle"].append(f"𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
-            perdedores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} ➜ -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
+                sesion_puntos["jugadores"][user_id]["detalle"].append(f"𝗠𝗔𝗬𝗢𝗥 𝗢 𝗠𝗘𝗡𝗢𝗥 🃏: -{cantidad} 𝗋𝗈𝖻𝗎𝗑")
+            perdedores.append(f"  {'⬆️' if eleccion == 'mayor' else '⬇️'} {nombre} ➜ -{cantidad} 𝗋𝗈𝖻𝗎𝗑")
 
     guardar_sesion()
 
