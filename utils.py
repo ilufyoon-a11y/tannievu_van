@@ -111,10 +111,28 @@ def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
         return
     if user_id not in sesion_puntos["jugadores"]:
         sesion_puntos["jugadores"][user_id] = {"nombre": nombre, "robux": 0, "detalle": []}
-        sesion_puntos["jugadores"][user_id]["robux"] += cantidad
-        sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad}")
-        sesion_puntos["jugadores"][user_id]["nombre"] = nombre
-        _guardar_sesion()
+    sesion_puntos["jugadores"][user_id]["robux"] += cantidad
+    sesion_puntos["jugadores"][user_id]["detalle"].append(f"{concepto}: +{cantidad}")
+    sesion_puntos["jugadores"][user_id]["nombre"] = nombre
+    _guardar_sesion()
+
+def migrar_si_existe_fake(user) -> int:
+    """Si esta persona tiene robux guardados bajo un ID falso (por haber sido agregada
+    con /add antes de escribirle al bot), los mueve a su ID real de Telegram.
+    No usa la red, así que nunca se cuelga. Devuelve el ID real del usuario."""
+    real_uid = user.id
+    if real_uid in sesion_puntos["jugadores"]:
+        return real_uid
+    username = (user.username or "").lower()
+    if not username:
+        return real_uid
+    for uid, datos in list(sesion_puntos["jugadores"].items()):
+        if uid < 0 and datos.get("nombre", "").lstrip("@").lower() == username:
+            sesion_puntos["jugadores"][real_uid] = datos
+            del sesion_puntos["jugadores"][uid]
+            _guardar_sesion()
+            break
+    return real_uid
 
 # !!  AUXILIARES  ───  ♥︎
 
@@ -174,7 +192,7 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
-    uid = update.effective_user.id
+    uid = migrar_si_existe_fake(update.effective_user)
     datos = sesion_puntos["jugadores"].get(uid)
     if not datos or datos["robux"] == 0:
         await update.message.reply_text("¡𝖠𝗎𝗇 𝗇𝗈 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 𝗋𝗈𝖻𝗎𝗑 𝖺𝖼𝗎𝗆𝗎𝗅𝖺𝖽𝗈𝗌, 𝗌𝖾𝗀𝗎𝗋𝗈 𝗊𝗎𝖾 𝖾𝗇 𝖾𝗅 𝗉𝗋𝗈𝗑𝗂𝗆𝗈 𝗃𝗎𝖾𝗀𝗈 𝖼𝗈𝗇𝗌𝗂𝗀𝗎𝖾𝗌, 𝖻𝗎𝖾𝗇𝖺 𝗌𝗎𝖾𝗋𝗍𝖾!")
@@ -288,24 +306,21 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if encontrado:
         uid, datos = encontrado
-        if uid < 0:
-            try:
-                chat_obj = await context.bot.get_chat(f"@{username_arg}")
-                if chat_obj and chat_obj.type == "private":
-                    real_id = chat_obj.id
-                    if real_id in sesion_puntos["jugadores"] and real_id != uid:
-                        sesion_puntos["jugadores"][real_id]["robux"] += datos["robux"]
-                        sesion_puntos["jugadores"][real_id]["detalle"].extend(datos["detalle"])
-                    else:
-                        sesion_puntos["jugadores"][real_id] = datos
-                    del sesion_puntos["jugadores"][uid]
-                    uid = real_id
-            except Exception:
-                pass
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
         sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝖺𝖽𝗈𝗌 +{cantidad}")
         _guardar_sesion()
         await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {sesion_puntos['jugadores'][uid]['nombre']}.")
+    else:
+        fake_id = -abs(hash(username_arg)) % 10**9
+        nombre_display = f"@{username_arg}"
+        sesion_puntos["jugadores"][fake_id] = {
+            "nombre": nombre_display,
+            "robux": cantidad,
+            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝖺𝖽𝗈𝗌 +{cantidad}"],
+            "reclamado": False,
+        }
+        _guardar_sesion()
+        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {nombre_display} (𝖺𝗀𝗋𝖾𝗀𝖺𝖽𝗈 𝗆𝖺𝗇𝗎𝖺𝗅𝗆𝖾𝗇𝗍𝖾).")
 
 async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """/claim @usuario — marca al jugador como pagado y lo saca de la lista pendiente."""
