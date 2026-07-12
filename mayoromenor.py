@@ -214,8 +214,8 @@ async def cmd_out_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     guardar_sesion()
 
     resultado = [
-        f"🃏 𝗖𝗮𝗿𝘁𝗮 𝗮𝗻𝘁𝗲𝗿𝗶𝗼𝗿: {carta_anterior['nombre']} (valor {carta_anterior['valor']})\n"
-        f"🃏 𝗖𝗮𝗿𝘁𝗮 𝗻𝘂𝗲𝘃𝗮: {carta_nueva['nombre']} (valor {carta_nueva['valor']})\n"
+        f"🃏 𝗖𝗮𝗿𝘁𝗮 𝗮𝗻𝘁𝗲𝗿𝗶𝗼𝗿: {carta_anterior['nombre']}\n"
+        f"🃏 𝗖𝗮𝗿𝘁𝗮 𝗻𝘂𝗲𝘃𝗮: {carta_nueva['nombre']}"
     ]
     if ganadores:
         resultado.append("っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗗𝗢𝗥𝗘𝗦⠀꒱\n")
