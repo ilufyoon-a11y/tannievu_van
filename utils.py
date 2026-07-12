@@ -291,7 +291,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
         sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}")
         _guardar_sesion()
-        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {datos['{username']}.")
+        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {datos['nombre']}.")
     else:
         fake_id = -abs(hash(username_arg)) % 10**9
         nombre_display = f"@{username_arg}"
@@ -302,7 +302,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "reclamado": False,
         }
         _guardar_sesion()
-        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {username_display} (𝖺𝗀𝗋𝖾𝗀𝖺𝖽𝗈 𝗆𝖺𝗇𝗎𝖺𝗅𝗆𝖾𝗇𝗍𝖾).")
+        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {nombre_display} (𝖺𝗀𝗋𝖾𝗀𝖺𝖽𝗈 𝗆𝖺𝗇𝗎𝖺𝗅𝗆𝖾𝗇𝗍𝖾).")
 
 async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """/claim @usuario — marca al jugador como pagado y lo saca de la lista pendiente."""
