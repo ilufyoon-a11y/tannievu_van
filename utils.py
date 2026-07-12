@@ -257,6 +257,129 @@ async def cmd_reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA08u8GpNrCMaUmuuofvcc7Jo5f7XxFs3AAKvBgAClVRARLXKsDTGQm-JPAQ")
 
+async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    if update.effective_user.id != sesion_puntos.get("admin_id"):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈 𝗉𝗎𝖾𝖽𝖾 𝗈𝗍𝗈𝗋𝗀𝖺𝗋 𝗋𝗈𝖻𝗎𝗑")
+        return
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺.")
+        return
+
+    args = context.args or []
+    if len(args) < 2:
+        await update.message.reply_text("𝖴𝗌𝗈: <code>/add @usuario &lt;cantidad&lt;</code>\n\n<blockquote>𝖤𝗃: /add @namseokiss 5</blockquote>",
+                                       parse_mode="HTML")
+        return
+
+    username_arg = args[0].lstrip("@").lower()
+    try:
+        cantidad = int(args[1])
+    except ValueError:
+        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈.")
+        return
+
+    encontrado = None
+    for uid, datos in sesion_puntos["jugadores"].items():
+        nombre = datos.get("nombre", "")
+        if nombre.lstrip("@").lower() == username_arg:
+            encontrado = (uid, datos)
+            break
+
+    if encontrado:
+        uid, datos = encontrado
+        sesion_puntos["jugadores"][uid]["robux"] += cantidad
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}")
+        _guardar_sesion()
+        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {datos['{username']}.")
+    else:
+        fake_id = -abs(hash(username_arg)) % 10**9
+        nombre_display = f"@{username_arg}"
+        sesion_puntos["jugadores"][fake_id] = {
+            "nombre": nombre_display,
+            "robux": cantidad,
+            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}"],
+            "reclamado": False,
+        }
+        _guardar_sesion()
+        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {username_display} (𝖺𝗀𝗋𝖾𝗀𝖺𝖽𝗈 𝗆𝖺𝗇𝗎𝖺𝗅𝗆𝖾𝗇𝗍𝖾).")
+
+async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """/claim @usuario — marca al jugador como pagado y lo saca de la lista pendiente."""
+    chat_id = update.effective_chat.id
+    if update.effective_user.id != sesion_puntos.get("admin_id"):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈 𝗉𝗎𝖾𝖽𝖾 𝗎𝗌𝖺𝗋 𝖾𝗌𝗍𝖾 𝖼𝗈𝗆𝖺𝗇𝖽𝗈")
+        return
+
+    args = context.args or []
+    if not args:
+        await update.message.reply_text("𝖴𝗌𝗈: <code>/claim @usuario</code>",
+                                       parse_mode="HTML")
+        return
+
+    username_arg = args[0].lstrip("@").lower()
+    encontrado = None
+    for uid, datos in sesion_puntos["jugadores"].items():
+        if datos.get("nombre", "").lstrip("@").lower() == username_arg:
+            encontrado = (uid, datos)
+            break
+
+    if not encontrado:
+        await update.message.reply_text(f"𝖭𝗈 𝗌𝖾 𝗅𝗈𝖼𝖺𝗅𝗂𝗓𝗈 𝖺 @{username_arg} 𝖾𝗇 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇")
+        return
+
+    uid, datos = encontrado
+    sesion_puntos["jugadores"][uid]["reclamado"] = True
+    _guardar_sesion()
+    await update.message.reply_text(f"✅ {datos['nombre']} 𝗋𝖾𝖼𝗅𝖺𝗆𝗈 𝗌𝗎𝗌 𝗋𝗈𝖻𝗎𝗑")
+
+async def cmd_export(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    if update.effective_user.id != sesion_puntos.get("admin_id"):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈 𝗉𝗎𝖾𝖽𝖾 𝗎𝗌𝖺𝗋 𝖾𝗌𝗍𝖾 𝖼𝗈𝗆𝖺𝗇𝖽𝗈")
+        return
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺.")
+        return
+
+    datos_json = json.dumps(sesion_puntos, ensure_ascii=False, indent=2)
+    archivo = io.BytesIO(datos_json.encode("utf-8"))
+    archivo.name = "sesion_export.json"
+    await context.bot.send_document(
+        chat_id=chat_id,
+        document=archivo,
+        caption="𝖲𝖾 𝗀𝖾𝗇𝖾𝗋𝗈 𝖾𝗅 𝗋𝖾𝗌𝗉𝖺𝗅𝖽𝗈 𝖽𝖾 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗎𝖺𝗅"
+    )
+
+async def cmd_import(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    if update.effective_user.id != sesion_puntos.get("admin_id") and sesion_puntos.get("admin_id") is not None:
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈 𝗉𝗎𝖾𝖽𝖾 𝗎𝗌𝖺𝗋 𝖾𝗌𝗍𝖾 𝖼𝗈𝗆𝖺𝗇𝖽𝗈")
+        return
+
+    doc = None
+    if update.message.document:
+        doc = update.message.document
+    elif update.message.reply_to_message and update.message.reply_to_message.document:
+        doc = update.message.reply_to_message.document
+
+    if not doc:
+        await update.message.reply_text("𝖱𝖾𝗌𝗉𝗈𝗇𝖽𝖾 𝖺 𝗎𝗇 𝖺𝗋𝖼𝗁𝗂𝗏𝗈 𝖽𝖾 𝖿𝗈𝗋𝗆𝖺𝗍𝗈 .𝗃𝗌𝗈𝗇 𝖼𝗈𝗇 <code>/import</code>",
+                                       parse_mode="HTML")
+        return
+
+    archivo = await context.bot.get_file(doc.file_id)
+    contenido = await archivo.download_as_bytearray()
+    try:
+        datos = json.loads(contenido.decode("utf-8"))
+        datos["jugadores"] = {int(k): v for k, v in datos.get("jugadores", {}).items()}
+        sesion_puntos.clear()
+        sesion_puntos.update(datos)
+        _guardar_sesion()
+        await update.message.reply_text("✅ 𝖲𝖾𝗌𝗂𝗈𝗇 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝖽𝖺 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾.")
+    except Exception as e:
+        await update.message.reply_text(f"❌ 𝖤𝗋𝗋𝗈𝗋 𝖺𝗅 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝗋 𝗅𝖺 𝖣𝖡 𝖾𝗇𝗏𝗂𝖺𝖽𝖺: {e}")
+
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from zombie import sesion_zombie
     from caseria import sesion_caseria
