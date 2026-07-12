@@ -293,9 +293,18 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         _guardar_sesion()
         await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {datos['nombre']}.")
     else:
-        fake_id = -abs(hash(username_arg)) % 10**9
+        real_id = None
+        try:
+            chat_obj = await context.bot.get_chat(f"@{username_arg}")
+            if chat_obj and chat_obj.type == "private":
+                real_id = chat_obj.id
+        except Exception:
+            real_id = None
+
         nombre_display = f"@{username_arg}"
-        sesion_puntos["jugadores"][fake_id] = {
+        uid_final = real_id if real_id is not None else (-abs(hash(username_arg)) % 10**9)
+
+        sesion_puntos["jugadores"][uid_final] = {
             "nombre": nombre_display,
             "robux": cantidad,
             "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}"],
