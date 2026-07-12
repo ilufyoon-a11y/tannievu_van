@@ -130,8 +130,8 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
     await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝗈𝗌 𝟩 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗀𝗎𝖺𝗋𝖽𝖺𝖽𝗈𝗌!")
     lista_visual = " ".join(emojis_originales)
     mensaje_flash = await context.bot.send_message(chat_id=gid,
-        text=f"¡𝗔𝗧𝗘𝗡𝗖𝗜𝗢𝗡, 𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗔𝗕𝗜𝗘𝗥𝗧𝗔ⵑ\n\n¡𝖣𝖺𝗍𝖾 𝗉𝗋𝗂𝗌𝖺 𝗒 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌; 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝖼𝖾𝗋𝖺𝗇 𝖾𝗇 𝟩 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌!\n\n{lista_visual}")
-    await asyncio.sleep(7)
+        text=f"¡𝗔𝗧𝗘𝗡𝗖𝗜𝗢𝗡, 𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗔𝗕𝗜𝗘𝗥𝗧𝗔ⵑ\n\n¡𝖣𝖺𝗍𝖾 𝗉𝗋𝗂𝗌𝖺 𝗒 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌; 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝖼𝖾𝗋𝖺𝗇 𝖾𝗇 𝟣𝟢 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌!\n\n{lista_visual}")
+    await asyncio.sleep(10)
     try:
         await context.bot.delete_message(chat_id=gid, message_id=mensaje_flash.message_id)
     except Exception:
