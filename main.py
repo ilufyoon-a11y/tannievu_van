@@ -15,7 +15,7 @@ from utils import (
     GIF_BIENVENIDA, GIF_INFO, GIF_COMANDOS,
     sesion_puntos, nombre_usuario,
     cmd_new_session, cmd_wallet, cmd_spent, cmd_reset, cmd_saldo_final,
-    detener_juegos,
+    detener_juegos, cmd_add, cmd_claim, cmd_export, cmd_import  
 )
 
 # =====================================================================
@@ -317,7 +317,10 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("wallet",      cmd_wallet))
     application.add_handler(CommandHandler("spent",       cmd_spent))
     application.add_handler(CommandHandler("clean",       cmd_reset))
-    application.add_handler(CommandHandler("pay",  cmd_saldo_final))
+    application.add_handler(CommandHandler("import",  cmd_import))
+    application.add_handler(CommandHandler("export",  cmd_export))
+    application.add_handler(CommandHandler("claim",  cmd_claim))
+    application.add_handler(CommandHandler("add",  cmd_add))
 
     # Handlers generales
     application.add_handler(CallbackQueryHandler(manejar_botones_main))
