@@ -288,30 +288,24 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if encontrado:
         uid, datos = encontrado
+        if uid < 0:
+            try:
+                chat_obj = await context.bot.get_chat(f"@{username_arg}")
+                if chat_obj and chat_obj.type == "private":
+                    real_id = chat_obj.id
+                    if real_id in sesion_puntos["jugadores"] and real_id != uid:
+                        sesion_puntos["jugadores"][real_id]["robux"] += datos["robux"]
+                        sesion_puntos["jugadores"][real_id]["detalle"].extend(datos["detalle"])
+                    else:
+                        sesion_puntos["jugadores"][real_id] = datos
+                    del sesion_puntos["jugadores"][uid]
+                    uid = real_id
+            except Exception:
+                pass
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
-        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}")
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝖺𝖽𝗈𝗌 +{cantidad}")
         _guardar_sesion()
-        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {datos['nombre']}.")
-    else:
-        real_id = None
-        try:
-            chat_obj = await context.bot.get_chat(f"@{username_arg}")
-            if chat_obj and chat_obj.type == "private":
-                real_id = chat_obj.id
-        except Exception:
-            real_id = None
-
-        nombre_display = f"@{username_arg}"
-        uid_final = real_id if real_id is not None else (-abs(hash(username_arg)) % 10**9)
-
-        sesion_puntos["jugadores"][uid_final] = {
-            "nombre": nombre_display,
-            "robux": cantidad,
-            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}"],
-            "reclamado": False,
-        }
-        _guardar_sesion()
-        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {nombre_display} (𝖺𝗀𝗋𝖾𝗀𝖺𝖽𝗈 𝗆𝖺𝗇𝗎𝖺𝗅𝗆𝖾𝗇𝗍𝖾).")
+        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {sesion_puntos['jugadores'][uid]['nombre']}.")
 
 async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """/claim @usuario — marca al jugador como pagado y lo saca de la lista pendiente."""
