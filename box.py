@@ -77,7 +77,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA0YjCWpC_HERlalQGI7HXrVJOdOI2sDJAAIZCQAC36pAROiuTUHK1uCmPAQ"
+            sticker="CAACAgEAAxkBA1QAAaRqUwu5n3oGAo9Cs_xd1rPRRobkzAACgwYAAtz6uUQbnfNeh5189TwE"
         )
         
     try:    
