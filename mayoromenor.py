@@ -1,7 +1,7 @@
 import random
 from telegram import Update, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
+from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion, migrar_si_existe_fake
 
 # =====================================================================
 # DECK BTS 💜
