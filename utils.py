@@ -1,6 +1,7 @@
 # utils.py — Variables y funciones compartidas entre todos los juegos
 
 import json
+import io
 import os
 import psycopg2
 from telegram import Update
@@ -119,7 +120,8 @@ def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
 def migrar_si_existe_fake(user) -> int:
     """Si esta persona tiene robux guardados bajo un ID falso (por haber sido agregada
     con /add antes de escribirle al bot), los mueve a su ID real de Telegram.
-    No usa la red, así que nunca se cuelga. Devuelve el ID real del usuario."""
+    Busca por nombre en vez de por signo del ID, así también rescata entradas
+    viejas guardadas con el bug (IDs positivos en vez de negativos)."""
     real_uid = user.id
     if real_uid in sesion_puntos["jugadores"]:
         return real_uid
@@ -127,7 +129,8 @@ def migrar_si_existe_fake(user) -> int:
     if not username:
         return real_uid
     for uid, datos in list(sesion_puntos["jugadores"].items()):
-        if uid < 0 and datos.get("nombre", "").lstrip("@").lower() == username:
+        # Compara por nombre sin importar si el ID es negativo o positivo
+        if uid != real_uid and datos.get("nombre", "").lstrip("@").lower() == username:
             sesion_puntos["jugadores"][real_uid] = datos
             del sesion_puntos["jugadores"][uid]
             _guardar_sesion()
@@ -311,7 +314,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         _guardar_sesion()
         await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {sesion_puntos['jugadores'][uid]['nombre']}.")
     else:
-        fake_id = -abs(hash(username_arg)) % 10**9
+        fake_id = -(abs(hash(username_arg)) % 10**9 + 1)  # garantiza número negativo
         nombre_display = f"@{username_arg}"
         sesion_puntos["jugadores"][fake_id] = {
             "nombre": nombre_display,
@@ -426,8 +429,8 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_charada["activa"] = False
     sesion_charada["fase_registro"] = False
     sesion_charada["jugadores"] = []
-    sesion_pirata["activa"] = False
-    sesion_pirata["jugadores"] = []
+    if chat_id in sesion_pirata:
+        del sesion_pirata[chat_id]
     if chat_id in sesion_mom:
         del sesion_mom[chat_id]
     if chat_id in sesion_carrera:
