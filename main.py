@@ -321,6 +321,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("export",  cmd_export))
     application.add_handler(CommandHandler("claim",  cmd_claim))
     application.add_handler(CommandHandler("add",  cmd_add))
+    application.add_handler(CommandHandler("pay",  cmd_saldo_fina))
 
     # Handlers generales
     application.add_handler(CallbackQueryHandler(manejar_botones_main))
