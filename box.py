@@ -83,7 +83,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:    
         await context.bot.send_message(
             chat_id=encubridor["id"],
-            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖽𝖾𝗃𝖺𝗋 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...); 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾 𝗆𝗈𝗌𝗍𝗋𝖺𝗋𝖺𝗇 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote>𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
+            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟩 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖽𝖾𝗃𝖺𝗋 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...); 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾 𝗆𝗈𝗌𝗍𝗋𝖺𝗋𝖺𝗇 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote>𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
             parse_mode="HTML"
         )
     
@@ -93,7 +93,7 @@ async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         
     except Exception:
-        await update.message.reply_text(f"ⓘ ˖ ࣪ 𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {encubridor['name']}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 ᵎᵎ")
+        await update.message.reply_text(f"ⓘ ˖ ࣪ 𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {encubridor['name']}. \n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 ᵎᵎ")
         await context.bot.send_sticker(
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA08s3mpNqQrISXcnzmYG_9fOSF9e-8cBAAKNBwAC7QJBRHEkAAHybHUSQDwE")
@@ -108,8 +108,8 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
     gid = esperando_elementos[user_id]
 
     emojis_originales = extraer_emojis(texto)
-    if len(emojis_originales) != 6:
-        await update.message.reply_text("ⓘ ¡𝖴𝗇 𝗆𝗈𝗆𝖾𝗇𝗍𝗈! 𝖤𝗌𝗈𝗌 𝗇𝗈 𝗌𝗈𝗇 𝟨 𝖾𝗆𝗈𝗃𝗂𝗌; 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗅𝗈 𝖽𝖾 𝗇𝗎𝖾𝗏𝗈.")
+    if len(emojis_originales) != 7:
+        await update.message.reply_text("ⓘ ¡𝖴𝗇 𝗆𝗈𝗆𝖾𝗇𝗍𝗈! 𝖤𝗌𝗈𝗌 𝗇𝗈 𝗌𝗈𝗇 𝟩 𝖾𝗆𝗈𝗃𝗂𝗌; 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗂𝗇𝗍𝖾𝗇𝗍𝖺𝗅𝗈 𝖽𝖾 𝗇𝗎𝖾𝗏𝗈.")
         return
 
     # Normalizar para comparación consistente
@@ -127,7 +127,7 @@ async def manejar_mensajes_box(update: Update, context: ContextTypes.DEFAULT_TYP
         "activa": True,
     })
     del esperando_elementos[user_id]
-    await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝗈𝗌 𝟨 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗀𝗎𝖺𝗋𝖽𝖺𝖽𝗈𝗌!")
+    await update.message.reply_text("¡𝖬𝗎𝖼𝗁𝖺𝗌 𝗀𝗋𝖺𝖼𝗂𝖺𝗌, 𝗅𝗈𝗌 𝟩 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌 𝗁𝖺𝗇 𝗌𝗂𝖽𝗈 𝗀𝗎𝖺𝗋𝖽𝖺𝖽𝗈𝗌!")
     lista_visual = " ".join(emojis_originales)
     mensaje_flash = await context.bot.send_message(chat_id=gid,
         text=f"¡𝗔𝗧𝗘𝗡𝗖𝗜𝗢𝗡, 𝗟𝗔 𝗖𝗔𝗝𝗔 𝗙𝗨𝗘 𝗔𝗕𝗜𝗘𝗥𝗧𝗔ⵑ\n\n¡𝖣𝖺𝗍𝖾 𝗉𝗋𝗂𝗌𝖺 𝗒 𝗆𝖾𝗆𝗈𝗋𝗂𝗓𝖺 𝗅𝗈𝗌 𝖾𝗅𝖾𝗆𝖾𝗇𝗍𝗈𝗌; 𝖽𝖾𝗌𝖺𝗉𝖺𝗋𝖾𝖼𝖾𝗋𝖺𝗇 𝖾𝗇 𝟩 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌!\n\n{lista_visual}")
@@ -183,7 +183,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}, 𝖾𝗌𝖾 𝖺𝗋𝗍ı́𝖼𝗎𝗅𝗈 𝗌𝗂 𝖾𝗌𝗍𝖺𝖻𝖺 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺!\n\n"
-        f"𝖫𝗅𝖾𝗏𝖺𝗆𝗈𝗌 [{total}/6] 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈𝗌.")
+        f"𝖫𝗅𝖾𝗏𝖺𝗆𝗈𝗌 [{total}/𝟩] 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈𝗌.")
 
     if total == 6:
         sesion["activa"] = False
@@ -200,10 +200,10 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
             nombre_p = jugador_obj["name"] if jugador_obj else f"ID {uid_b}"
             dec = medallas[i] if i < 3 else "🔹"
             robux_p = premios_box[i] if i < 3 else 0
-            extra = f" ➜ {robux_p} 𝖿𝗂𝖼𝗁𝖺𝗌" if robux_p else ""
+            extra = f" ➜ {robux_p} 𝗋𝗈𝖻𝗎𝗑" if robux_p else ""
             msg += f"{dec} — {nombre_p}: {pts} 𝗉𝗍(𝗌)\n"
             if robux_p and jugador_obj:
-                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼 - 𝗯𝗼𝘅 : {i+1}")
+                sumar_robux(jugador_obj["id"], jugador_obj["name"], robux_p, f"𝗣𝘂𝗲𝘀𝘁𝗼 - 𝗯𝗼𝘅 {i+1}")
         await context.bot.send_message(chat_id=chat_id, text=msg)
         await context.bot.send_sticker(
                 chat_id=chat_id,
