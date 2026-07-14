@@ -166,6 +166,7 @@ async def procesar_resultados_votacion(chat_id, context):
         sesion_zombie["jugadores"] = [j for j in sesion_zombie["jugadores"] if j["id"] != mas_votado_id]
         await context.bot.send_message(chat_id=chat_id,
             text=f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌.\n\n𝖤𝗋𝖺 𝗎𝗇 𝗁𝗎𝗆𝖺𝗇𝗈 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗌𝖺𝗇𝗈...")
+        await update.bot.send_sticker(chat_id=chat_id, sticker="CAACAgEAAxkBA1cjc2pWuHo4nB1YI--Dkxpu3DDaHu_iAALMCgAClKJAREI4wOlKCD_lPQQ")
 
     if not sesion_zombie["zombies"]:
         ganadores_obj = [j for j in sesion_zombie["jugadores"] if j["id"] in sesion_zombie["vivos"]]
