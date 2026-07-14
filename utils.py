@@ -310,7 +310,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if encontrado:
         uid, datos = encontrado
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
-        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝖺𝖽𝗈𝗌 +{cantidad}")
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}")
         _guardar_sesion()
         await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {sesion_puntos['jugadores'][uid]['nombre']}.")
     else:
@@ -319,7 +319,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos["jugadores"][fake_id] = {
             "nombre": nombre_display,
             "robux": cantidad,
-            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝖺𝖽𝗈𝗌 +{cantidad}"],
+            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}"],
             "reclamado": False,
         }
         _guardar_sesion()
