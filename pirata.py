@@ -67,7 +67,7 @@ async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=chat_id,
         text=f"𐑺 ៸ ¡𝗟𝗔 𝗣𝗔𝗥𝗧𝗜𝗗𝗔 𝗗𝗘 𝗣𝗜𝗥𝗔𝗧𝗔 𝗛𝗔 𝗖𝗢𝗠𝗘𝗡𝗭𝗔𝗗𝗢ⵑ ◝ .\n\n"
              f"𝖧𝖺𝗒 {TOTAL_RANURAS} 𝗋𝖺𝗇𝗎𝗋𝖺𝗌 𝖽𝖾 𝗅𝖺𝗌 𝖼𝗎𝖺𝗅𝖾𝗌 𝗎𝗇𝖺 𝖺𝖼𝗍𝗂𝗏𝖺 𝖾𝗅 𝗆𝖾𝖼𝖺𝗇𝗂𝗌𝗆𝗈. ¡𝖲𝖾 𝗉𝗋𝖾𝖼𝖺𝗏𝗂𝖽@ 𝖺𝗅 𝖾𝗌𝖼𝗈𝗀𝖾𝗋 𝖽𝗈𝗇𝖽𝖾 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝗌 𝗅𝖺 𝖾𝗌𝗉𝖺𝖽𝖺!\n\n"
-             f"𝖳𝗂𝖾𝗇𝖾𝗌 {TIEMPO_TURNO} 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝗈𝗋 𝗍𝗎𝗋𝗇𝗈 𝗈 𝗌𝖾𝗋𝖺𝗌 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈 ᵎᵎ"
+             f"𝖳𝗂𝖾𝗇𝖾𝗌 {TIEMPO_TURNO} 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝗌𝖾𝗅𝖾𝖼𝖼𝗂𝗈𝗇𝖺𝗋 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝗈 𝗌𝖾𝗋𝖺𝗌 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈 ᵎᵎ"
     )
     await enviar_turno_pirata(chat_id, context)
 
