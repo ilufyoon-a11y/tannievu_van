@@ -180,7 +180,7 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_puntos["admin_username"] = f"@{user.username}" if user.username else user.first_name
     _guardar_sesion()
     await update.message.reply_text(
-        f"Hola, @{user.username}!\n\n"
+        f"𓏸𓈒  𝖡𝗂𝖾𝗇𝗏𝖾𝗇𝗂𝖽𝖺, @{user.username}  𐚁\n\n"
         "˖࣪⠀𝖲𝗂𝗌𝗍𝖾𝗆𝖺 𝗅𝗂𝗌𝗍𝗈 𝗉𝖺𝗋𝖺 𝗋𝖾𝖼𝗈𝗉𝗂𝗅𝖺𝖼𝗂𝗈𝗇 𝗒 𝗌𝗂𝗇𝖼𝗋𝗈𝗇𝗂𝗓𝖺𝖼𝗂𝗈𝗇 𝖽𝖾 𝖽𝖺𝗍𝗈𝗌⠀¡!\n\n"
     )
     await context.bot.send_sticker(
