@@ -323,7 +323,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "reclamado": False,
         }
         _guardar_sesion()
-        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {nombre_display} (𝖺𝗀𝗋𝖾𝗀𝖺𝖽𝗈 𝗆𝖺𝗇𝗎𝖺𝗅𝗆𝖾𝗇𝗍𝖾).")
+        await update.message.reply_text(f"𝖲𝖾 𝖽𝗈𝗇𝖺𝗋𝗈𝗇 {cantidad} 𝗋𝗈𝖻𝗎𝗑 a {nombre_display}. ¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗇𝗈 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝗅𝖺 𝗉𝗈𝖻𝗋𝖾𝗓𝖺!")
 
 async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """/claim @usuario — marca al jugador como pagado y lo saca de la lista pendiente."""
@@ -352,7 +352,7 @@ async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid, datos = encontrado
     sesion_puntos["jugadores"][uid]["reclamado"] = True
     _guardar_sesion()
-    await update.message.reply_text(f"✅ {datos['nombre']} 𝗋𝖾𝖼𝗅𝖺𝗆𝗈 𝗌𝗎𝗌 𝗋𝗈𝖻𝗎𝗑")
+    await update.message.reply_text(f"{datos['nombre']} 𝗋𝖾𝖼𝗅𝖺𝗆𝗈 𝗌𝗎𝗌 𝗋𝗈𝖻𝗎𝗑")
 
 async def cmd_export(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -397,9 +397,9 @@ async def cmd_import(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos.clear()
         sesion_puntos.update(datos)
         _guardar_sesion()
-        await update.message.reply_text("✅ 𝖲𝖾𝗌𝗂𝗈𝗇 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝖽𝖺 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾.")
+        await update.message.reply_text("𝖲𝖾𝗌𝗂𝗈𝗇 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝖽𝖺 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾.")
     except Exception as e:
-        await update.message.reply_text(f"❌ 𝖤𝗋𝗋𝗈𝗋 𝖺𝗅 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝗋 𝗅𝖺 𝖣𝖡 𝖾𝗇𝗏𝗂𝖺𝖽𝖺: {e}")
+        await update.message.reply_text(f"𝖤𝗋𝗋𝗈𝗋 𝖺𝗅 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝗋 𝗅𝖺 𝖣𝖡 𝖾𝗇𝗏𝗂𝖺𝖽𝖺: {e}")
 
 async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from zombie import sesion_zombie
