@@ -148,9 +148,9 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
     chat_id = query.message.chat.id
 
     if query.data == "unirme_pirata_click":
-        await query.answer()
         sesion = sesion_pirata.get(chat_id)
         if not sesion:
+            await query.answer()
             return
         if sesion.get("activa"):
             await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
@@ -160,7 +160,10 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
             return
         if not any(j["id"] == user.id for j in sesion["jugadores"]):
             sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
+            await query.answer()
             await query.message.reply_text(f"— {nombre_usuario(user)} 𝗌𝖾 𝗎𝗇𝗂𝗈 𝅄 𖹭' ა")
+        else:
+            await query.answer("ⓘ ˖ ࣪ ¡𝖸𝖺 𝖾𝗌𝗍𝖺𝗌 𝖾𝗇 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 ᵎᵎ", show_alert=True)
 
     elif query.data.startswith("pirata_clic_"):
         await query.answer()
