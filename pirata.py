@@ -130,7 +130,11 @@ async def _auto_skip(chat_id, jugador_id, nombre, context):
             if premio_p:
                 sumar_robux(sesion["sobrevivientes"][0], ganador, premio_p, "𝗣𝗶𝗿𝗮𝘁𝗮 𝘀𝗼𝗯𝗿𝗲𝘃𝗶𝘃𝗶𝗲𝗻𝘁𝗲 ")
             extra_p = f"\n+{premio_p} 𝗋𝗈𝖻𝗎𝗑" if premio_p else ""
-            await context.bot.send_message(chat_id=chat_id, text=f"っ⠀˖⠀꒰⠀𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗡𝗧𝗘⠀꒱\n\n{ganador}{extra_p}")
+            await context.bot.send_message(chat_id=chat_id, text=f"っ⠀˖⠀꒰⠀𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗡𝗧𝗘⠀꒱\n\n{ganador}")
+            await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
+            )
         else:
             await context.bot.send_message(chat_id=chat_id, text="𝖳𝗈𝖽𝗈𝗌 𝖿𝗎𝖾𝗋𝗈𝗇 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈𝗌 🕊️")
         sesion_pirata.pop(chat_id, None)
