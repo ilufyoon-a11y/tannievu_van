@@ -185,7 +185,7 @@ async def adivinar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"¡𝖯𝗎𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 {user_name}, 𝖾𝗌𝖾 𝖺𝗋𝗍ı́𝖼𝗎𝗅𝗈 𝗌𝗂 𝖾𝗌𝗍𝖺𝖻𝖺 𝖾𝗇 𝗅𝖺 𝖼𝖺𝗃𝖺!\n\n"
         f"𝖫𝗅𝖾𝗏𝖺𝗆𝗈𝗌 [{total}/𝟩] 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝖽𝖾𝗌𝖼𝗎𝖻𝗂𝖾𝗋𝗍𝗈𝗌.")
 
-    if total == 6:
+    if total == 7:
         sesion["activa"] = False
         tabla = sorted(sesion["puntajes"].items(), key=lambda x: x[1], reverse=True)
         medallas = ["🥇", "🥈", "🥉"]
