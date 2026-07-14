@@ -252,6 +252,8 @@ async def manejar_botones_zombie(update: Update, context: ContextTypes.DEFAULT_T
 
                     await context.bot.send_message(chat_id=grupo_chat_id,
                         text=f"¡𝗨𝗡 𝗔𝗧𝗔𝗤𝗨𝗘 𝗛𝗔 𝗢𝗖𝗨𝗥𝗥𝗜𝗗𝗢ⵑ\n\n{victima_obj['name']} 𝗁𝖺 𝗌𝗂𝖽𝗈 𝖺𝗍𝖺𝖼𝖺𝖽𝗈 𝖾𝗇 𝗅𝖺 𝗈𝗌𝖼𝗎𝗋𝗂𝖽𝖺𝖽 𝗉𝗈𝗋 𝗎𝗇 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝗌𝖾 𝖾𝗌𝗍𝖺 𝗍𝗋𝖺𝗇𝗌𝖿𝗈𝗋𝗆𝖺𝗇𝖽𝗈, 𝗍𝗎𝗏𝗈 𝗊𝗎𝖾 𝗌𝖾𝗋 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾 𝗂𝗇𝗆𝖾𝖽𝗂𝖺𝗍𝗈.")
+                    await context.bot.send_sticker(chat_id=chat_id,
+                                                   sticker="CAACAgEAAxkBA1ckEGpWuXK2-Lj8IoN3zdGLx16p9Im1AAI2CAACthxARN1s0lOcz8t2PQQ")
                     await asyncio.sleep(2)
 
                     if len(sesion_zombie["vivos"]) <= 1:
