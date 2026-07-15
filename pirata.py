@@ -76,7 +76,8 @@ async def enviar_turno_pirata(chat_id, context):
     if not sesion:
         return
 
-    if chat_id in _tareas_turno and not _tareas_turno[chat_id].done():
+    tarea_actual = asyncio.current_task()
+    if chat_id in _tareas_turno and not _tareas_turno[chat_id].done() and _tareas_turno[chat_id] is not tarea_actual:
         _tareas_turno[chat_id].cancel()
 
     if sesion["turno_actual"] >= len(sesion["sobrevivientes"]):
