@@ -64,6 +64,15 @@ def construir_texto_cartilla(cartilla: list, marcados: set) -> str:
         lineas.append("  ".join(fila))
     return "\n".join(lineas)
 
+def construir_mensaje_cartillas(jugadores: list) -> str:
+    partes = []
+    for jugador in jugadores:
+        texto_cartilla = construir_texto_cartilla(jugador["cartilla"], jugador["marcados"])
+        partes.append(
+            f"🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n<code>{texto_cartilla}</code>"
+        )
+    return "\n\n".join(partes)
+
 # ================= CODIGO PRINCIPAL =================
 
 async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -78,6 +87,7 @@ async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "jugadores": [],
         "tablero": [],
         "tablero_msg_id": None,
+        "cartillas_msg_id": None,
     }
 
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝗨𝗡𝗜𝗥𝗠𝗘ㅤㅤ!¡", callback_data="unirme_caseria_click")
@@ -122,7 +132,6 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elegidos = random.sample(pool, TAMANIO_CARTILLA)
         jugador["cartilla"] = elegidos
         jugador["marcados"] = set()
-        jugador["cartilla_msg_id"] = None
 
     markup = construir_teclado_tablero(pool)
     msg = await context.bot.send_message(
@@ -135,17 +144,16 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tarea = asyncio.create_task(_shuffle_tablero(chat_id, context))
     _tareas_shuffle[chat_id] = tarea
 
-    for jugador in sesion["jugadores"]:
-        await context.bot.send_sticker(
-                chat_id=chat_id,
-                sticker="CAACAgEAAxkBA0zRRmpLKoWCq3L-8eG58lH9nCLMVe0jAALYCAAC9qBYRq1em0vd00mlPAQ"
-        )
-        texto_cartilla = construir_texto_cartilla(jugador["cartilla"], jugador["marcados"])
-        msg_cartilla = await context.bot.send_message(
-            chat_id=chat_id,
-            text=f"\n🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n\n{texto_cartilla}"
-        )
-        jugador["cartilla_msg_id"] = msg_cartilla.message_id
+    await context.bot.send_sticker(
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA0zRRmpLKoWCq3L-8eG58lH9nCLMVe0jAALYCAAC9qBYRq1em0vd00mlPAQ"
+    )
+    msg_cartillas = await context.bot.send_message(
+        chat_id=chat_id,
+        text=construir_mensaje_cartillas(sesion["jugadores"]),
+        parse_mode="HTML"
+    )
+    sesion["cartillas_msg_id"] = msg_cartillas.message_id
 
 async def _shuffle_tablero(chat_id, context):
     while True:
@@ -213,13 +221,14 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
         marcados.add(emoji_pulsado)
         await query.answer(f"¡𝖡𝗂𝖾𝗇, 𝗌𝗂𝗀𝗎𝖾 𝖺𝗌𝗂, 𝗅𝗅𝖾𝗏𝖺𝗌 ({len(marcados)}/6) 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝗆𝖺𝗋𝖼𝖺𝖽𝗈𝗌!", show_alert=False)
 
-        texto_cartilla = construir_texto_cartilla(cartilla, marcados)
-        if jugador.get("cartilla_msg_id"):
+        texto_cartillas = construir_mensaje_cartillas(sesion["jugadores"])
+        if sesion.get("cartillas_msg_id"):
             try:
                 await context.bot.edit_message_text(
                     chat_id=chat_id,
-                    message_id=jugador["cartilla_msg_id"],
-                    text=f"\n🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n\n{texto_cartilla}"
+                    message_id=sesion["cartillas_msg_id"],
+                    text=texto_cartillas,
+                    parse_mode="HTML"
                 )
             except Exception:
                 pass
