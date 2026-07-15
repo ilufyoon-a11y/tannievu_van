@@ -1,4 +1,5 @@
 import random
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_CASERIA
@@ -6,6 +7,9 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_CASERIA
 # ================= DICCIONARIO =================
 
 sesion_caseria = {}   # chat_id -> {...}
+_tareas_shuffle = {}  # chat_id -> asyncio.Task
+
+TIEMPO_SHUFFLE = 20  # segundos entre cada mezcla del tablero
 
 POOL_EMOJIS_CASERIA = [
     "💭", "💜", "♥️", "💙", "💚", "🩶", "🩵", "💛", "🧡", "🩷", "❤️", "🤍", "🖤", "🤎", "🗡️", 
@@ -64,6 +68,9 @@ def construir_texto_cartilla(cartilla: list, marcados: set) -> str:
 
 async def unirse_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if chat_id in _tareas_shuffle and not _tareas_shuffle[chat_id].done():
+        _tareas_shuffle[chat_id].cancel()
 
     sesion_caseria[chat_id] = {
         "activa": False,
@@ -125,6 +132,9 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     sesion["tablero_msg_id"] = msg.message_id
 
+    tarea = asyncio.create_task(_shuffle_tablero(chat_id, context))
+    _tareas_shuffle[chat_id] = tarea
+
     for jugador in sesion["jugadores"]:
         await context.bot.send_sticker(
                 chat_id=chat_id,
@@ -136,7 +146,25 @@ async def iniciar_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=f"\n🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n\n{texto_cartilla}"
         )
         jugador["cartilla_msg_id"] = msg_cartilla.message_id
-        
+
+async def _shuffle_tablero(chat_id, context):
+    while True:
+        await asyncio.sleep(TIEMPO_SHUFFLE)
+        sesion = sesion_caseria.get(chat_id)
+        if not sesion or not sesion.get("activa"):
+            return
+
+        random.shuffle(sesion["tablero"])
+        nuevo_markup = construir_teclado_tablero(sesion["tablero"])
+        try:
+            await context.bot.edit_message_reply_markup(
+                chat_id=chat_id,
+                message_id=sesion["tablero_msg_id"],
+                reply_markup=nuevo_markup
+            )
+        except Exception:
+            pass
+
 # ================= MANEJO DE BOTONES =================
 
 async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -145,15 +173,19 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
     chat_id = query.message.chat.id
 
     if query.data == "unirme_caseria_click":
-        await query.answer()
         sesion = sesion_caseria.get(chat_id)
         if not sesion:
+            await query.answer()
             return
         if sesion.get("activa"):
             await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
             return
-        sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-        await query.message.reply_text(f"— {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
+        if not any(j["id"] == user.id for j in sesion["jugadores"]):
+            sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
+            await query.answer()
+            await query.message.reply_text(f"— {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
+        else:
+            await query.answer("ⓘ ˖ ࣪ ¡𝖸𝖺 𝖾𝗌𝗍𝖺𝗌 𝖾𝗇 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 ᵎᵎ", show_alert=True)
 
     elif query.data.startswith("caseria_tablero_"):
         sesion = sesion_caseria.get(chat_id)
@@ -194,6 +226,8 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
 
         if len(marcados) == 6:
             sesion["activa"] = False
+            if chat_id in _tareas_shuffle and not _tareas_shuffle[chat_id].done():
+                _tareas_shuffle[chat_id].cancel()
             premio_cas = sesion_puntos.get("premio_actual", {}).get("caseria", 0)
             sumar_robux(user.id, jugador["name"], premio_cas, "𝗖𝗮𝗰𝗲𝗿𝗶𝗮: ")
             extra_cas = f"\n\n+{premio_cas} 𝖿𝗂𝖼𝗁𝖺𝗌" if premio_cas else ""
@@ -209,4 +243,4 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             await context.bot.send_sticker(
                 chat_id=chat_id,
                 sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
-    )
+            )
