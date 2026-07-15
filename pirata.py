@@ -9,7 +9,7 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_PIRATA
 sesion_pirata = {}   # chat_id -> {...}
 _tareas_turno = {}   # chat_id -> asyncio.Task
 
-MAX_JUGADORES = 10
+MAX_JUGADORES = 1
 TOTAL_RANURAS = 30
 TIEMPO_TURNO = 15
 
@@ -51,7 +51,7 @@ async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except ValueError:
         pass
 
-    if len(sesion["jugadores"]) < 2:
+    if len(sesion["jugadores"]) < 1:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
         await update.message.reply_sticker(sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
