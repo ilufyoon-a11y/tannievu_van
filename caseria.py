@@ -9,7 +9,7 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_CASERIA
 sesion_caseria = {}   # chat_id -> {...}
 _tareas_shuffle = {}  # chat_id -> asyncio.Task
 
-TIEMPO_SHUFFLE = 20  # segundos entre cada mezcla del tablero
+TIEMPO_SHUFFLE = 5  # segundos entre cada mezcla del tablero
 
 POOL_EMOJIS_CASERIA = [
     "💭", "💜", "♥️", "💙", "💚", "🩶", "🩵", "💛", "🧡", "🩷", "❤️", "🤍", "🖤", "🤎", "🗡️", 
@@ -69,7 +69,7 @@ def construir_mensaje_cartillas(jugadores: list) -> str:
     for jugador in jugadores:
         texto_cartilla = construir_texto_cartilla(jugador["cartilla"], jugador["marcados"])
         partes.append(
-            f"🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n<code>{texto_cartilla}</code>"
+            f"🎴 𝗖𝗮𝗿𝘁𝗶𝗹𝗹𝗮 𝗱𝗲 ﹕ {jugador['name']} 𔓕\n\n<code>{texto_cartilla}</code>"
         )
     return "\n\n".join(partes)
 
