@@ -219,7 +219,10 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
             return
 
         marcados.add(emoji_pulsado)
-        await query.answer(f"¡𝖡𝗂𝖾𝗇, 𝗌𝗂𝗀𝗎𝖾 𝖺𝗌𝗂, 𝗅𝗅𝖾𝗏𝖺𝗌 ({len(marcados)}/6) 𝗈𝖻𝗃𝖾𝗍𝗈𝗌 𝗆𝖺𝗋𝖼𝖺𝖽𝗈𝗌!", show_alert=False)
+        faltantes = [e for e in cartilla if e not in marcados]
+        if faltantes:
+            texto_faltantes = " ".join(faltantes)
+            await query.answer(f"¡𝖡𝗂𝖾𝗇, 𝗌𝗂𝗀𝗎𝖾 𝖺𝗌𝗂, 𝗅𝗅𝖾𝗏𝖺𝗌 ({len(marcados)}/6)! \n\n𝖥𝖺𝗅𝗍𝖺𝗇: {texto_faltantes}", show_alert=False)
 
         texto_cartillas = construir_mensaje_cartillas(sesion["jugadores"])
         if sesion.get("cartillas_msg_id"):
