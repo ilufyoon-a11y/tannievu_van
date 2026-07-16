@@ -2,14 +2,27 @@ import random
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
+from telegram.error import RetryAfter
 from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_PIRATA
+
+# ================= UTILIDAD ANTI FLOOD =================
+
+async def _enviar_seguro(func, *args, **kwargs):
+    """Ejecuta un envío a Telegram; si Telegram aplica flood control (RetryAfter),
+    espera el tiempo indicado y reintenta, en vez de dejar que la excepción reviente el turno."""
+    for _ in range(3):
+        try:
+            return await func(*args, **kwargs)
+        except RetryAfter as e:
+            await asyncio.sleep(e.retry_after + 1)
+    return await func(*args, **kwargs)
 
 # ================= DICCIONARIO =================
 
 sesion_pirata = {}   # chat_id -> {...}
 _tareas_turno = {}   # chat_id -> asyncio.Task
 
-MAX_JUGADORES = 10
+MAX_JUGADORES = 1
 TOTAL_RANURAS = 25
 TIEMPO_TURNO = 15
 
@@ -95,11 +108,8 @@ async def enviar_turno_pirata(chat_id, context):
     ]
     botones = [todos_los_botones[i:i+5] for i in range(0, len(todos_los_botones), 5)]
 
-    await context.bot.send_sticker(
-        chat_id=chat_id,
-        sticker="CAACAgEAAxkBA0zRRmpLKoWCq3L-8eG58lH9nCLMVe0jAALYCAAC9qBYRq1em0vd00mlPAQ"
-    )
-    await context.bot.send_message(
+    await _enviar_seguro(
+        context.bot.send_message,
         chat_id=chat_id,
         text=f"¡{nombre_actual} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!",
         reply_markup=InlineKeyboardMarkup(botones)
@@ -119,7 +129,8 @@ async def _auto_skip(chat_id, jugador_id, nombre, context):
         return
 
     sesion["sobrevivientes"].remove(jugador_id)
-    await context.bot.send_message(
+    await _enviar_seguro(
+        context.bot.send_message,
         chat_id=chat_id,
         text=f"¡𝖤𝗅 𝗍𝗂𝖾𝗆𝗉𝗈 𝗌𝖾 𝖺𝗀𝗈𝗍𝗈, {nombre} 𝖿𝗎𝖾 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈!"
     )
@@ -160,15 +171,9 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
         if sesion.get("activa"):
             await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
             return
-
         if len(sesion["jugadores"]) >= MAX_JUGADORES:
-            await query.answer()
-            await context.bot.send_message(
-                chat_id=chat_id,
-                text="ⓘ ˖ ࣪ ¡𝖫𝖺 𝗌𝖺𝗅𝖺 𝗒𝖺 𝗌𝖾 𝖾𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗅𝖾𝗇𝖺 ᵎᵎ"
-            )
+            await context.bot.send_message(f"ⓘ ˖ ࣪ ¡𝖫𝖺 𝗌𝖺𝗅𝖺 𝗒𝖺 𝗌𝖾 𝖾𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗅𝖾𝗇𝖺 ᵎᵎ", show_alert=True)
             return
-
         if not any(j["id"] == user.id for j in sesion["jugadores"]):
             sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
             await query.answer()
@@ -218,7 +223,8 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
 
         else:
             sesion["agujerosave"].append(num_ranura)
-            await context.bot.send_message(
+            await _enviar_seguro(
+                context.bot.send_message,
                 chat_id=chat_id,
                 text=f"🗡️ ¡𝖤𝗌𝗉𝖺𝖽𝖺 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝖽𝖺! 𝖱𝖺𝗇𝗎𝗋𝖺 {num_ranura} 𝖺 𝗌𝖺𝗅𝗏𝗈.\n\n{nombre_usuario(user)} 𝗌𝗈𝖻𝗋𝖾𝗏𝗂𝗏𝗂𝗈."
             )
@@ -226,4 +232,4 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
             await enviar_turno_pirata(chat_id, context)
 
     elif query.data.startswith("ranura_ya_usada_"):
-        await context.bot.send_message("¡𝖴𝗉𝗌, 𝖾𝗌𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝗒𝖺 𝗍𝗂𝖾𝗇𝖾 𝗎𝗇𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝖽𝖺, 𝖾𝗅𝗂𝗀𝖾 𝗈𝗍𝗋𝖺!", show_alert=True)
+        await query.answer("¡𝖴𝗉𝗌, 𝖾𝗌𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝗒𝖺 𝗍𝗂𝖾𝗇𝖾 𝗎𝗇𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝖽𝖺, 𝖾𝗅𝗂𝗀𝖾 𝗈𝗍𝗋𝖺!", show_alert=True)
