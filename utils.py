@@ -412,6 +412,7 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from anagrama import reset_anagrama_chat
     from guessong import reset_guessong_chat
     from slots import sesion_slots
+    from ahorcado import sesion_ahorcado, esperando_palabra_ahorcado
 
     chat_id = update.effective_chat.id
 
@@ -439,6 +440,17 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del sesion_slots[chat_id]
     reset_anagrama_chat(chat_id)
     reset_guessong_chat(chat_id)
+
+    sesion_ahorcado["activa"] = False
+    sesion_ahorcado["jugadores"] = []
+    sesion_ahorcado["palabra"] = ""
+    sesion_ahorcado["categoria"] = ""
+    sesion_ahorcado["letras_correctas"] = set()
+    sesion_ahorcado["letras_incorrectas"] = set()
+    sesion_ahorcado["moderador_id"] = None
+    sesion_ahorcado["vidas"] = {}
+    sesion_ahorcado["eliminados"] = set()
+    esperando_palabra_ahorcado.clear()
 
     await update.message.reply_text("𝖲𝖾 𝖼𝖾𝗋𝗋𝖺𝗋𝗈𝗇 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗋𝗍𝗂𝖽𝖺𝗌 𝖺𝖼𝗍𝗂𝗏𝖺𝗌")
     await context.bot.send_sticker(
