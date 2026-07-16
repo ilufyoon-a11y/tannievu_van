@@ -104,7 +104,7 @@ async def enviar_turno_pirata(chat_id, context):
         )
         for i in range(1, TOTAL_RANURAS + 1)
     ]
-    botones = [todos_los_botones[i:i+5] for i in range(0, len(todos_los_botones), 6)]
+    botones = [todos_los_botones[i:i+6] for i in range(0, len(todos_los_botones), 6)]
 
     await _enviar_seguro(
         context.bot.send_message,
