@@ -109,7 +109,8 @@ async def enviar_turno_pirata(chat_id, context):
     await _enviar_seguro(
         context.bot.send_message,
         chat_id=chat_id,
-        text=f"¡{nombre_actual} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!",
+        text=f"<b>¡{nombre_actual} 𝖾𝗌 𝗍𝗎 𝗍𝗎𝗋𝗇𝗈, 𝖾𝗌𝖼𝗈𝗀𝖾 𝗎𝗇𝖺 𝗋𝖺𝗇𝗎𝗋𝖺!</b>",
+        parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup(botones)
     )
 
@@ -129,7 +130,8 @@ async def _auto_skip(chat_id, jugador_id, nombre, context):
     sesion["sobrevivientes"].remove(jugador_id)
     await context.bot.send_message(
         chat_id=chat_id,
-        text=f"¡𝖤𝗅 𝗍𝗂𝖾𝗆𝗉𝗈 𝗌𝖾 𝖺𝗀𝗈𝗍𝗈, {nombre} 𝖿𝗎𝖾 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈!"
+        text=f"<b>¡𝖤𝗅 𝗍𝗂𝖾𝗆𝗉𝗈 𝗌𝖾 𝖺𝗀𝗈𝗍𝗈, {nombre} 𝖿𝗎𝖾 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈!</b>",
+        parse_mode="HTML"
     )
     if len(sesion["sobrevivientes"]) <= 1:
         sesion["activa"] = False
