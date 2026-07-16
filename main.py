@@ -51,7 +51,7 @@ from caseria import (
 from charada import (
     unirse_charada, iniciar_charada,
     manejar_botones_charada,
-    escuchar_charada_privado, escuchar_charada_grupo,
+    escuchar_charada_grupo,
     sesion_charada,
 )
 
@@ -209,11 +209,6 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ── PRIVADO: encubridor box envía emojis ──
     if chat_type == "private" and user_id in esperando_elementos:
         await manejar_mensajes_box(update, context)
-        return
-
-    # ── PRIVADO: moderador charada envía nombre de equipo ──
-    if chat_type == "private":
-        await escuchar_charada_privado(update, context, user_id, texto)
         return
 
     # ── BOX: adivinar emojis en el grupo ──
