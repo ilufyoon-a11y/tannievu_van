@@ -10,7 +10,7 @@ sesion_pirata = {}   # chat_id -> {...}
 _tareas_turno = {}   # chat_id -> asyncio.Task
 
 MAX_JUGADORES = 10
-TOTAL_RANURAS = 30
+TOTAL_RANURAS = 25
 TIEMPO_TURNO = 15
 
 def _sesion_base() -> dict:
