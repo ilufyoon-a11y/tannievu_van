@@ -220,4 +220,4 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
             await enviar_turno_pirata(chat_id, context)
 
     elif query.data.startswith("ranura_ya_usada_"):
-        await query.answer("¡𝖴𝗉𝗌, 𝖾𝗌𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝗒𝖺 𝗍𝗂𝖾𝗇𝖾 𝗎𝗇𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝖽𝖺, 𝖾𝗅𝗂𝗀𝖾 𝗈𝗍𝗋𝖺!", show_alert=True)
+        await context.bot.send_message("¡𝖴𝗉𝗌, 𝖾𝗌𝖺 𝗋𝖺𝗇𝗎𝗋𝖺 𝗒𝖺 𝗍𝗂𝖾𝗇𝖾 𝗎𝗇𝖺 𝖾𝗌𝗉𝖺𝖽𝖺 𝗂𝗇𝗌𝖾𝗋𝗍𝖺𝖽𝖺, 𝖾𝗅𝗂𝗀𝖾 𝗈𝗍𝗋𝖺!", show_alert=True)
