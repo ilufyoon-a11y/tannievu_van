@@ -96,6 +96,15 @@ from zombie import (
     manejar_botones_zombie,
 )
 
+# ── AHORCADO ✔️  ───────────────────────────────────────────────────────
+
+from ahorcado import (
+    unirse_ahorcado, iniciar_ahorcado,
+    manejar_botones_ahorcado,
+    escuchar_ahorcado_privado, escuchar_ahorcado_grupo,
+    esperando_palabra_ahorcado,
+)
+
 # =====================================================================
 # COMANDOS GENERALES
 # =====================================================================
@@ -206,6 +215,11 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await escuchar_anagrama_privado(update, context, user_id, texto)
         return
 
+    # ── PRIVADO: moderador ahorcado escribe categoría/palabra ──
+    if chat_type == "private" and user_id in esperando_palabra_ahorcado:
+        await escuchar_ahorcado_privado(update, context, user_id, texto)
+        return
+
     # ── PRIVADO: encubridor box envía emojis ──
     if chat_type == "private" and user_id in esperando_elementos:
         await manejar_mensajes_box(update, context)
@@ -219,6 +233,9 @@ async def manejar_mensajes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ── CHARADA: adivinar palabras en el grupo ──
     await escuchar_charada_grupo(update, context, user_id, texto, chat_id)
     await escuchar_anagrama_grupo(update, context, user_id, texto, chat_id)
+
+    # ── AHORCADO: adivinar letras/números en el grupo ──
+    await escuchar_ahorcado_grupo(update, context, user_id, texto, chat_id)
 
 # =====================================================================
 # HANDLER DE BOTONES — despacha según callback_data
@@ -246,6 +263,8 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
         await verificar_respuesta_musica(update, context)
     elif data == "unirme_anagrama_click":
         await manejar_botones_anagrama(update, context)
+    elif data == "unirme_ahorcado_click":
+        await manejar_botones_ahorcado(update, context)
 
 # =====================================================================
 # ARRANQUE
@@ -279,6 +298,10 @@ if __name__ == '__main__':
     # Charada
     application.add_handler(CommandHandler("charada",       unirse_charada))
     application.add_handler(CommandHandler("start_charada", iniciar_charada))
+
+    # Ahorcado
+    application.add_handler(CommandHandler("ahorcado",       unirse_ahorcado))
+    application.add_handler(CommandHandler("start_ahorcado", iniciar_ahorcado))
 
     # Pirata
     application.add_handler(CommandHandler("pirata",       unirse_pirata))
