@@ -78,7 +78,7 @@ async def iniciar_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgEAAxkBA1QAAaRqUwu5n3oGAo9Cs_xd1rPRRobkzAACgwYAAtz6uUQbnfNeh5189TwE"
+            sticker="CAACAgEAAxkBA1liuWpZaCAfr_7RCC9sowjWomIemvnjAAJtCQACwKBIRfmifG2ArCOpPQQ"
     )
 
     botones_ataque = [
@@ -191,7 +191,7 @@ async def procesar_resultados_votacion(chat_id, context):
             text=f"𐑺 ៸ 𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦 ◝ .\n\n{zombie_obj['name']} 𝗆𝗈𝗋𝖽𝗂𝗈 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗒 𝖼𝗈𝗇𝗏𝗂𝗋𝗍𝗂𝗈 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝖾𝗇 𝗈𝗍𝗋𝗈 𝖿𝗈𝖼𝗈 𝖽𝖾 𝗂𝗇𝖿𝖾𝖼𝖼𝗂𝗈𝗇 🧟‍♂️")
         await context.bot.send_sticker(
             chat_id=chat_id,
-            sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE")
+            sticker="CAACAgEAAxkBA1liwmpZaCiXazKd9DULHZSCu_cOAm-jAAIjCAACekFIReuNjCaBMQABTT0E")
         
         sesion_zombie["activa"] = False
     else:
