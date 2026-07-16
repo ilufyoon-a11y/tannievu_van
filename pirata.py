@@ -68,6 +68,7 @@ async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     sesion["activa"] = True
     sesion["sobrevivientes"] = [j["id"] for j in sesion["jugadores"]]
+    random.shuffle(sesion["sobrevivientes"])
     sesion["turno_actual"] = 0
     sesion["agujerosave"] = []
     sesion["agujerofake"] = random.randint(1, TOTAL_RANURAS)
