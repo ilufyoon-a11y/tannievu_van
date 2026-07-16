@@ -20,7 +20,7 @@ sesion_pirata = {}   # chat_id -> {...}
 _tareas_turno = {}   # chat_id -> asyncio.Task
 
 MAX_JUGADORES = 10
-TOTAL_RANURAS = 24
+TOTAL_RANURAS = 25
 TIEMPO_TURNO = 15
 
 def _sesion_base() -> dict:
@@ -104,7 +104,7 @@ async def enviar_turno_pirata(chat_id, context):
         )
         for i in range(1, TOTAL_RANURAS + 1)
     ]
-    botones = [todos_los_botones[i:i+6] for i in range(0, len(todos_los_botones), 6)]
+    botones = [todos_los_botones[i:i+5] for i in range(0, len(todos_los_botones), 5)]
 
     await _enviar_seguro(
         context.bot.send_message,
