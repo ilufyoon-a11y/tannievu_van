@@ -9,7 +9,7 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_PIRATA
 sesion_pirata = {}   # chat_id -> {...}
 _tareas_turno = {}   # chat_id -> asyncio.Task
 
-MAX_JUGADORES = 1
+MAX_JUGADORES = 10
 TOTAL_RANURAS = 25
 TIEMPO_TURNO = 15
 
