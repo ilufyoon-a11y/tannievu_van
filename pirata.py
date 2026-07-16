@@ -160,9 +160,15 @@ async def manejar_botones_pirata(update: Update, context: ContextTypes.DEFAULT_T
         if sesion.get("activa"):
             await query.answer("ⓘ ˖ ࣪ ¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 ᵎᵎ", show_alert=True)
             return
+
         if len(sesion["jugadores"]) >= MAX_JUGADORES:
-            await query.answer(f"ⓘ ˖ ࣪ ¡𝖫𝖺 𝗌𝖺𝗅𝖺 𝗒𝖺 𝗌𝖾 𝖾𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗅𝖾𝗇𝖺 ᵎᵎ", show_alert=True)
+            await query.answer()
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text="ⓘ ˖ ࣪ ¡𝖫𝖺 𝗌𝖺𝗅𝖺 𝗒𝖺 𝗌𝖾 𝖾𝗇𝖼𝗎𝖾𝗇𝗍𝗋𝖺 𝗅𝗅𝖾𝗇𝖺 ᵎᵎ"
+            )
             return
+
         if not any(j["id"] == user.id for j in sesion["jugadores"]):
             sesion["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
             await query.answer()
