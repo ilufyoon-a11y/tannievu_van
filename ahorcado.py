@@ -1,17 +1,27 @@
-# ahorcado.py — Juego de Ahorcado 🪢
-#
-# Sigue el mismo patrón que tus otros módulos (charada.py, anagrama.py, box.py):
-# un moderador elige categoría + palabra en privado, y el grupo adivina
-# letras o números. Cada jugador tiene sus propias 6 vidas (no compartidas).
 
 import random
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.error import RetryAfter
 from telegram.ext import ContextTypes
 
 from utils import (
     GIF_AHORCADO, GIF_ERROR, GIF_RECHAZADO, GIF_LETRISTA,
     sesion_puntos, sumar_robux, nombre_usuario,
 )
+
+# !!  MANEJO SEGURO DE FLOOD CONTROL  ───  ♥︎
+# Con hasta 20 jugadores adivinando casi al mismo tiempo, Telegram puede
+# tirar RetryAfter si se envían muchos mensajes/stickers muy rápido.
+# Esto reintenta en vez de dejar al bot sin responder.
+
+async def _enviar_seguro(func, *args, **kwargs):
+    for _ in range(3):
+        try:
+            return await func(*args, **kwargs)
+        except RetryAfter as e:
+            await asyncio.sleep(e.retry_after + 1)
+    return await func(*args, **kwargs)
 
 # !!  STICKERS DEL AHORCADO (0 a 6 fallos)  ───  ♥︎
 # Pon aquí el file_id de cada sticker, uno por cada cantidad de fallos.
@@ -74,7 +84,7 @@ def _palabra_completa(palabra: str, correctas: set) -> bool:
 
 async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if sesion_ahorcado["activa"]:
-        await update.message.reply_text("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!")
+        await _enviar_seguro(update.message.reply_text, "¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗋𝗈𝗇𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!")
         return
 
     sesion_ahorcado["jugadores"] = []
@@ -87,7 +97,8 @@ async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sesion_ahorcado["eliminados"] = set()
 
     boton = InlineKeyboardButton("੭੭ㅤㅤ𝐔𝐍𝐈𝐑𝐌𝐄ㅤㅤ!¡", callback_data="unirme_ahorcado_click")
-    await update.message.reply_photo(
+    await _enviar_seguro(
+        update.message.reply_photo,
         photo=GIF_AHORCADO,
         caption="៹ ࣪  🪢 ¡𝖩𝗎𝗀𝗎𝖾𝗆𝗈𝗌 𝖺𝗅 𝖠𝗁𝗈𝗋𝖼𝖺𝖽𝗈! 𝖯𝗋𝖾𝗌𝗂𝗈𝗇𝖺 𝖾𝗅 𝖻𝗈𝗍𝗈𝗇 𝗉𝖺𝗋𝖺 𝗎𝗇𝗂𝗋𝗍𝖾  ֪   𓂃",
         reply_markup=InlineKeyboardMarkup([[boton]])
@@ -105,7 +116,8 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     if len(sesion_ahorcado["jugadores"]) < 2:
-        await update.message.reply_photo(photo=GIF_ERROR,
+        await _enviar_seguro(
+            update.message.reply_photo, photo=GIF_ERROR,
             caption="𝖲𝖾 𝗇𝖾𝖼𝖾𝗌𝗂𝗍𝖺𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗃𝗎𝗀𝖺𝗋.")
         return
 
@@ -129,10 +141,13 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
 
     esperando_palabra_ahorcado[moderador["id"]] = chat_id
-    await update.message.reply_text("˒˓  ¡𝖬𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈! 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝗊𝗎𝖾 𝖾𝗇𝗏𝗂𝖾 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂́𝖺 𝗒 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺  ᨦᨩ")
+    await _enviar_seguro(
+        update.message.reply_text,
+        "˒˓  ¡𝖬𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋 𝖾𝗅𝖾𝗀𝗂𝖽𝗈! 𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝗊𝗎𝖾 𝖾𝗇𝗏𝗂𝖾 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂́𝖺 𝗒 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺  ᨦᨩ")
 
     try:
-        await context.bot.send_photo(
+        await _enviar_seguro(
+            context.bot.send_photo,
             chat_id=moderador["id"],
             photo=GIF_LETRISTA,
             caption=("¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋!\n\n"
@@ -142,7 +157,8 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown"
         )
     except Exception:
-        await context.bot.send_photo(
+        await _enviar_seguro(
+            context.bot.send_photo,
             chat_id=chat_id, photo=GIF_RECHAZADO,
             caption=f"𝖴𝗉𝗌, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 ({moderador['name']}). 𝖠𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 𝖾𝗇 𝗉𝗋𝗂𝗏𝖺𝖽𝗈."
         )
@@ -163,7 +179,7 @@ async def manejar_botones_ahorcado(update: Update, context: ContextTypes.DEFAULT
         return
     if not any(j["id"] == user.id for j in sesion_ahorcado["jugadores"]):
         sesion_ahorcado["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-        await query.message.reply_text(f"🪢 ֹ  {nombre_usuario(user)} se unió al ahorcado 𓂃")
+        await _enviar_seguro(query.message.reply_text, f"🪢 ֹ  {nombre_usuario(user)} se unió al ahorcado 𓂃")
 
 
 # =====================================================================
@@ -174,7 +190,9 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
     gid = esperando_palabra_ahorcado[user_id]
 
     if "-" not in texto:
-        await update.message.reply_text("⚠️ Formato inválido. Usa: `categoria-palabra` (con un guión).", parse_mode="Markdown")
+        await _enviar_seguro(
+            update.message.reply_text,
+            "⚠️ Formato inválido. Usa: `categoria-palabra` (con un guión).", parse_mode="Markdown")
         return
 
     categoria, palabra = texto.split("-", 1)
@@ -182,17 +200,18 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
     palabra = _normalizar(palabra)
 
     if not palabra:
-        await update.message.reply_text("⚠️ La palabra no puede estar vacía. Intenta de nuevo.")
+        await _enviar_seguro(update.message.reply_text, "⚠️ La palabra no puede estar vacía. Intenta de nuevo.")
         return
 
     sesion_ahorcado["categoria"] = categoria
     sesion_ahorcado["palabra"] = palabra
     del esperando_palabra_ahorcado[user_id]
 
-    await update.message.reply_text("¡𝖯𝖺𝗅𝖺𝖻𝗋𝖺 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝖺! El juego comienza en el grupo.")
+    await _enviar_seguro(update.message.reply_text, "¡𝖯𝖺𝗅𝖺𝖻𝗋𝖺 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝖺! El juego comienza en el grupo.")
 
     pantalla = _pantalla_ahorcado(palabra, set())
-    await context.bot.send_message(
+    await _enviar_seguro(
+        context.bot.send_message,
         chat_id=gid,
         text=(f"🪢 **¡AHORCADO INICIADO!**\n\n"
               f"🗂️ Categoría: **{categoria.upper()}**\n\n"
@@ -202,7 +221,7 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
         parse_mode="Markdown"
     )
     if STICKERS_AHORCADO[0]:
-        await context.bot.send_sticker(chat_id=gid, sticker=STICKERS_AHORCADO[0])
+        await _enviar_seguro(context.bot.send_sticker, chat_id=gid, sticker=STICKERS_AHORCADO[0])
 
 
 # =====================================================================
@@ -230,7 +249,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
     incorrectas = sesion_ahorcado["letras_incorrectas"]
 
     if intento in correctas or intento in incorrectas:
-        await update.message.reply_text(f"⚠️ '{intento.upper()}' ya fue mencionado.")
+        await _enviar_seguro(update.message.reply_text, f"⚠️ '{intento.upper()}' ya fue mencionado.")
         return
 
     nombre = update.effective_user.first_name
@@ -244,14 +263,16 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
             premio = sesion_puntos.get("premio_actual", {}).get("ahorcado", 0)
             sumar_robux(user_id, nombre_usuario(update.effective_user), premio, "Ahorcado 🪢")
             extra = f" (+{premio} Robux)" if premio else ""
-            await update.message.reply_text(
+            await _enviar_seguro(
+                update.message.reply_text,
                 f"🎉 **¡{nombre} ADIVINÓ LA PALABRA!** 🎉\n\n"
                 f"La palabra era: **{palabra.upper()}**{extra}",
                 parse_mode="Markdown"
             )
             return
 
-        await update.message.reply_text(
+        await _enviar_seguro(
+            update.message.reply_text,
             f"✅ ¡'{intento.upper()}' está en la palabra!\n\n`{pantalla}`",
             parse_mode="Markdown"
         )
@@ -264,17 +285,19 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
 
         if vidas_restantes <= 0:
             sesion_ahorcado["eliminados"].add(user_id)
-            await update.message.reply_text(
+            await _enviar_seguro(
+                update.message.reply_text,
                 f"💀 **¡{nombre} se quedó sin intentos y queda eliminado!**",
                 parse_mode="Markdown"
             )
             if sticker_etapa:
-                await context.bot.send_sticker(chat_id=chat_id, sticker=sticker_etapa)
+                await _enviar_seguro(context.bot.send_sticker, chat_id=chat_id, sticker=sticker_etapa)
 
             activos = [uid for uid in sesion_ahorcado["vidas"] if uid not in sesion_ahorcado["eliminados"]]
             if not activos:
                 sesion_ahorcado["activa"] = False
-                await context.bot.send_message(
+                await _enviar_seguro(
+                    context.bot.send_message,
                     chat_id=chat_id,
                     text=f"☠️ **¡NADIE LOGRÓ ADIVINARLA!**\n\nLa palabra era: **{palabra.upper()}**",
                     parse_mode="Markdown"
@@ -282,11 +305,12 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
             return
 
         pantalla = _pantalla_ahorcado(palabra, correctas)
-        await update.message.reply_text(
+        await _enviar_seguro(
+            update.message.reply_text,
             f"❌ '{intento.upper()}' no está en la palabra.\n\n"
             f"`{pantalla}`\n"
             f"❤️ {nombre}, te quedan {vidas_restantes} intento(s).",
             parse_mode="Markdown"
         )
         if sticker_etapa:
-            await context.bot.send_sticker(chat_id=chat_id, sticker=sticker_etapa)
+            await _enviar_seguro(context.bot.send_sticker, chat_id=chat_id, sticker=sticker_etapa)
