@@ -1,4 +1,3 @@
-
 import random
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -72,6 +71,16 @@ def _palabra_completa(palabra: str, correctas: set) -> bool:
     return all(c in correctas or c == " " for c in palabra)
 
 
+def _letras_intentadas(incorrectas: set) -> str:
+    """Devuelve un blockquote HTML con las letras/números que YA fallaron
+    (por cualquier jugador), para que no se repitan. Las correctas no van
+    aquí porque ya se ven reflejadas en el propio tablero."""
+    if not incorrectas:
+        return ""
+    lista = ", ".join(c.upper() for c in sorted(incorrectas))
+    return f"\n\n<blockquote>Letras falladas: {lista}</blockquote>"
+
+
 # =====================================================================
 # COMANDOS
 # =====================================================================
@@ -103,10 +112,6 @@ async def unirse_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
-    if chat_id not in sesion_ahorcado:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /𝖻𝗈𝗑 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ")
-        return
-
     args = context.args or []
     if args:
         try:
@@ -114,11 +119,15 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except ValueError:
             pass
 
-    if len(sesion_box[chat_id]["jugadores"]) < 2:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
-        await update.message.reply_sticker(sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
+    if len(sesion_ahorcado["jugadores"]) < 2:
+        await _enviar_seguro(
+            update.message.reply_text,
+            "ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
+        await _enviar_seguro(
+            update.message.reply_sticker,
+            sticker="CAACAgEAAxkBA0xCcWpKcoeEBYZYhxHjkhqbGntnlJzXAAJhBgACiPVIRbbKF2KzkH0nPAQ")
         return
-    
+
     candidatos = list(sesion_ahorcado["jugadores"])
     ultimo_mod = sesion_ahorcado.get("ultimo_moderador_id")
     if ultimo_mod and len(candidatos) > 1:
@@ -141,30 +150,37 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     esperando_palabra_ahorcado[moderador["id"]] = chat_id
     await _enviar_seguro(
         update.message.reply_text,
-        "Ꜥ ¡{encubridor['name']} 𝖿𝗎𝖾 𝖾𝗅𝖾𝗀𝗂𝖽𝗈 𝖼𝗈𝗆𝗈 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋! ⸝⸝\n\n𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝖺 𝗊𝗎𝖾 𝖺𝗌𝗂𝗀𝗇𝖾 𝗅𝗈𝗌 𝗈𝖻𝗃𝖾𝗍𝗈")
-    await context.bot.send_sticker(
-            chat_id=chat_id,
-            sticker="CAACAgEAAxkBA1QAAaRqUwu5n3oGAo9Cs_xd1rPRRobkzAACgwYAAtz6uUQbnfNeh5189TwE"
-        )
+        f"Ꜥ ¡{moderador['name']} 𝖿𝗎𝖾 𝖾𝗅𝖾𝗀𝗂𝖽𝗈 𝖼𝗈𝗆𝗈 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋! ⸝⸝\n\n𝖤𝗌𝗉𝖾𝗋𝖺𝗇𝖽𝗈 𝖺 𝗊𝗎𝖾 𝖾𝗇𝗏𝗂𝖾 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂́𝖺 𝗒 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺")
+    await _enviar_seguro(
+        context.bot.send_sticker,
+        chat_id=chat_id,
+        sticker="CAACAgEAAxkBA1QAAaRqUwu5n3oGAo9Cs_xd1rPRRobkzAACgwYAAtz6uUQbnfNeh5189TwE"
+    )
 
     try:
         await _enviar_seguro(
             context.bot.send_message,
-            chat_id=encubridor["id"],
-            text="<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝖾𝗇𝖼𝗎𝖻𝗋𝗂𝖽𝗈𝗋!</b>\n\n𝖤𝗇𝗏𝗂𝖺 𝖾𝗑𝖺𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝟩 𝖾𝗆𝗈𝗃𝗂𝗌 𝗌𝗂𝗇 𝖽𝖾𝗃𝖺𝗋 𝖾𝗌𝗉𝖺𝖼𝗂𝗈𝗌 (🌸🌟📰...); 𝖾𝗌𝗍𝗈𝗌 𝗌𝖾 𝗆𝗈𝗌𝗍𝗋𝖺𝗋𝖺𝗇 𝖻𝗋𝖾𝗏𝖾𝗆𝖾𝗇𝗍𝖾 𝖺 𝗅𝗈𝗌 𝗃𝗎𝗀𝖺𝖽𝗈𝗋𝖾𝗌.\n\n<blockquote>𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗏𝗂𝗍𝖺 𝖾𝗇𝗏𝗂𝖺𝗋 𝗅𝗈𝗌 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾𝗌 𝖾𝗆𝗈𝗃𝗂𝗌: 🎳, 🎰, 🏀, ⚽, 🎲.</blockquote>",
+            chat_id=moderador["id"],
+            text=("<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋!</b>\n\n"
+                  "𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂́𝖺 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂́𝖺 𝗒 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺/𝖿𝗋𝖺𝗌𝖾 𝗌𝖾𝗉𝖺𝗋𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝗎𝗇 𝗀𝗎𝗂𝗈́𝗇 '-'.\n\n"
+                  "<blockquote>𝖤𝗃𝖾𝗆𝗉𝗅𝗈: paises-peru</blockquote>"),
             parse_mode="HTML"
         )
-        
-        await context.bot.send_sticker(
-            chat_id=encubridor["id"],
+        await _enviar_seguro(
+            context.bot.send_sticker,
+            chat_id=moderador["id"],
             sticker="CAACAgEAAxkBA0WkVGpCeFxv3hOINwnldaJhBC_FXDhhAAIbCQAC-nQYRn3vKswkIhekPAQ"
         )
-    
+
     except Exception:
-        await update.message.reply_text(f"ⓘ ˖ ࣪ 𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {encubridor['name']}. \n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 ᵎᵎ")
-        await context.bot.send_sticker(
+        await _enviar_seguro(
+            update.message.reply_text,
+            f"ⓘ ˖ ࣪ 𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {moderador['name']}. \n\n𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍 ᵎᵎ")
+        await _enviar_seguro(
+            context.bot.send_sticker,
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA08s3mpNqQrISXcnzmYG_9fOSF9e-8cBAAKNBwAC7QJBRHEkAAHybHUSQDwE")
+        sesion_ahorcado["activa"] = False
         return
 
 # =====================================================================
@@ -219,7 +235,9 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
               f"𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria}\n\n"
               f"`{pantalla}`\n\n"
               f"𝗜𝗻𝘁𝗲𝗻𝘁𝗼𝘀 𝗽𝗼𝗿 𝗷𝘂𝗴𝗮𝗱𝗼𝗿: {MAX_FALLOS}\n\n"
-              f"¡𝖤𝗌𝖼𝗋𝗂𝖻𝖾 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗈 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋!")
+              f"¡𝖤𝗌𝖼𝗋𝗂𝖻𝖾 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗈 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋!"
+              f"{_letras_intentadas(set())}"),
+        parse_mode="HTML"
     )
     if STICKERS_AHORCADO[0]:
         await _enviar_seguro(context.bot.send_sticker, chat_id=gid, sticker=STICKERS_AHORCADO[0])
@@ -270,7 +288,8 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
                 f"𝖫𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝖾𝗋𝖺: <b>{palabra}</b>",
                 parse_mode="HTML"
             )
-            await context.bot.send_sticker(
+            await _enviar_seguro(
+                context.bot.send_sticker,
                 chat_id=chat_id,
                 sticker="CAACAgIAAxkBA0Y_BGpDJx8fjT0XysClgbwsbIDR6Y8kAAI2bAEAAWOLRgw-W-3HHw-_YjwE"
             )
@@ -278,7 +297,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
 
         await _enviar_seguro(
             update.message.reply_text,
-            f"<b>{intento}</b> 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺\n\n`{pantalla}`",
+            f"<b>{intento}</b> 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺\n\n`{pantalla}`{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
     else:
@@ -313,7 +332,8 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
             update.message.reply_text,
             f"<b>{intento}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
             f"`{pantalla}`\n"
-            f"{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.",
+            f"{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌."
+            f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
         if sticker_etapa:
