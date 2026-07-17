@@ -13,19 +13,22 @@ from utils import (
     sesion_puntos, sumar_robux, nombre_usuario,
 )
 
-# !!  ARTE ASCII DEL AHORCADO (0 a 6 fallos)  ───  ♥︎
+# !!  STICKERS DEL AHORCADO (0 a 6 fallos)  ───  ♥︎
+# Pon aquí el file_id de cada sticker, uno por cada cantidad de fallos.
+# STICKERS_AHORCADO[0] = sin fallos todavía (opcional, se puede dejar "")
+# STICKERS_AHORCADO[6] = el último fallo, el que elimina al jugador
 
-ETAPAS_AHORCADO = [
-    "```\n\n\n\n\n═══════\n```",
-    "```\n│\n│\n│\n│\n═══════\n```",
-    "```\n┌───┐\n│\n│\n│\n│\n═══════\n```",
-    "```\n┌───┐\n│   O\n│\n│\n│\n═══════\n```",
-    "```\n┌───┐\n│   O\n│   │\n│\n│\n═══════\n```",
-    "```\n┌───┐\n│   O\n│  /│\n│\n│\n═══════\n```",
-    "```\n┌───┐\n│   O\n│  /│\\\n│  / \\\n│\n═══════\n```",
+STICKERS_AHORCADO = [
+    "",                     # 0 fallos
+    "STICKER_ID_FALLO_1",
+    "STICKER_ID_FALLO_2",
+    "STICKER_ID_FALLO_3",
+    "STICKER_ID_FALLO_4",
+    "STICKER_ID_FALLO_5",
+    "STICKER_ID_FALLO_6",   # eliminado
 ]
 
-MAX_FALLOS = len(ETAPAS_AHORCADO) - 1  # 6 fallos = eliminado
+MAX_FALLOS = len(STICKERS_AHORCADO) - 1  # 6 fallos = eliminado
 
 # !!  SESIÓN DEL AHORCADO  ───  ♥︎
 
@@ -194,11 +197,12 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
         text=(f"🪢 **¡AHORCADO INICIADO!**\n\n"
               f"🗂️ Categoría: **{categoria.upper()}**\n\n"
               f"`{pantalla}`\n\n"
-              f"{ETAPAS_AHORCADO[0]}\n"
               f"❤️ Intentos por jugador: {MAX_FALLOS}\n\n"
               f"Escribe una letra o un número en el chat para adivinar."),
         parse_mode="Markdown"
     )
+    if STICKERS_AHORCADO[0]:
+        await context.bot.send_sticker(chat_id=gid, sticker=STICKERS_AHORCADO[0])
 
 
 # =====================================================================
@@ -256,14 +260,16 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         sesion_ahorcado["vidas"][user_id] -= 1
         vidas_restantes = sesion_ahorcado["vidas"][user_id]
         fallos_jugador = MAX_FALLOS - vidas_restantes
-        etapa = ETAPAS_AHORCADO[min(fallos_jugador, MAX_FALLOS)]
+        sticker_etapa = STICKERS_AHORCADO[min(fallos_jugador, MAX_FALLOS)]
 
         if vidas_restantes <= 0:
             sesion_ahorcado["eliminados"].add(user_id)
             await update.message.reply_text(
-                f"💀 **¡{nombre} se quedó sin intentos y queda eliminado!**\n\n{etapa}",
+                f"💀 **¡{nombre} se quedó sin intentos y queda eliminado!**",
                 parse_mode="Markdown"
             )
+            if sticker_etapa:
+                await context.bot.send_sticker(chat_id=chat_id, sticker=sticker_etapa)
 
             activos = [uid for uid in sesion_ahorcado["vidas"] if uid not in sesion_ahorcado["eliminados"]]
             if not activos:
@@ -278,8 +284,9 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         pantalla = _pantalla_ahorcado(palabra, correctas)
         await update.message.reply_text(
             f"❌ '{intento.upper()}' no está en la palabra.\n\n"
-            f"{etapa}\n"
             f"`{pantalla}`\n"
             f"❤️ {nombre}, te quedan {vidas_restantes} intento(s).",
             parse_mode="Markdown"
         )
+        if sticker_etapa:
+            await context.bot.send_sticker(chat_id=chat_id, sticker=sticker_etapa)
