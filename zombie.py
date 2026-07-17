@@ -2,7 +2,20 @@ import random
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
+from telegram.error import RetryAfter
 from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_ZOMBIE, GIF_ERROR, GIF_CERO
+
+# ================= UTILIDAD ANTI FLOOD =================
+
+async def _enviar_seguro(func, *args, **kwargs):
+    """Ejecuta un envío/edición a Telegram; si hay flood control (RetryAfter),
+    espera el tiempo indicado y reintenta, en vez de dejar que la excepción reviente el flujo."""
+    for _ in range(3):
+        try:
+            return await func(*args, **kwargs)
+        except RetryAfter as e:
+            await asyncio.sleep(e.retry_after + 1)
+    return await func(*args, **kwargs)
 
 # ================= DICCIONARIO =================
 
@@ -137,7 +150,7 @@ async def procesar_resultados_votacion(chat_id, context):
         pass
 
     if not sesion_zombie["votos"]:
-        await context.bot.send_message(chat_id=chat_id, text="𝖭𝖺𝖽𝗂𝖾 𝗏𝗈𝗍𝗈 𝖺 𝗍𝗂𝖾𝗆𝗉𝗈, 𝖾𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝗂𝗀𝗎𝖾 𝖺𝗊𝗎ı́, 𝖾𝗅 𝖺𝗍𝖺𝗊𝗎𝖾 𝖼𝗈𝗇𝗍𝗂𝗇𝗎𝖺...")
+        await _enviar_seguro(context.bot.send_message, chat_id=chat_id, text="𝖭𝖺𝖽𝗂𝖾 𝗏𝗈𝗍𝗈 𝖺 𝗍𝗂𝖾𝗆𝗉𝗈, 𝖾𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝗌𝗂𝗀𝗎𝖾 𝖺𝗊𝗎ı́, 𝖾𝗅 𝖺𝗍𝖺𝗊𝗎𝖾 𝖼𝗈𝗇𝗍𝗂𝗇𝗎𝖺...")
         await pasar_a_siguiente_ataque(chat_id, context)
         return
 
@@ -150,7 +163,7 @@ async def procesar_resultados_votacion(chat_id, context):
     empates = [k for k, v in conteo.items() if v == max_votos]
 
     if len(empates) > 1:
-        await context.bot.send_message(chat_id=chat_id, text="¡𝖧𝗎𝖻𝗈 𝗎𝗇 𝖾𝗆𝗉𝖺𝗍𝖾 𝗒 𝗇𝖺𝖽𝗂𝖾 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈!")
+        await _enviar_seguro(context.bot.send_message, chat_id=chat_id, text="¡𝖧𝗎𝖻𝗈 𝗎𝗇 𝖾𝗆𝗉𝖺𝗍𝖾 𝗒 𝗇𝖺𝖽𝗂𝖾 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈!")
         await pasar_a_siguiente_ataque(chat_id, context)
         return
 
@@ -159,14 +172,14 @@ async def procesar_resultados_votacion(chat_id, context):
     if mas_votado_id in sesion_zombie["zombies"]:
         sesion_zombie["zombies"].remove(mas_votado_id)
         sesion_zombie["jugadores"] = [j for j in sesion_zombie["jugadores"] if j["id"] != mas_votado_id]
-        await context.bot.send_message(chat_id=chat_id,
+        await _enviar_seguro(context.bot.send_message, chat_id=chat_id,
             text=f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌.\n\n¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, 𝗌𝖾 𝖽𝖾𝗌𝗁𝗂𝖼𝗂𝖾𝗋𝗈𝗇 𝖽𝖾𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈!")
     else:
         sesion_zombie["vivos"].remove(mas_votado_id)
         sesion_zombie["jugadores"] = [j for j in sesion_zombie["jugadores"] if j["id"] != mas_votado_id]
-        await context.bot.send_message(chat_id=chat_id,
+        await _enviar_seguro(context.bot.send_message, chat_id=chat_id,
             text=f"{eliminado_obj['name']} 𝗈𝖻𝗍𝗎𝗏𝗈 {max_votos} 𝗏𝗈𝗍𝗈𝗌 𝗒 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌.\n\n𝖤𝗋𝖺 𝗎𝗇 𝗁𝗎𝗆𝖺𝗇𝗈 𝗉𝖾𝗋𝖿𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗌𝖺𝗇𝗈...")
-        await context.bot.send_sticker(chat_id=chat_id, sticker="CAACAgEAAxkBA1cjc2pWuHo4nB1YI--Dkxpu3DDaHu_iAALMCgAClKJAREI4wOlKCD_lPQQ")
+        await _enviar_seguro(context.bot.send_sticker, chat_id=chat_id, sticker="CAACAgEAAxkBA1cjc2pWuHo4nB1YI--Dkxpu3DDaHu_iAALMCgAClKJAREI4wOlKCD_lPQQ")
 
     if not sesion_zombie["zombies"]:
         ganadores_obj = [j for j in sesion_zombie["jugadores"] if j["id"] in sesion_zombie["vivos"]]
@@ -175,9 +188,10 @@ async def procesar_resultados_votacion(chat_id, context):
         for j in ganadores_obj:
             sumar_robux(j["id"], j["name"], premio_surv, "𝗦𝗼𝗯𝗿𝗲𝘃𝗶𝘃𝗶𝗲𝗻𝘁𝗲 𝗲𝗻 𝘇𝗼𝗺𝗯𝗶𝗲:")
         extra_surv = f" (+{premio_surv} 𝖿𝗂𝖼𝗁𝖺𝗌)" if premio_surv else ""
-        await context.bot.send_message(chat_id=chat_id,
+        await _enviar_seguro(context.bot.send_message, chat_id=chat_id,
             text=f"𐑺 ៸ 𝗦𝗢𝗕𝗥𝗘𝗩𝗜𝗩𝗜𝗘𝗥𝗢𝗡 ◝ .\n\n𝖤𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖿𝗎𝖾 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝗒 𝖺𝗁𝗈𝗋𝖺 {', '.join(ganadores)} 𝗉𝗎𝖾𝖽𝖾𝗇 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝖼𝖺𝗌𝖺")
-        await context.bot.send_sticker(
+        await _enviar_seguro(
+            context.bot.send_sticker,
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA0Y1sWpDGFQQHzwJSrB9YNUygD0j8YEuAAI5BgACxL5BRIsEuKAHC3RbPAQ")
         
@@ -187,9 +201,10 @@ async def procesar_resultados_votacion(chat_id, context):
         premio_z2 = sesion_puntos.get("premio_actual", {}).get("zombie_zombie", 0)
         sumar_robux(zombie_obj["id"], zombie_obj["name"], premio_z2, "𝗭𝗼𝗺𝗯𝗶𝗲: ")
         extra_z2 = f" (+{premio_z2} 𝖿𝗂𝖼𝗁𝖺𝗌)" if premio_z2 else ""
-        await context.bot.send_message(chat_id=chat_id,
+        await _enviar_seguro(context.bot.send_message, chat_id=chat_id,
             text=f"𐑺 ៸ 𝗬𝗔 𝗡𝗢 𝗤𝗨𝗘𝗗𝗔𝗡 𝗛𝗨𝗠𝗔𝗡𝗢𝗦 ◝ .\n\n{zombie_obj['name']} 𝗆𝗈𝗋𝖽𝗂𝗈 𝖺 𝗍𝗈𝖽𝗈𝗌 𝗒 𝖼𝗈𝗇𝗏𝗂𝗋𝗍𝗂𝗈 𝖺𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌 𝖾𝗇 𝗈𝗍𝗋𝗈 𝖿𝗈𝖼𝗈 𝖽𝖾 𝗂𝗇𝖿𝖾𝖼𝖼𝗂𝗈𝗇 🧟‍♂️")
-        await context.bot.send_sticker(
+        await _enviar_seguro(
+            context.bot.send_sticker,
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA1liwmpZaCiXazKd9DULHZSCu_cOAm-jAAIjCAACekFIReuNjCaBMQABTT0E")
         
@@ -208,12 +223,16 @@ async def pasar_a_siguiente_ataque(chat_id, context):
             for humano_id in sesion_zombie["vivos"]
         ]
         try:
-            await context.bot.send_message(chat_id=z_id,
+            await _enviar_seguro(
+                context.bot.send_message,
+                chat_id=z_id,
                 text="𝖮𝗍𝗋𝖺 𝗏𝖾𝗓 𝗌𝗂𝖾𝗇𝗍𝖾𝗌 𝖺𝗇𝗌𝗂𝖾𝖽𝖺𝖽 𝗉𝗈𝗋 𝗉𝗋𝗈𝖻𝖺𝗋 𝖼𝖺𝗋𝗇𝖾. 𝖤𝗅𝗂𝗀𝗎𝖾 𝖺 𝗍𝗎 𝗌𝗂𝗀𝗎𝗂𝖾𝗇𝗍𝖾 𝗏𝗂𝖼𝗍𝗂𝗆𝖺 𝖼𝗈𝗇 𝗉𝗋𝖾𝖼𝖺𝗎𝖼𝗂𝗈𝗇.",
                 reply_markup=InlineKeyboardMarkup(botones_ataque))
         except Exception:
             pass
-    await context.bot.send_message(chat_id=chat_id,
+    await _enviar_seguro(
+        context.bot.send_message,
+        chat_id=chat_id,
         text="𝖫𝖺 𝗇𝗈𝖼𝗁𝖾 𝖼𝖺𝖾 𝗒 𝗌𝖾 𝖽𝖾𝖻𝖾𝗇 𝗉𝖺𝗀𝖺𝗋 𝗅𝖺𝗌 𝗅𝗎𝖼𝖾𝗌 𝖽𝖾𝗅 𝖺𝗎𝗍𝗈𝖻𝗎𝗌... 𝖤𝗅 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖾𝗌𝗍𝖺 𝖺𝗅 𝖺𝖼𝖾𝖼𝗁𝗈.")
 
 # ================= MANEJO DE BOTONES =================
@@ -250,10 +269,14 @@ async def manejar_botones_zombie(update: Update, context: ContextTypes.DEFAULT_T
                     except Exception:
                         await context.bot.send_message(chat_id=user.id, text=f"𝖠𝗍𝖺𝗊𝗎𝖾 𝖾𝗑𝗂𝗍𝗈𝗌𝗈. 𝖧𝖺𝗌 𝗂𝗇𝖿𝖾𝖼𝗍𝖺𝖽𝗈 𝖺 {victima_obj['name']}.")
 
-                    await context.bot.send_message(chat_id=grupo_chat_id,
+                    await _enviar_seguro(
+                        context.bot.send_message,
+                        chat_id=grupo_chat_id,
                         text=f"¡𝗨𝗡 𝗔𝗧𝗔𝗤𝗨𝗘 𝗛𝗔 𝗢𝗖𝗨𝗥𝗥𝗜𝗗𝗢ⵑ\n\n{victima_obj['name']} 𝗁𝖺 𝗌𝗂𝖽𝗈 𝖺𝗍𝖺𝖼𝖺𝖽𝗈 𝖾𝗇 𝗅𝖺 𝗈𝗌𝖼𝗎𝗋𝗂𝖽𝖺𝖽 𝗉𝗈𝗋 𝗎𝗇 𝗓𝗈𝗆𝖻𝗂𝖾 𝗒 𝗌𝖾 𝖾𝗌𝗍𝖺 𝗍𝗋𝖺𝗇𝗌𝖿𝗈𝗋𝗆𝖺𝗇𝖽𝗈, 𝗍𝗎𝗏𝗈 𝗊𝗎𝖾 𝗌𝖾𝗋 𝖾𝗑𝗉𝗎𝗅𝗌𝖺𝖽𝗈 𝖽𝖾 𝗂𝗇𝗆𝖾𝖽𝗂𝖺𝗍𝗈.")
-                    await context.bot.send_sticker(chat_id=chat_id,
-                                                   sticker="CAACAgEAAxkBA1ckEGpWuXK2-Lj8IoN3zdGLx16p9Im1AAI2CAACthxARN1s0lOcz8t2PQQ")
+                    await _enviar_seguro(
+                        context.bot.send_sticker,
+                        chat_id=grupo_chat_id,
+                        sticker="CAACAgEAAxkBA1ckEGpWuXK2-Lj8IoN3zdGLx16p9Im1AAI2CAACthxARN1s0lOcz8t2PQQ")
                     await asyncio.sleep(2)
 
                     if len(sesion_zombie["vivos"]) <= 1:
@@ -279,7 +302,9 @@ async def manejar_botones_zombie(update: Update, context: ContextTypes.DEFAULT_T
             if any(j["id"] == user.id for j in sesion_zombie["jugadores"]):
                 sesion_zombie["votos"][user.id] = votado_id
                 await query.answer("𝖵𝗈𝗍𝗈 𝖾𝗆𝗂𝗍𝗂𝖽𝗈 ✓", show_alert=True)
-                await context.bot.send_message(chat_id=chat_id,
+                await _enviar_seguro(
+                    context.bot.send_message,
+                    chat_id=chat_id,
                     text=f"{nombre_usuario(user)} 𝖺𝖼𝖺𝖻𝖺 𝖽𝖾 𝖾𝗆𝗂𝗍𝗂𝗋 𝗌𝗎 𝗏𝗈𝗍𝗈.\n\n"
                          f"{len(sesion_zombie['votos'])}/{len(sesion_zombie['jugadores'])}  𝗏𝗈𝗍𝗈𝗌 𝖾𝗆𝗂𝗍𝗂𝖽𝗈𝗌")
                 if len(sesion_zombie["votos"]) >= len(sesion_zombie["jugadores"]):
