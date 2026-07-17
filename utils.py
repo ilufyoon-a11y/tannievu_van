@@ -325,6 +325,118 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         _guardar_sesion()
         await update.message.reply_text(f"𝖲𝖾 𝖽𝗈𝗇𝖺𝗋𝗈𝗇 {cantidad} 𝗋𝗈𝖻𝗎𝗑 a {nombre_display}. ¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗇𝗈 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝗅𝖺 𝗉𝗈𝖻𝗋𝖾𝗓𝖺!")
 
+async def cmd_transfer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """/transfer @usuario cantidad — le transfiere robux propios a otro jugador."""
+    chat_id = update.effective_chat.id
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺.")
+        return
+
+    args = context.args or []
+    if len(args) < 2:
+        await update.message.reply_text(
+            "𝖴𝗌𝗈: <code>/transfer @usuario &lt;cantidad&gt;</code>\n\n<blockquote>𝖤𝗃: /transfer @namseokiss 5</blockquote>",
+            parse_mode="HTML")
+        return
+
+    username_arg = args[0].lstrip("@").lower()
+    try:
+        cantidad = int(args[1])
+    except ValueError:
+        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈.")
+        return
+
+    if cantidad <= 0:
+        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗆𝖺𝗒𝗈𝗋 𝖺 𝟢.")
+        return
+
+    remitente_uid = migrar_si_existe_fake(update.effective_user)
+    remitente = sesion_puntos["jugadores"].get(remitente_uid)
+
+    if not remitente or remitente["robux"] < cantidad:
+        await update.message.reply_text("𝖭𝗈 𝗍𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝗋𝗈𝖻𝗎𝗑 𝗉𝖺𝗋𝖺 𝗁𝖺𝖼𝖾𝗋 𝖾𝗌𝖺 𝗍𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝖾𝗇𝖼𝗂𝖺.")
+        return
+
+    if nombre_usuario(update.effective_user).lstrip("@").lower() == username_arg:
+        await update.message.reply_text("𝖭𝗈 𝗍𝖾 𝗉𝗎𝖾𝖽𝖾𝗌 𝗍𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝗂𝗋 𝗋𝗈𝖻𝗎𝗑 𝖺 𝗍𝗂 𝗆𝗂𝗌𝗆𝗈.")
+        return
+
+    destinatario = None
+    for uid, datos in sesion_puntos["jugadores"].items():
+        if uid != remitente_uid and datos.get("nombre", "").lstrip("@").lower() == username_arg:
+            destinatario = (uid, datos)
+            break
+
+    remitente["robux"] -= cantidad
+    remitente["detalle"].append(f"𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝗂𝖽𝗈 𝖺 @{username_arg} -{cantidad}")
+
+    if destinatario:
+        uid, datos = destinatario
+        sesion_puntos["jugadores"][uid]["robux"] += cantidad
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝖺 +{cantidad}")
+        nombre_destino = datos["nombre"]
+    else:
+        fake_id = -(abs(hash(username_arg)) % 10**9 + 1)
+        nombre_destino = f"@{username_arg}"
+        sesion_puntos["jugadores"][fake_id] = {
+            "nombre": nombre_destino,
+            "robux": cantidad,
+            "detalle": [f"𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝖺 +{cantidad}"],
+            "reclamado": False,
+        }
+
+    _guardar_sesion()
+    await update.message.reply_text(
+        f"✅ 𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝗂𝗌𝗍𝖾 {cantidad} 𝗋𝗈𝖻𝗎𝗑 𝖺 {nombre_destino}."
+    )
+
+async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """/remove @usuario cantidad — le quita robux a un jugador (solo admin)."""
+    chat_id = update.effective_chat.id
+    if update.effective_user.id != sesion_puntos.get("admin_id"):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈 𝗉𝗎𝖾𝖽𝖾 𝗊𝗎𝗂𝗍𝖺𝗋 𝗋𝗈𝖻𝗎𝗑")
+        return
+    if not sesion_puntos["activa"]:
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺.")
+        return
+
+    args = context.args or []
+    if len(args) < 2:
+        await update.message.reply_text(
+            "𝖴𝗌𝗈: <code>/remove @usuario &lt;cantidad&gt;</code>\n\n<blockquote>𝖤𝗃: /remove @namseokiss 5</blockquote>",
+            parse_mode="HTML")
+        return
+
+    username_arg = args[0].lstrip("@").lower()
+    try:
+        cantidad = int(args[1])
+    except ValueError:
+        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈.")
+        return
+
+    if cantidad <= 0:
+        await update.message.reply_text("𝖫𝖺 𝖼𝖺𝗇𝗍𝗂𝖽𝖺𝖽 𝖽𝖾𝖻𝖾 𝗌𝖾𝗋 𝗆𝖺𝗒𝗈𝗋 𝖺 𝟢.")
+        return
+
+    encontrado = None
+    for uid, datos in sesion_puntos["jugadores"].items():
+        if datos.get("nombre", "").lstrip("@").lower() == username_arg:
+            encontrado = (uid, datos)
+            break
+
+    if not encontrado:
+        await update.message.reply_text(f"𝖭𝗈 𝗌𝖾 𝗅𝗈𝖼𝖺𝗅𝗂𝗓𝗈 𝖺 @{username_arg} 𝖾𝗇 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇")
+        return
+
+    uid, datos = encontrado
+    quitados = min(cantidad, datos["robux"])
+    sesion_puntos["jugadores"][uid]["robux"] -= quitados
+    sesion_puntos["jugadores"][uid]["detalle"].append(f"𝖱𝗈𝖻𝗎𝗑 𝗋𝖾𝗍𝗂𝗋𝖺𝖽𝗈𝗌 -{quitados}")
+    _guardar_sesion()
+    await update.message.reply_text(
+        f"➖ 𝖲𝖾 𝗅𝖾 𝗊𝗎𝗂𝗍𝖺𝗋𝗈𝗇 {quitados} 𝗋𝗈𝖻𝗎𝗑 𝖺 {sesion_puntos['jugadores'][uid]['nombre']}."
+    )
+
 async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """/claim @usuario — marca al jugador como pagado y lo saca de la lista pendiente."""
     chat_id = update.effective_chat.id
