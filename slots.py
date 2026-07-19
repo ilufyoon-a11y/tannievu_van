@@ -2,6 +2,7 @@ import random
 import asyncio
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.error import RetryAfter, TelegramError
 from telegram.ext import ContextTypes, CallbackQueryHandler
 from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
@@ -17,8 +18,8 @@ PESOS    = [13,   11,   8,    7,    7,    6,    6,    5,    5,    6]
 PAGO_3 = 4
 PAGO_2 = 1.8
 
-FRAMES_ANIMACION = 4
-DELAY_ANIMACION = 0.6  # segundos entre frames (evita flood control de Telegram)
+FRAMES_ANIMACION = 2
+DELAY_ANIMACION = 0.7  # segundos entre frames (evita flood control de Telegram)
 
 # =====================================================================
 # HELPERS
@@ -42,6 +43,46 @@ def markup_ruletas(simbolos: list) -> InlineKeyboardMarkup:
 async def cb_slots_noop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Los botones de la ruleta son solo visuales: no hacen nada al tocarlos."""
     await update.callback_query.answer()
+
+async def enviar_resultado_final(context, chat_id, message_id, texto, reply_markup, intentos=3):
+    """
+    Muestra el resultado final pase lo que pase. A diferencia de un simple
+    try/except, si Telegram tira flood control (RetryAfter) esperamos el
+    tiempo indicado y reintentamos, en vez de darnos por vencidos al toque.
+    Esto es lo que evitaba que el mensaje se quedara pegado en "girando...".
+    """
+    for intento in range(intentos):
+        try:
+            await context.bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=message_id,
+                text=texto,
+                reply_markup=reply_markup
+            )
+            return
+        except RetryAfter as e:
+            logger.warning(f"Slots: flood control, espero {e.retry_after}s (intento {intento + 1})")
+            await asyncio.sleep(e.retry_after + 0.5)
+        except TelegramError as e:
+            logger.exception(f"Slots: fallo editando resultado final (intento {intento + 1}): {e}")
+            break
+
+    # Si editar no funcionó (mensaje borrado, etc), mandamos uno nuevo,
+    # también con el mismo respeto por el flood control.
+    for intento in range(intentos):
+        try:
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=texto,
+                reply_markup=reply_markup
+            )
+            return
+        except RetryAfter as e:
+            logger.warning(f"Slots: flood control en fallback, espero {e.retry_after}s (intento {intento + 1})")
+            await asyncio.sleep(e.retry_after + 0.5)
+        except TelegramError as e:
+            logger.exception(f"Slots: fallo total al enviar resultado (intento {intento + 1}): {e}")
+            break
 
 def evaluar(ruletas: list, apuesta: int) -> tuple:
     a, b, c = ruletas
@@ -108,7 +149,8 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     # Animación: mueve los "rodillos" (botones) varias veces con combinaciones al azar.
-    # Si Telegram tira flood control aquí, no pasa nada grave: seguimos al resultado final.
+    # Si Telegram tira flood control aquí no es grave (es solo estética):
+    # esperamos lo indicado y, si no alcanza el tiempo, seguimos igual al resultado final.
     for _ in range(FRAMES_ANIMACION):
         falso = [random.choice(SIMBOLOS) for _ in range(3)]
         try:
@@ -117,7 +159,10 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 message_id=msg.message_id,
                 reply_markup=markup_ruletas(falso)
             )
-        except Exception as e:
+        except RetryAfter as e:
+            logger.warning(f"Slots: flood control animando, espero {e.retry_after}s")
+            await asyncio.sleep(e.retry_after)
+        except TelegramError as e:
             logger.warning(f"Slots: fallo animando frame ({e})")
         await asyncio.sleep(DELAY_ANIMACION)
 
@@ -141,23 +186,22 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     guardar_sesion()
 
-    # Si falla la edición final (flood control, mensaje borrado, etc),
-    # mandamos el resultado como mensaje nuevo para que NUNCA se quede sin respuesta.
-    try:
-        await context.bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=msg.message_id,
-            text=texto_final,
-            reply_markup=markup_ruletas(ruletas)
-        )
-    except Exception as e:
-        logger.warning(f"Slots: fallo mostrando resultado final, mando mensaje nuevo ({e})")
-        try:
-            await context.bot.send_message(
-                chat_id=chat_id,
-                text=texto_final,
-                reply_markup=markup_ruletas(ruletas)
-            )
-        except Exception as e2:
-            logger.error(f"Slots: fallo total al enviar resultado ({e2})")
+    # Nunca se debe perder el resultado: reintenta respetando el flood control
+    # y, si aun así falla, manda un mensaje nuevo en vez de dejarlo pegado.
+    await enviar_resultado_final(
+        context, chat_id, msg.message_id, texto_final, markup_ruletas(ruletas)
+    )
 
+# =====================================================================
+# REGISTRO (ya aplicado en tu main.py):
+#
+#   from slots import cmd_jackpot, cb_slots_noop
+#   application.add_handler(CommandHandler("jackpot", cmd_jackpot))
+#
+#   Y dentro de manejar_botones_main:
+#       elif data == "slots_noop":
+#           await cb_slots_noop(update, context)
+#
+# No hace falta un CallbackQueryHandler aparte: tu bot ya despacha todos
+# los callbacks por un único handler central (manejar_botones_main).
+# =====================================================================
