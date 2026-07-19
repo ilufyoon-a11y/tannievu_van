@@ -72,13 +72,11 @@ def _palabra_completa(palabra: str, correctas: set) -> bool:
 
 
 def _letras_intentadas(incorrectas: set) -> str:
-    """Devuelve un blockquote HTML con las letras/números que YA fallaron
-    (por cualquier jugador), para que no se repitan. Las correctas no van
-    aquí porque ya se ven reflejadas en el propio tablero."""
+
     if not incorrectas:
         return ""
     lista = ", ".join(c.upper() for c in sorted(incorrectas))
-    return f"\n\n<blockquote>Letras falladas: {lista}</blockquote>"
+    return f"\n\n<blockquote>𝗟𝗲𝘁𝗿𝗮𝘀 𝗲𝗿𝗿𝗼𝗻𝗲𝗮𝘀: {lista}</blockquote>"
 
 
 # =====================================================================
@@ -171,8 +169,8 @@ async def iniciar_ahorcado(update: Update, context: ContextTypes.DEFAULT_TYPE):
             context.bot.send_message,
             chat_id=moderador["id"],
             text=("<b>¡𝖤𝗇 𝗁𝗈𝗋𝖺 𝖻𝗎𝖾𝗇𝖺, 𝗍𝖾 𝗍𝗈𝖼𝖺 𝗌𝖾𝗋 𝖾𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋!</b>\n\n"
-                  "𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂́𝖺 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂́𝖺 𝗒 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺/𝖿𝗋𝖺𝗌𝖾 𝗌𝖾𝗉𝖺𝗋𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝗎𝗇 𝗀𝗎𝗂𝗈́𝗇 '-'.\n\n"
-                  "<blockquote>𝖤𝗃𝖾𝗆𝗉𝗅𝗈: paises-peru</blockquote>"),
+                  "𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖾𝗇𝗏𝗂𝖺 𝗅𝖺 𝖼𝖺𝗍𝖾𝗀𝗈𝗋𝗂𝖺 𝗒 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗈 𝖿𝗋𝖺𝗌𝖾 𝗌𝖾𝗉𝖺𝗋𝖺𝖽𝖺𝗌 𝗉𝗈𝗋 𝗎𝗇 𝗀𝗎𝗂𝗈𝗇 '-'.\n\n"
+                  "<blockquote>𝖤𝗃𝖾𝗆𝗉𝗅𝗈: Fruta - Manzana</blockquote>"),
             parse_mode="HTML"
         )
         await _enviar_seguro(
@@ -219,7 +217,7 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
     if "-" not in texto:
         await _enviar_seguro(
             update.message.reply_text,
-            "⚠️ Formato inválido. Usa: `categoria-palabra` (con un guión).", parse_mode="Markdown")
+            "Formato inválido. Usa: `categoria-palabra`")
         return
 
     categoria, palabra = texto.split("-", 1)
@@ -240,10 +238,10 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
     await _enviar_seguro(
         context.bot.send_message,
         chat_id=gid,
-        text=(f"¡𝗟𝗮 𝗽𝗮𝗿𝘁𝗶𝗱𝗮 𝗱𝗲 𝗮𝗵𝗼𝗿𝗰𝗮𝗱𝗼 𝗵𝗮 𝗶𝗻𝗶𝗰𝗶𝗮𝗱𝗼ⵑ\n\n"
-              f"𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n"
-              f"PALABRA: '{pantalla}'\n\n"
-              f"𝗜𝗻𝘁𝗲𝗻𝘁𝗼𝘀 𝗽𝗼𝗿 𝗷𝘂𝗴𝗮𝗱𝗼𝗿: {MAX_FALLOS}\n\n"
+        text=(f"¡𝖤𝗅 𝗆𝗈𝖽𝖾𝗋𝖺𝖽𝗈𝗋 𝖺𝖼𝖺𝖻𝖺 𝖽𝖾 𝖽𝖺𝗋 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!\n\n"
+              f"𝗖𝗔𝗧𝗘𝗚𝗢𝗥𝗜𝗔: {categoria.upper()}\n\n"
+              f"𝗧𝗔𝗕𝗟𝗘𝗥𝗢: {pantalla}\n\n"
+              f"𝗜𝗡𝗧𝗘𝗡𝗧𝗢𝗦 𝗣𝗢𝗥 𝗝𝗨𝗚𝗔𝗗𝗢𝗥: {MAX_FALLOS}\n\n"
               f"¡𝖤𝗌𝖼𝗋𝗂𝖻𝖾 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗈 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋!"
               f"{_letras_intentadas(set())}"),
         parse_mode="HTML"
@@ -281,7 +279,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
     if intento in correctas:
         await _enviar_seguro(
             update.message.reply_text,
-            f"𝖠𝗒, <b>{intento.upper()}</b> 𝗒𝖺 𝖾𝗌𝗍𝖺́ 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈, 𝗆𝗂𝗋𝖺 𝖻𝗂𝖾𝗇 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝖾𝗌𝖼𝗋𝗂𝖻𝗂𝗋 ᵎᵎ",
+            f"𝖠𝗒, <b>{intento.upper()}</b> 𝗒𝖺 𝖾𝗌𝗍𝖺 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈.",
             parse_mode="HTML"
         )
         return
@@ -296,7 +294,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         if _palabra_completa(palabra, correctas):
             sesion_ahorcado["activa"] = False
             premio = sesion_puntos.get("premio_actual", {}).get("ahorcado", 0)
-            sumar_robux(user_id, nombre_usuario(update.effective_user), premio, "𝗔𝗛𝗢𝗥𝗖𝗔𝗗𝗢")
+            sumar_robux(user_id, nombre_usuario(update.effective_user), premio, "𝗔𝗵𝗼𝗿𝗰𝗮𝗱𝗼")
             extra = f" (+ {premio} 𝗋𝗈𝖻𝗎𝗑)" if premio else ""
             await _enviar_seguro(
                 update.message.reply_text,
@@ -314,7 +312,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         vidas_restantes = sesion_ahorcado["vidas"][user_id]
         await _enviar_seguro(
             update.message.reply_text,
-            f"PALABRA: '{pantalla}'\n\n"
+            f"𝗧𝗔𝗕𝗟𝗘𝗥𝗢: {pantalla}\n\n"
             f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌."
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
@@ -329,7 +327,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         if vidas_restantes <= 0:
             sesion_ahorcado["eliminados"].add(user_id)
             aviso_repetida = (
-                f" (𝗋𝖾𝗉𝗂𝗍𝗂𝗈́ 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗊𝗎𝖾 𝗒𝖺 𝗌𝖺𝖻𝗂́𝖺 𝗊𝗎𝖾 𝖿𝖺𝗅𝗅𝖺𝖻𝖺)" if ya_habia_fallado else ""
+                f" (𝖠𝗒, 𝖾𝗌𝖺 𝗅𝖾𝗍𝗋𝖺 𝗒𝖺 𝗌𝖾 𝗌𝖺𝖻𝗂𝖺 𝗊𝗎𝖾 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺𝖻𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺)" if ya_habia_fallado else ""
             )
             await _enviar_seguro(
                 update.message.reply_text,
@@ -344,20 +342,20 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
                 await _enviar_seguro(
                     context.bot.send_message,
                     chat_id=chat_id,
-                    text=f"¡𝗡𝗮𝗱𝗶𝗲 𝗹𝗼𝗴𝗿𝗼 𝗮𝗱𝗶𝘃𝗶𝗻𝗮𝗿ⵑ\n\nLa palabra era: <b>{palabra.upper()}</b>",
+                    text=f"¡𝗡𝗔𝗗𝗜𝗘 𝗟𝗢𝗚𝗥𝗢 𝗔𝗗𝗜𝗩𝗜𝗡𝗔𝗥ⵑ\n\nLa palabra era: <b>{palabra.upper()}</b>",
                     parse_mode="HTML"
                 )
             return
 
         pantalla = _pantalla_ahorcado(palabra, correctas)
         aviso_repetida = (
-            f"\n<i>({nombre} repitio una letra que ya sabia que fallaba)</i>"
+            f"\n<i>(𝖠𝗒, {nombre} 𝖾𝗌𝖺 𝗅𝖾𝗍𝗋𝖺 𝗒𝖺 𝗌𝖾 𝗌𝖺𝖻𝗂𝖺 𝗊𝗎𝖾 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺𝖻𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺)</i>"
             if ya_habia_fallado else ""
         )
         await _enviar_seguro(
             update.message.reply_text,
             f"<b>{intento.upper()}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
-            f"PALABRA: '{pantalla}'\n\n"
+            f"𝗧𝗔𝗕𝗟𝗘𝗥𝗢: {pantalla}\n\n"
             f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}"
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
