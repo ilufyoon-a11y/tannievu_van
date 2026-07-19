@@ -325,7 +325,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         _guardar_sesion()
         await update.message.reply_text(f"𝖲𝖾 𝖽𝗈𝗇𝖺𝗋𝗈𝗇 {cantidad} 𝗋𝗈𝖻𝗎𝗑 a {nombre_display}. ¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗇𝗈 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝗅𝖺 𝗉𝗈𝖻𝗋𝖾𝗓𝖺!")
 
-async def cmd_transfer(update: Update, context: ContextTypes.DEFAUL_TYPE):
+async def cmd_transfer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if not sesion_puntos["activa"]:
         await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺.")
