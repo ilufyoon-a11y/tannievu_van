@@ -298,9 +298,12 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
             )
             return
 
+        vidas_restantes = sesion_ahorcado["vidas"][user_id]
         await _enviar_seguro(
             update.message.reply_text,
-            f"<b>{intento.upper()}</b> 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺\n\nPALABRA: '{pantalla}'{_letras_intentadas(incorrectas)}",
+            f"PALABRA: '{pantalla}'\n\n"
+            f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌."
+            f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
     else:
