@@ -301,7 +301,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         vidas_restantes = sesion_ahorcado["vidas"][user_id]
         await _enviar_seguro(
             update.message.reply_text,
-            f"PALABRA: '{pantalla}'\n\n"
+            f"<b>{pantalla}</b>\n\n"
             f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌."
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
@@ -344,7 +344,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         await _enviar_seguro(
             update.message.reply_text,
             f"<b>{intento.upper()}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
-            f"PALABRA: '{pantalla}'\n\n"
+            f"<b>{pantalla}</b>\n\n"
             f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}"
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
