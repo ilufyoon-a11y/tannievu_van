@@ -345,7 +345,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if encontrado:
         uid, datos = encontrado
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
-        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀: {cantidad}")
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀: +{cantidad}")
         _guardar_sesion()
         await update.message.reply_text(f"𝖲𝖾 𝖽𝗈𝗇𝖺𝗋𝗈𝗇 {cantidad} 𝗋𝗈𝖻𝗎𝗑 a {sesion_puntos['jugadores'][uid]['nombre']}. ¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗇𝗈 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝗅𝖺 𝗉𝗈𝖻𝗋𝖾𝗓𝖺!")
     else:
@@ -354,7 +354,7 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos["jugadores"][fake_id] = {
             "nombre": nombre_display,
             "robux": cantidad,
-            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀: {cantidad}"],
+            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀: +{cantidad}"],
             "reclamado": False,
         }
         _guardar_sesion()
@@ -407,7 +407,7 @@ async def cmd_transfer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if destinatario:
         uid, datos = destinatario
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
-        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗧𝗿𝗮𝗻𝘀𝗳𝗲𝗿𝗲𝗻𝗰𝗶𝗮 𝗿𝗲𝗰𝗶𝗯𝗶𝗱𝗮: {cantidad}")
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗧𝗿𝗮𝗻𝘀𝗳𝗲𝗿𝗲𝗻𝗰𝗶𝗮 𝗿𝗲𝗰𝗶𝗯𝗶𝗱𝗮: +{cantidad}")
         nombre_destino = datos["nombre"]
     else:
         fake_id = -(abs(hash(username_arg)) % 10**9 + 1)
@@ -415,7 +415,7 @@ async def cmd_transfer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos["jugadores"][fake_id] = {
             "nombre": nombre_destino,
             "robux": cantidad,
-            "detalle": [f"𝖲𝖾 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗅𝖺 𝗍𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝖽𝖾 {cantidad}"],
+            "detalle": [f"𝗧𝗿𝗮𝗻𝘀𝗳𝗲𝗿𝗲𝗻𝗰𝗶𝗮 𝗿𝗲𝗰𝗶𝗯𝗶𝗱𝗮: +{cantidad}"],
             "reclamado": False,
         }
  
