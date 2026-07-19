@@ -160,3 +160,4 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         except Exception as e2:
             logger.error(f"Slots: fallo total al enviar resultado ({e2})")
+
