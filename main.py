@@ -80,7 +80,7 @@ from pirata import (
 
 # ── SLOTS  ───────────────────────────────────────────────────────────  
 
-from slots import cmd_slots, cmd_open_slots, cmd_spin, sesion_slots
+from slots import cmd_slots, sesion_slots
 
 # ── MAYOROMENOR - CASINO ─────────────────────────────────────────────
 
