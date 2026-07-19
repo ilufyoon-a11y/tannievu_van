@@ -233,14 +233,12 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
         chat_id=gid,
         text=(f"¡𝗟𝗮 𝗽𝗮𝗿𝘁𝗶𝗱𝗮 𝗱𝗲 𝗮𝗵𝗼𝗿𝗰𝗮𝗱𝗼 𝗵𝗮 𝗶𝗻𝗶𝗰𝗶𝗮𝗱𝗼ⵑ\n\n"
               f"𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n"
-              f"{pantalla}\n\n"
+              f"PALABRA: '{pantalla}'\n\n"
               f"𝗜𝗻𝘁𝗲𝗻𝘁𝗼𝘀 𝗽𝗼𝗿 𝗷𝘂𝗴𝗮𝗱𝗼𝗿: {MAX_FALLOS}\n\n"
               f"¡𝖤𝗌𝖼𝗋𝗂𝖻𝖾 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗈 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋!"
               f"{_letras_intentadas(set())}"),
         parse_mode="HTML"
     )
-    if STICKERS_AHORCADO[0]:
-        await _enviar_seguro(context.bot.send_sticker, chat_id=gid, sticker=STICKERS_AHORCADO[0])
 
 
 # =====================================================================
@@ -302,7 +300,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
 
         await _enviar_seguro(
             update.message.reply_text,
-            f"{pantalla}\n\n{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}\n\n{_letras_intentadas(incorrectas)}",
+            f"<b>{intento.upper()}</b> 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺\n\nPALABRA: '{pantalla}'{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
     else:
@@ -343,8 +341,8 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         await _enviar_seguro(
             update.message.reply_text,
             f"<b>{intento.upper()}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
-            f"{pantalla}\n\n"
-            f"{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}"
+            f"PALABRA: '{pantalla}'\n\n"
+            f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}"
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
