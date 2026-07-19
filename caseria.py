@@ -1,15 +1,18 @@
 import random
 import asyncio
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, GIF_CASERIA
+
+logger = logging.getLogger(__name__)
 
 # ================= DICCIONARIO =================
 
 sesion_caseria = {}   # chat_id -> {...}
 _tareas_shuffle = {}  # chat_id -> asyncio.Task
 
-TIEMPO_SHUFFLE = 5  # segundos entre cada mezcla del tablero
+TIEMPO_SHUFFLE = 10  # segundos entre cada mezcla del tablero
 
 POOL_EMOJIS_CASERIA = [
     "💭", "💜", "♥️", "💙", "💚", "🩶", "🩵", "💛", "🧡", "🩷", "❤️", "🤍", "🖤", "🤎", "🗡️", 
@@ -178,8 +181,17 @@ async def _shuffle_tablero(chat_id, context):
                 message_id=sesion["tablero_msg_id"],
                 reply_markup=nuevo_markup
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Caseria: fallo al mezclar tablero, reintentando ({e})")
+            await asyncio.sleep(1.5)
+            try:
+                await context.bot.edit_message_reply_markup(
+                    chat_id=chat_id,
+                    message_id=sesion["tablero_msg_id"],
+                    reply_markup=nuevo_markup
+                )
+            except Exception as e2:
+                logger.error(f"Caseria: fallo definitivo al mezclar tablero ({e2})")
 
 # ================= MANEJO DE BOTONES =================
 
@@ -241,15 +253,15 @@ async def manejar_botones_caseria(update: Update, context: ContextTypes.DEFAULT_
                     text=texto_cartillas,
                     parse_mode="HTML"
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Caseria: fallo al actualizar cartillas ({e})")
 
         if len(marcados) == 6:
             sesion["activa"] = False
             if chat_id in _tareas_shuffle and not _tareas_shuffle[chat_id].done():
                 _tareas_shuffle[chat_id].cancel()
             premio_cas = sesion_puntos.get("premio_actual", {}).get("caseria", 0)
-            sumar_robux(user.id, jugador["name"], premio_cas, "𝗖𝗮𝗰𝗲𝗿𝗶𝗮: ")
+            sumar_robux(user.id, jugador["name"], premio_cas, "𝗖𝗮𝗰𝗲𝗿𝗶𝗮 ")
             extra_cas = f"\n\n+{premio_cas} 𝖿𝗂𝖼𝗁𝖺𝗌" if premio_cas else ""
             await context.bot.send_sticker(
                 chat_id=chat_id,
