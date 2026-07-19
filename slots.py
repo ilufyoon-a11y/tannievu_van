@@ -11,14 +11,14 @@ logger = logging.getLogger(__name__)
 # SÍMBOLOS Y PAGOS
 # =====================================================================
 
-SIMBOLOS = ["🍒", "🍋", "💎"]
-PESOS    = [50,   35,   15]
+SIMBOLOS = ["🍒", "🍋", "🍇", "⭐", "💎", "🐨", "🐹", "🐱", "🐿️", "🐥", "🐻", "🐰"]
+PESOS    = [12,   11,   10,  9,    9,    8,    8,   7,    7,    6,   6,    7]
 
 PAGO_3 = 3
-PAGO_2 = 1.5
+PAGO_2 = 2.4
 
 FRAMES_ANIMACION = 4
-DELAY_ANIMACION = 0.6  # segundos entre frames (subido para evitar flood control)
+DELAY_ANIMACION = 0.6  # segundos entre frames (evita flood control de Telegram)
 
 # =====================================================================
 # HELPERS
@@ -62,7 +62,7 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "𝖴𝗌𝗈: <code>/jackpot &lt;cantidad&gt;</code>\n\n"
             "𝗣𝗿𝗲𝗺𝗶𝗼𝘀:\n"
             "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟥 💰\n"
-            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟣.𝟧 ✨\n"
+            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟤.𝟦 ✨\n"
             "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 ➜ 𝗉𝗂𝖾𝗋𝖽𝖾𝗌 💸",
             parse_mode="HTML"
         )
