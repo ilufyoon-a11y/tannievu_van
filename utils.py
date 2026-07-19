@@ -119,10 +119,6 @@ def sumar_robux(user_id: int, nombre: str, cantidad: int, concepto: str):
     _guardar_sesion()
 
 def migrar_si_existe_fake(user) -> int:
-    """Si esta persona tiene robux guardados bajo un ID falso (por haber sido agregada
-    con /add antes de escribirle al bot), los mueve a su ID real de Telegram.
-    Busca por nombre en vez de por signo del ID, así también rescata entradas
-    viejas guardadas con el bug (IDs positivos en vez de negativos)."""
     real_uid = user.id
     if real_uid in sesion_puntos["jugadores"]:
         return real_uid
@@ -192,8 +188,6 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
             sticker="CAACAgEAAxkBA08swWpNqNnZt1zzMtnHo2C7O4H2dURHAAIgBwACYSZoRojECEp9-LYLPAQ")
 
 def _resumen_wallet(detalle: list) -> str:
-    """Agrupa las entradas del detalle por concepto (sumando repetidos con
-    contador 'xN') y las separa en Ganaste / Gastaste segun el signo."""
     patron = re.compile(r'^(.*?)\s*:?\s*([+\-−])\s*(\d+)')
     ganancias = {}
     gastos = {}
@@ -213,19 +207,19 @@ def _resumen_wallet(detalle: list) -> str:
 
     partes = []
     if ganancias:
-        partes.append("𝖦𝖺𝗇𝖺𝗌𝗍𝖾:")
+        partes.append("𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦:\n\n")
         for concepto, (suma, veces) in ganancias.items():
-            etiqueta = f"{concepto} (x{veces})" if veces > 1 else concepto
+            etiqueta = f"{concepto} — ({veces} 𝗋𝗈𝗇𝖽𝖺𝗌 𝗀𝖺𝗇𝖺𝖽𝖺𝗌)" if veces > 1 else concepto
             partes.append(f"+ {etiqueta}: {suma}")
     if gastos:
         if partes:
             partes.append("")
-        partes.append("𝖦𝖺𝗌𝗍𝖺𝗌𝗍𝖾:")
+        partes.append("𝗣𝗘𝗥𝗗𝗜𝗗𝗔𝗦:\n\n")
         for concepto, (suma, veces) in gastos.items():
-            etiqueta = f"{concepto} (x{veces})" if veces > 1 else concepto
+            etiqueta = f"{concepto} — ({veces} 𝗋𝗈𝗇𝖽𝖺𝗌 𝗉𝖾𝗋𝖽𝗂𝖽𝖺𝗌)" if veces > 1 else concepto
             partes.append(f"− {etiqueta}: {suma}")
 
-    return "\n".join(partes) if partes else "𝖠𝗎𝗇 𝗌𝗂𝗇 𝗆𝗈𝗏𝗂𝗆𝗂𝖾𝗇𝗍𝗈𝗌."
+    return "\n".join(partes) if partes else "¡𝖠𝗎𝗇 𝗇𝗈 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 𝗋𝗈𝖻𝗎𝗑 𝖺𝖼𝗎𝗆𝗎𝗅𝖺𝖽𝗈𝗌, 𝗌𝖾𝗀𝗎𝗋𝗈 𝗊𝗎𝖾 𝖾𝗇 𝖾𝗅 𝗉𝗋𝗈𝗑𝗂𝗆𝗈 𝗃𝗎𝖾𝗀𝗈 𝖼𝗈𝗇𝗌𝗂𝗀𝗎𝖾𝗌, 𝖻𝗎𝖾𝗇𝖺 𝗌𝗎𝖾𝗋𝗍𝖾!"
 
 
 async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -248,7 +242,7 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"𝖧𝗈𝗅𝖺, {nombre_usuario(update.effective_user)}:\n\n"
         f"{resumen}\n\n"
-        f"💰 𝖳𝗎 𝖿𝗈𝗋𝗍𝗎𝗇𝖺 𝖺𝗌𝖼𝗂𝖾𝗇𝖽𝖾 𝖺 {datos['robux']} 𝗋𝗈𝖻𝗎𝗑"
+        f"𝖳𝗎 𝖿𝗈𝗋𝗍𝗎𝗇𝖺 𝖺𝗌𝖼𝗂𝖾𝗇𝖽𝖾 𝖺 {datos['robux']} 𝗋𝗈𝖻𝗎𝗑"
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
@@ -351,16 +345,16 @@ async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if encontrado:
         uid, datos = encontrado
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
-        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}")
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀: {cantidad}")
         _guardar_sesion()
-        await update.message.reply_text(f"✅ +{cantidad} 𝗋𝗈𝖻𝗎𝗑 a {sesion_puntos['jugadores'][uid]['nombre']}.")
+        await update.message.reply_text(f"𝖲𝖾 𝖽𝗈𝗇𝖺𝗋𝗈𝗇 {cantidad} 𝗋𝗈𝖻𝗎𝗑 a {sesion_puntos['jugadores'][uid]['nombre']}. ¡𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗇𝗈 𝗏𝗈𝗅𝗏𝖾𝗋 𝖺 𝗅𝖺 𝗉𝗈𝖻𝗋𝖾𝗓𝖺!")
     else:
         fake_id = -(abs(hash(username_arg)) % 10**9 + 1)  # garantiza número negativo
         nombre_display = f"@{username_arg}"
         sesion_puntos["jugadores"][fake_id] = {
             "nombre": nombre_display,
             "robux": cantidad,
-            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀 +{cantidad}"],
+            "detalle": [f"𝗥𝗼𝗯𝘂𝘅 𝗱𝗼𝗻𝗮𝗱𝗼𝘀: {cantidad}"],
             "reclamado": False,
         }
         _guardar_sesion()
@@ -408,12 +402,12 @@ async def cmd_transfer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             break
  
     remitente["robux"] -= cantidad
-    remitente["detalle"].append(f"𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝗂𝖽𝗈 𝖺 @{username_arg} -{cantidad}")
+    remitente["detalle"].append(f"𝗧𝗿𝗮𝗻𝘀𝗳𝗲𝗿𝗲𝗻𝗰𝗶𝗮 𝗮 @{username_arg}: -{cantidad}")
  
     if destinatario:
         uid, datos = destinatario
         sesion_puntos["jugadores"][uid]["robux"] += cantidad
-        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝖺 +{cantidad}")
+        sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗧𝗿𝗮𝗻𝘀𝗳𝗲𝗿𝗲𝗻𝗰𝗶𝗮 𝗿𝗲𝗰𝗶𝗯𝗶𝗱𝗮: {cantidad}")
         nombre_destino = datos["nombre"]
     else:
         fake_id = -(abs(hash(username_arg)) % 10**9 + 1)
@@ -421,17 +415,16 @@ async def cmd_transfer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos["jugadores"][fake_id] = {
             "nombre": nombre_destino,
             "robux": cantidad,
-            "detalle": [f"𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝗋𝖾𝖼𝗂𝖻𝗂𝖽𝖺 +{cantidad}"],
+            "detalle": [f"𝖲𝖾 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝗅𝖺 𝗍𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝖾𝗇𝖼𝗂𝖺 𝖽𝖾 {cantidad}"],
             "reclamado": False,
         }
  
     _guardar_sesion()
     await update.message.reply_text(
-        f"✅ 𝖳𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝗂𝗌𝗍𝖾 {cantidad} 𝗋𝗈𝖻𝗎𝗑 𝖺 {nombre_destino}."
+        f"𝖠𝖼𝖺𝖻𝖺𝗌 𝖽𝖾 𝗍𝗋𝖺𝗇𝗌𝖿𝖾𝗋𝗂𝗋 {cantidad} 𝗋𝗈𝖻𝗎𝗑 𝖺 {nombre_destino}."
     )
  
 async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """/remove @usuario cantidad — le quita robux a un jugador (solo admin)."""
     chat_id = update.effective_chat.id
     if update.effective_user.id != sesion_puntos.get("admin_id"):
         await update.message.reply_text("𝖲𝗈𝗅𝗈 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈 𝗉𝗎𝖾𝖽𝖾 𝗊𝗎𝗂𝗍𝖺𝗋 𝗋𝗈𝖻𝗎𝗑")
@@ -471,14 +464,13 @@ async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid, datos = encontrado
     quitados = min(cantidad, datos["robux"])
     sesion_puntos["jugadores"][uid]["robux"] -= quitados
-    sesion_puntos["jugadores"][uid]["detalle"].append(f"𝖱𝗈𝖻𝗎𝗑 𝗋𝖾𝗍𝗂𝗋𝖺𝖽𝗈𝗌 -{quitados}")
+    sesion_puntos["jugadores"][uid]["detalle"].append(f"𝗥𝗼𝗯𝘂𝘅 𝗿𝗲𝘁𝗶𝗿𝗮𝗱𝗼𝘀: -{quitados}")
     _guardar_sesion()
     await update.message.reply_text(
-        f"➖ 𝖲𝖾 𝗅𝖾 𝗊𝗎𝗂𝗍𝖺𝗋𝗈𝗇 {quitados} 𝗋𝗈𝖻𝗎𝗑 𝖺 {sesion_puntos['jugadores'][uid]['nombre']}."
+        f"𝖲𝖾 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝗈 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 𝖾𝗅 𝗋𝖾𝗍𝗂𝗋𝗈 𝖽𝖾 {quitados} 𝗋𝗈𝖻𝗎𝗑 𝖺 {sesion_puntos['jugadores'][uid]['nombre']}."
     )
 
 async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """/claim @usuario — marca al jugador como pagado y lo saca de la lista pendiente."""
     chat_id = update.effective_chat.id
     if update.effective_user.id != sesion_puntos.get("admin_id"):
         await update.message.reply_text("𝖲𝗈𝗅𝗈 𝖾𝗅/𝗅𝖺 𝖺𝖽𝗆𝗂𝗇 𝖺 𝖼𝖺𝗋𝗀𝗈 𝗉𝗎𝖾𝖽𝖾 𝗎𝗌𝖺𝗋 𝖾𝗌𝗍𝖾 𝖼𝗈𝗆𝖺𝗇𝖽𝗈")
@@ -504,7 +496,7 @@ async def cmd_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid, datos = encontrado
     sesion_puntos["jugadores"][uid]["reclamado"] = True
     _guardar_sesion()
-    await update.message.reply_text(f"{datos['nombre']} 𝗋𝖾𝖼𝗅𝖺𝗆𝗈 𝗌𝗎𝗌 𝗋𝗈𝖻𝗎𝗑")
+    await update.message.reply_text(f"{datos['nombre']} 𝖺𝖼𝖺𝖻𝖺 𝖽𝖾 𝗋𝖾𝖼𝗅𝖺𝗆𝖺𝗋 𝗅𝗈𝗌 𝗋𝗈𝖻𝗎𝗑 𝖺𝖼𝗎𝗆𝗎𝗅𝖺𝖽𝗈𝗌")
 
 async def cmd_export(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -521,7 +513,7 @@ async def cmd_export(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_document(
         chat_id=chat_id,
         document=archivo,
-        caption="𝖲𝖾 𝗀𝖾𝗇𝖾𝗋𝗈 𝖾𝗅 𝗋𝖾𝗌𝗉𝖺𝗅𝖽𝗈 𝖽𝖾 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗎𝖺𝗅"
+        caption="𝖲𝖾 𝗀𝖾𝗇𝖾𝗋𝗈 𝖼𝗈𝗇 𝖾𝗑𝗂𝗍𝗈 𝖾𝗅 𝗋𝖾𝗌𝗉𝖺𝗅𝖽𝗈 𝖽𝖾 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗎𝖺𝗅"
     )
 
 async def cmd_import(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -549,7 +541,7 @@ async def cmd_import(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sesion_puntos.clear()
         sesion_puntos.update(datos)
         _guardar_sesion()
-        await update.message.reply_text("𝖲𝖾𝗌𝗂𝗈𝗇 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝖽𝖺 𝖼𝗈𝗋𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾.")
+        await update.message.reply_text("𝖲𝖾𝗌𝗂𝗈𝗇 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝖽𝖺 𝖼𝗈𝗇 𝖾𝗑𝗂𝗍𝗈.")
     except Exception as e:
         await update.message.reply_text(f"𝖤𝗋𝗋𝗈𝗋 𝖺𝗅 𝗋𝖾𝗌𝗍𝖺𝗎𝗋𝖺𝗋 𝗅𝖺 𝖣𝖡 𝖾𝗇𝗏𝗂𝖺𝖽𝖺: {e}")
 
