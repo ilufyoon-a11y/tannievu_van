@@ -576,9 +576,22 @@ async def detener_juegos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chat_id in sesion_box:
         sesion_box[chat_id]["activa"] = False
         sesion_box[chat_id]["jugadores"] = []
+    task_charada = sesion_charada.get("reloj_task")
+    if task_charada and not task_charada.done():
+        task_charada.cancel()
+    sesion_charada["reloj_task"] = None
     sesion_charada["activa"] = False
     sesion_charada["fase_registro"] = False
+    sesion_charada["juego_en_curso"] = False
     sesion_charada["jugadores"] = []
+    sesion_charada["equipo_rojo"] = []
+    sesion_charada["equipo_azul"] = []
+    sesion_charada["bando_actual"] = None
+    sesion_charada["moderador_id"] = None
+    sesion_charada["palabras_ronda"] = {}
+    sesion_charada["puntos_rojo"] = 0
+    sesion_charada["puntos_azul"] = 0
+    sesion_charada["ronda"] = 1
     if chat_id in sesion_pirata:
         del sesion_pirata[chat_id]
     if chat_id in sesion_mom:
