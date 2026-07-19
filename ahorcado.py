@@ -233,7 +233,7 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
         chat_id=gid,
         text=(f"¡𝗟𝗮 𝗽𝗮𝗿𝘁𝗶𝗱𝗮 𝗱𝗲 𝗮𝗵𝗼𝗿𝗰𝗮𝗱𝗼 𝗵𝗮 𝗶𝗻𝗶𝗰𝗶𝗮𝗱𝗼ⵑ\n\n"
               f"𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n"
-              f"<b>{pantalla}</b>\n\n"
+              f"PALABRA: '{pantalla}'\n\n"
               f"𝗜𝗻𝘁𝗲𝗻𝘁𝗼𝘀 𝗽𝗼𝗿 𝗷𝘂𝗴𝗮𝗱𝗼𝗿: {MAX_FALLOS}\n\n"
               f"¡𝖤𝗌𝖼𝗋𝗂𝖻𝖾 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗈 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋!"
               f"{_letras_intentadas(set())}"),
@@ -249,6 +249,10 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
     if not sesion_ahorcado.get("activa") or not sesion_ahorcado.get("palabra"):
         return
     if user_id == sesion_ahorcado.get("moderador_id"):
+        try:
+            await context.bot.delete_message(chat_id=chat_id, message_id=update.message.message_id)
+        except Exception:
+            pass  # el bot puede no tener permisos de borrado en ese chat
         return
     if user_id not in sesion_ahorcado.get("vidas", {}):
         return  # no estaba entre los jugadores de esta ronda
@@ -301,7 +305,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         vidas_restantes = sesion_ahorcado["vidas"][user_id]
         await _enviar_seguro(
             update.message.reply_text,
-            f"<b>{pantalla}</b>\n\n"
+            f"PALABRA: '{pantalla}'\n\n"
             f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌."
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
@@ -344,7 +348,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         await _enviar_seguro(
             update.message.reply_text,
             f"<b>{intento.upper()}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
-            f"<b>{pantalla}</b>\n\n"
+            f"PALABRA: '{pantalla}'\n\n"
             f"{nombre}, 𝖼𝗎𝖾𝗇𝗍𝖺𝗌 𝖼𝗈𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}"
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
