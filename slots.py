@@ -18,8 +18,8 @@ PESOS    = [13,   11,   8,    7,    7,    6,    6,    5,    5,    6]
 PAGO_3 = 3
 PAGO_2 = 2
 
-DELAY_ANIMACION = 0.8  # antes de mostrar el frame falso
-DELAY_SUSPENSO = 0.9   # antes de mostrar el resultado real
+DELAY_ANIMACION = 1.1  # antes de mostrar cada frame falso
+DELAY_SUSPENSO = 1.3   # antes de mostrar el resultado real
 
 # =====================================================================
 # HELPERS
@@ -135,20 +135,22 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await asyncio.sleep(DELAY_ANIMACION)
 
-    # Un único frame de "giro" (no varios) para que se vea movimiento
+    # Dos frames de "giro" (no más) para que se vea movimiento
     # sin bombardear a Telegram de ediciones y arriesgar flood control.
-    falso = [random.choice(SIMBOLOS) for _ in range(3)]
-    try:
-        await context.bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=msg.message_id,
-            text=f"{encabezado}\n\n[ {falso[0]} | {falso[1]} | {falso[2]} ]"
-        )
-    except RetryAfter as e:
-        logger.warning(f"Slots: flood control animando, espero {e.retry_after}s")
-        await asyncio.sleep(e.retry_after)
-    except TelegramError as e:
-        logger.warning(f"Slots: fallo animando frame ({e})")
+    for _ in range(2):
+        falso = [random.choice(SIMBOLOS) for _ in range(3)]
+        try:
+            await context.bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=msg.message_id,
+                text=f"{encabezado}\n\n[ {falso[0]} | {falso[1]} | {falso[2]} ]"
+            )
+        except RetryAfter as e:
+            logger.warning(f"Slots: flood control animando, espero {e.retry_after}s")
+            await asyncio.sleep(e.retry_after)
+        except TelegramError as e:
+            logger.warning(f"Slots: fallo animando frame ({e})")
+        await asyncio.sleep(DELAY_ANIMACION)
 
     await asyncio.sleep(DELAY_SUSPENSO)
 
