@@ -277,7 +277,7 @@ async def _fin_rondas(context, chat_id: int):
     extra = f"\n+{premio} 𝖿𝗂𝖼𝗁𝖺𝗌" if premio else ""
     msg += f"( 𐃯 ) — {ganador_nombre} 𝖿𝗎𝖾 𝗊𝗎𝗂𝖾𝗇 𝗈𝗋𝖽𝖾𝗇𝗈 𝗆𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌. ¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌! 🎉"
     if premio:
-        sumar_robux(ganador_id, ganador_nombre, premio, "𝗝𝘂𝗺𝗯𝗹𝗲: ")
+        sumar_robux(ganador_id, ganador_nombre, premio, "𝗝𝘂𝗺𝗯𝗹𝗲 ")
 
     await context.bot.send_message(chat_id=chat_id, text=msg)
     await context.bot.send_sticker(
