@@ -302,7 +302,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
 
         await _enviar_seguro(
             update.message.reply_text,
-            f"<b>{intento.upper()}</b> 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺\n\n{pantalla}{_letras_intentadas(incorrectas)}",
+            f"{pantalla}\n\n{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
     else:
@@ -343,7 +343,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         await _enviar_seguro(
             update.message.reply_text,
             f"<b>{intento.upper()}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
-            f"{pantalla}\n"
+            f"{pantalla}\n\n"
             f"{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}"
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
