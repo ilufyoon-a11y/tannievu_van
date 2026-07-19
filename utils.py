@@ -143,6 +143,9 @@ def migrar_si_existe_fake(user) -> int:
 def nombre_usuario(user):
     return f"@{user.username}" if user.username else user.first_name
 
+def es_admin_sesion(user_id: int) -> bool:
+    return user_id == sesion_puntos.get("admin_id")
+
 def extraer_emojis(texto):
     import regex
     # Detecta todos los emojis sin diccionarios:
