@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_SONG
+from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, GIF_SONG
 
 # ================= DICCIONARIOS Y CONFIG =================
 
@@ -193,8 +193,11 @@ async def enviar_siguiente_ronda(chat_id, context: ContextTypes.DEFAULT_TYPE):
 # ================= CONTROL DE LA SALA (ESTILO BOX) =================
 
 async def unirse_adivina(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Abre la sala de reclutamiento, mismo estilo y mismo manejo de jugadores que box.py"""
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     sesion_song[chat_id] = {
         "jugadores": [],
@@ -238,8 +241,11 @@ async def manejar_boton_unirse(update: Update, context: ContextTypes.DEFAULT_TYP
     await query.message.reply_text(f"— {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
 
 async def iniciar_adivina_juego(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Valida los requisitos minimos y arranca la primera ronda"""
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     if chat_id not in sesion_song or len(sesion_song[chat_id]["jugadores"]) < 2:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖲𝖾 𝗋𝖾𝗊𝗎𝗂𝖾𝗋𝖾 𝗎𝗇 𝗆𝗂𝗇𝗂𝗆𝗈 𝖽𝖾 𝟤 𝗉𝖾𝗋𝗌𝗈𝗇𝖺𝗌 𝗉𝖺𝗋𝖺 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝖾𝗅 𝗃𝗎𝖾𝗀𝗈 ᵎᵎ")
