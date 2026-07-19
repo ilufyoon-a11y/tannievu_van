@@ -80,7 +80,7 @@ from pirata import (
 
 # ── SLOTS  ───────────────────────────────────────────────────────────  
 
-from slots import cmd_jackpot
+from slots import cmd_jackpot, cb_slots_noop
 
 # ── MAYOROMENOR - CASINO ─────────────────────────────────────────────
 
@@ -265,6 +265,8 @@ async def manejar_botones_main(update: Update, context: ContextTypes.DEFAULT_TYP
         await manejar_botones_anagrama(update, context)
     elif data == "unirme_ahorcado_click":
         await manejar_botones_ahorcado(update, context)
+    elif data == "slots_noop":
+        await cb_slots_noop(update, context)
 
 # =====================================================================
 # ARRANQUE
