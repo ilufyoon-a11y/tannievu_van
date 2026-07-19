@@ -95,9 +95,9 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "𝖴𝗌𝗈: <code>/jackpot &lt;cantidad&gt;</code>\n\n"
             "𝗣𝗿𝗲𝗺𝗶𝗼𝘀:\n"
-            "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟦 💰\n"
-            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟣.𝟪 ✨\n"
-            "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 ➜ 𝗉𝗂𝖾𝗋𝖽𝖾𝗌 💸",
+            "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟥\n"
+            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟤\n"
+            "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 ➜ 𝖯𝗂𝖾𝗋𝖽𝖾𝗌 𝗅𝗈 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈",
             parse_mode="HTML"
         )
         return
