@@ -302,7 +302,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
 
         await _enviar_seguro(
             update.message.reply_text,
-            f"{pantalla}\n\n{_letras_intentadas(incorrectas)}",
+            f"{pantalla}\n\n{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}\n\n{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
     else:
