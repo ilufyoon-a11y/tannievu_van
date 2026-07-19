@@ -325,6 +325,8 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("jumble",       cmd_anagrama))
     application.add_handler(CommandHandler("jumble4",      cmd_anagrama4))
     application.add_handler(CommandHandler("start_jumble", cmd_start_anagrama))
+
+    # Carrera 🔀
     application.add_handler(CommandHandler("carrera",          cmd_carrera))
     application.add_handler(CommandHandler("rider",  cmd_apostar_carrera))
     application.add_handler(CommandHandler("start_carrera",    cmd_start_carrera))
@@ -339,6 +341,8 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("export",  cmd_export))
     application.add_handler(CommandHandler("claim",  cmd_claim))
     application.add_handler(CommandHandler("add",  cmd_add))
+    application.add_handler(CommandHandler("trans",  cmd_transfer))
+    application.add_handler(CommandHandler("remove",  cmd_remove))
     application.add_handler(CommandHandler("pay",  cmd_saldo_final))
 
     # Handlers generales
