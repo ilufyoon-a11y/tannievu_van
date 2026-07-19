@@ -80,7 +80,7 @@ from pirata import (
 
 # ── SLOTS  ───────────────────────────────────────────────────────────  
 
-from slots import cmd_slots, sesion_slots
+from slots import cmd_jackpot
 
 # ── MAYOROMENOR - CASINO ─────────────────────────────────────────────
 
@@ -317,7 +317,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("out_card", cmd_out_card))
 
     # Slots 🎰
-    application.add_handler(CommandHandler("jackpot", cmd_open_slots))
+    application.add_handler(CommandHandler("jackpot", cmd_jackpot))
 
     # Anagrama 🔀
     application.add_handler(CommandHandler("jumble",       cmd_anagrama))
