@@ -1,8 +1,11 @@
 import random
 import asyncio
+import logging
 from telegram import Update
 from telegram.ext import ContextTypes
 from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
+
+logger = logging.getLogger(__name__)
 
 # =====================================================================
 # SÍMBOLOS Y PAGOS
@@ -14,8 +17,8 @@ PESOS    = [50,   35,   15]
 PAGO_3 = 3
 PAGO_2 = 1.5
 
-FRAMES_ANIMACION = 6
-DELAY_ANIMACION = 0.4  # segundos entre frames
+FRAMES_ANIMACION = 4
+DELAY_ANIMACION = 0.6  # segundos entre frames (subido para evitar flood control)
 
 # =====================================================================
 # HELPERS
@@ -91,7 +94,8 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
     )
 
-    # Animación: edita el mensaje varias veces con combinaciones al azar
+    # Animación: edita el mensaje varias veces con combinaciones al azar.
+    # Si Telegram tira flood control aquí, no pasa nada grave: seguimos al resultado final.
     for _ in range(FRAMES_ANIMACION):
         falso = [random.choice(SIMBOLOS) for _ in range(3)]
         try:
@@ -100,8 +104,8 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 message_id=msg.message_id,
                 text=f"{encabezado}\n\n[ {falso[0]} | {falso[1]} | {falso[2]} ]"
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Slots: fallo animando frame ({e})")
         await asyncio.sleep(DELAY_ANIMACION)
 
     # Resultado final real
@@ -125,11 +129,17 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     guardar_sesion()
 
+    # Si falla la edición final (flood control, mensaje borrado, etc),
+    # mandamos el resultado como mensaje nuevo para que NUNCA se quede sin respuesta.
     try:
         await context.bot.edit_message_text(
             chat_id=chat_id,
             message_id=msg.message_id,
             text=texto_final
         )
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Slots: fallo mostrando resultado final, mando mensaje nuevo ({e})")
+        try:
+            await context.bot.send_message(chat_id=chat_id, text=texto_final)
+        except Exception as e2:
+            logger.error(f"Slots: fallo total al enviar resultado ({e2})")
