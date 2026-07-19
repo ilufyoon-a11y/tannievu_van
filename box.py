@@ -2,7 +2,7 @@ import random
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, extraer_emojis, es_admin_sesion, GIF_JITB, GIF_ERROR, GIF_ENCUBRIDOR, GIF_RECHAZADO
+from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, extraer_emojis, es_admin_sesion, GIF_JITB, GIF_ERROR, GIF_ENCUBRIDOR, GIF_RECHAZADO
 
 # ================= DICCIONARIO =================
 
