@@ -1,9 +1,9 @@
 import random
 import asyncio
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.error import RetryAfter, TelegramError
-from telegram.ext import ContextTypes, CallbackQueryHandler
+from telegram.ext import ContextTypes
 from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
 logger = logging.getLogger(__name__)
@@ -15,11 +15,10 @@ logger = logging.getLogger(__name__)
 SIMBOLOS = ["🍒", "🍋", "💎", "🐨", "🐹", "🐱", "🐿️", "🐥", "🐻", "🐰"]
 PESOS    = [13,   11,   8,    7,    7,    6,    6,    5,    5,    6]
 
-PAGO_3 = 4
-PAGO_2 = 1.8
+PAGO_3 = 3
+PAGO_2 = 2
 
-FRAMES_ANIMACION = 2
-DELAY_ANIMACION = 0.7  # segundos entre frames (evita flood control de Telegram)
+DELAY_SUSPENSO = 1.2  # segundos de suspenso antes de mostrar el resultado
 
 # =====================================================================
 # HELPERS
@@ -32,19 +31,7 @@ def get_saldo(user_id: int) -> int:
 def girar() -> list:
     return random.choices(SIMBOLOS, weights=PESOS, k=3)
 
-def markup_ruletas(simbolos: list) -> InlineKeyboardMarkup:
-    """3 botones inline que simulan los rodillos de la maquina."""
-    botones = [
-        InlineKeyboardButton(simbolos[i], callback_data="slots_noop")
-        for i in range(3)
-    ]
-    return InlineKeyboardMarkup([botones])
-
-async def cb_slots_noop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Los botones de la ruleta son solo visuales: no hacen nada al tocarlos."""
-    await update.callback_query.answer()
-
-async def enviar_resultado_final(context, chat_id, message_id, texto, reply_markup, intentos=3):
+async def enviar_resultado_final(context, chat_id, message_id, texto, intentos=3):
     """
     Muestra el resultado final pase lo que pase. A diferencia de un simple
     try/except, si Telegram tira flood control (RetryAfter) esperamos el
@@ -56,8 +43,7 @@ async def enviar_resultado_final(context, chat_id, message_id, texto, reply_mark
             await context.bot.edit_message_text(
                 chat_id=chat_id,
                 message_id=message_id,
-                text=texto,
-                reply_markup=reply_markup
+                text=texto
             )
             return
         except RetryAfter as e:
@@ -73,8 +59,7 @@ async def enviar_resultado_final(context, chat_id, message_id, texto, reply_mark
         try:
             await context.bot.send_message(
                 chat_id=chat_id,
-                text=texto,
-                reply_markup=reply_markup
+                text=texto
             )
             return
         except RetryAfter as e:
@@ -142,37 +127,19 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ruletas = girar()
 
     encabezado = f"🎰 {nombre} 𝖾𝗌𝗍𝖺 𝗀𝗂𝗋𝖺𝗇𝖽𝗈 𝗉𝗈𝗋 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌..."
-    falso_inicial = [random.choice(SIMBOLOS) for _ in range(3)]
-    msg = await update.message.reply_text(
-        encabezado,
-        reply_markup=markup_ruletas(falso_inicial)
-    )
+    msg = await update.message.reply_text(encabezado)
 
-    # Animación: mueve los "rodillos" (botones) varias veces con combinaciones al azar.
-    # Si Telegram tira flood control aquí no es grave (es solo estética):
-    # esperamos lo indicado y, si no alcanza el tiempo, seguimos igual al resultado final.
-    for _ in range(FRAMES_ANIMACION):
-        falso = [random.choice(SIMBOLOS) for _ in range(3)]
-        try:
-            await context.bot.edit_message_reply_markup(
-                chat_id=chat_id,
-                message_id=msg.message_id,
-                reply_markup=markup_ruletas(falso)
-            )
-        except RetryAfter as e:
-            logger.warning(f"Slots: flood control animando, espero {e.retry_after}s")
-            await asyncio.sleep(e.retry_after)
-        except TelegramError as e:
-            logger.warning(f"Slots: fallo animando frame ({e})")
-        await asyncio.sleep(DELAY_ANIMACION)
+    # Un solo respiro de suspenso, sin editar el mensaje varias veces.
+    await asyncio.sleep(DELAY_SUSPENSO)
 
     # Resultado final real
     resultado_txt, ganancia, multiplicador = evaluar(ruletas, cantidad)
+    display = " | ".join(ruletas)
 
     if ganancia > 0:
         sumar_robux(user_id, nombre, ganancia, f"Slots 🎰 (+x{multiplicador})")
         texto_final = (
-            f"🎰 {nombre}\n\n"
+            f"🎰 {nombre}\n\n[ {display} ]\n\n"
             f"{resultado_txt} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
     else:
@@ -180,7 +147,7 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
             sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
             sesion_puntos["jugadores"][user_id]["detalle"].append(f"Slots 🎰: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
         texto_final = (
-            f"🎰 {nombre}\n\n"
+            f"🎰 {nombre}\n\n[ {display} ]\n\n"
             f"{resultado_txt} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
 
@@ -188,20 +155,15 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Nunca se debe perder el resultado: reintenta respetando el flood control
     # y, si aun así falla, manda un mensaje nuevo en vez de dejarlo pegado.
-    await enviar_resultado_final(
-        context, chat_id, msg.message_id, texto_final, markup_ruletas(ruletas)
-    )
+    await enviar_resultado_final(context, chat_id, msg.message_id, texto_final)
 
 # =====================================================================
-# REGISTRO (ya aplicado en tu main.py):
+# REGISTRO (en tu main.py):
 #
-#   from slots import cmd_jackpot, cb_slots_noop
+#   from slots import cmd_jackpot
 #   application.add_handler(CommandHandler("jackpot", cmd_jackpot))
 #
-#   Y dentro de manejar_botones_main:
-#       elif data == "slots_noop":
-#           await cb_slots_noop(update, context)
-#
-# No hace falta un CallbackQueryHandler aparte: tu bot ya despacha todos
-# los callbacks por un único handler central (manejar_botones_main).
+# Ya no hay botones ni callback que registrar: si en manejar_botones_main
+# de tu main.py habías agregado la rama de "slots_noop", podés borrarla,
+# y también el import de cb_slots_noop.
 # =====================================================================
