@@ -267,11 +267,15 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
     correctas = sesion_ahorcado["letras_correctas"]
     incorrectas = sesion_ahorcado["letras_incorrectas"]
 
-    if intento in correctas or intento in incorrectas:
-        await _enviar_seguro(update.message.reply_text, f"𝖠𝗒, <b>{intento.upper()}</b> 𝗒𝖺 𝖿𝗎𝖾 𝗆𝖾𝗇𝖼𝗂𝗈𝗇𝖺𝖽𝖺",
-        parse_mode="HTML")
+    if intento in correctas:
+        await _enviar_seguro(
+            update.message.reply_text,
+            f"𝖠𝗒, <b>{intento.upper()}</b> 𝗒𝖺 𝖾𝗌𝗍𝖺́ 𝖾𝗇 𝖾𝗅 𝗍𝖺𝖻𝗅𝖾𝗋𝗈, 𝗆𝗂𝗋𝖺 𝖻𝗂𝖾𝗇 𝖺𝗇𝗍𝖾𝗌 𝖽𝖾 𝖾𝗌𝖼𝗋𝗂𝖻𝗂𝗋 ᵎᵎ",
+            parse_mode="HTML"
+        )
         return
 
+    ya_habia_fallado = intento in incorrectas
     nombre = nombre_usuario(update.effective_user)
 
     if intento in palabra:
@@ -281,8 +285,8 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         if _palabra_completa(palabra, correctas):
             sesion_ahorcado["activa"] = False
             premio = sesion_puntos.get("premio_actual", {}).get("ahorcado", 0)
-            sumar_robux(user_id, nombre_usuario(update.effective_user), premio, "Ahorcado 🪢")
-            extra = f" (+{premio} Robux)" if premio else ""
+            sumar_robux(user_id, nombre_usuario(update.effective_user), premio, "𝗔𝗛𝗢𝗥𝗖𝗔𝗗𝗢")
+            extra = f" (+ {premio} 𝗋𝗈𝖻𝗎𝗑)" if premio else ""
             await _enviar_seguro(
                 update.message.reply_text,
                 f"<b>¡{nombre} 𝖠𝖣𝖨𝖵𝖨𝖭𝖮 𝖫𝖠 𝖯𝖠𝖫𝖠𝖡𝖱𝖠!</b>\n\n"
@@ -310,9 +314,12 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
 
         if vidas_restantes <= 0:
             sesion_ahorcado["eliminados"].add(user_id)
+            aviso_repetida = (
+                f" (𝗋𝖾𝗉𝗂𝗍𝗂𝗈́ 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗊𝗎𝖾 𝗒𝖺 𝗌𝖺𝖻𝗂́𝖺 𝗊𝗎𝖾 𝖿𝖺𝗅𝗅𝖺𝖻𝖺)" if ya_habia_fallado else ""
+            )
             await _enviar_seguro(
                 update.message.reply_text,
-                f"¡{nombre} 𝖺𝗀𝗈𝗍𝗈 𝗍𝗈𝖽𝗈𝗌 𝗌𝗎𝗌 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌, 𝗊𝗎𝖾𝖽𝖺 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈!"
+                f"¡{nombre} 𝖺𝗀𝗈𝗍𝗈 𝗍𝗈𝖽𝗈𝗌 𝗌𝗎𝗌 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌, 𝗊𝗎𝖾𝖽𝖺 𝖾𝗅𝗂𝗆𝗂𝗇𝖺𝖽𝗈!{aviso_repetida}"
             )
             if sticker_etapa:
                 await _enviar_seguro(context.bot.send_sticker, chat_id=chat_id, sticker=sticker_etapa)
@@ -329,11 +336,15 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
             return
 
         pantalla = _pantalla_ahorcado(palabra, correctas)
+        aviso_repetida = (
+            f"\n<i>({nombre} repitio una letra que ya sabia que fallaba)</i>"
+            if ya_habia_fallado else ""
+        )
         await _enviar_seguro(
             update.message.reply_text,
-            f"<b>{intento.upper()}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
+            f"<b>{intento}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
             f"{pantalla}\n"
-            f"{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌."
+            f"{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌.{aviso_repetida}"
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
