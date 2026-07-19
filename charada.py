@@ -2,8 +2,7 @@ import random
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_CHARADA, GIF_ERROR
-
+from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, GIF_CHARADA, GIF_ERROR
 # ================= DICCIONARIO =================
 
 DICCIONARIOS_CHARADA = {
@@ -267,6 +266,9 @@ sesion_charada = {
 # ================= CODIGO PRINCIPAL =================
 
 async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
     if sesion_charada.get("fase_registro") or sesion_charada.get("activa") or sesion_charada.get("juego_en_curso"):
         await update.message.reply_text("¡𝖫𝗈 𝗌𝗂𝖾𝗇𝗍𝗈, 𝗒𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈!!")
         return
@@ -298,6 +300,10 @@ async def unirse_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     if not sesion_charada.get("fase_registro"):
         await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /charada 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺.")
@@ -368,7 +374,7 @@ async def iniciar_ronda(chat_id, context, bando, numero_ronda):
         await context.bot.send_message(chat_id=id_moderador,
             text=f"🤫 ¡𝗔𝗤𝗨Ɩ́ 𝗘𝗦𝗧𝗔́𝗡 𝗧𝗨𝗦 𝗣𝗔𝗟𝗔𝗕𝗥𝗔𝗦 𝗦𝗘𝗖𝗥𝗘𝗧𝗔𝗦ⵑ 🤫\n\n"
                  f"🗂️ 𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n{lista_texto}\n\n"
-                 f"¡𝖢𝗈𝗋𝗋𝖾 𝖺𝗅 𝗀𝗋𝗎𝗉𝗈, 𝗉𝗎𝖾𝖽𝖾𝗌 𝗎𝗌𝖺𝗋 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝗈 𝖾𝗆𝗈𝗃𝗂𝗌 𝗉𝖺𝗋𝖺 𝗅𝗈𝗀𝗋𝖺𝗋 𝗊𝗎𝖾 𝗍𝗎 𝖾𝗊𝗎𝗂𝗉𝗈 𝖺𝖽𝗂𝗏𝗂𝗇𝖾! 𝖭𝗈 𝖾𝗌𝖼𝗋𝗂𝖻𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌 𝖽𝗂𝗋𝖾𝖼𝗍𝖺𝗆𝖾𝗇𝗍𝖾 💀")
+                 f"¡𝖢𝗈𝗋𝗋𝖾 𝖺𝗅 𝗀𝗋𝗎𝗉𝗈! 𝖯𝗎𝖾𝖽𝖾𝗌 𝗎𝗌𝖺𝗋 𝖾𝗆𝗈𝗃𝗂𝗌 𝗒/𝗈 𝖻𝗋𝖾𝗏𝖾𝗌 𝖽𝖾𝗌𝖼𝗋𝗂𝗉𝖼𝗂𝗈𝗇𝖾𝗌 𝗉𝖺𝗋𝖺 𝗊𝗎𝖾 𝗍𝗎 𝖾𝗊𝗎𝗂𝗉𝗈 𝖺𝖽𝗂𝗏𝗂𝗇𝖾. 𝖭𝗈 𝖽𝗂𝗀𝖺𝗌 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗇𝗂 𝗉𝖺𝗋𝗍𝖾𝗌 𝖽𝖾 𝖾𝗅𝗅𝖺 💀")
     except Exception:
         await context.bot.send_message(chat_id=chat_id,
             text=f"𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {nombre_moderador}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍.")
