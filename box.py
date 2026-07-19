@@ -2,7 +2,7 @@ import random
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, extraer_emojis, GIF_JITB, GIF_ERROR, GIF_ENCUBRIDOR, GIF_RECHAZADO
+from utils import sesion_puntos, sumar_robux, nombre_usuario, extraer_emojis, es_admin_sesion, GIF_JITB, GIF_ERROR, GIF_ENCUBRIDOR, GIF_RECHAZADO
 
 # ================= DICCIONARIO =================
 
@@ -19,6 +19,11 @@ ERRORES_PROHIBIDOS = [
 
 async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
+        
     if chat_id not in sesion_box:
         sesion_box[chat_id] = {"jugadores": [], "activa": False}
     else:
@@ -36,6 +41,10 @@ async def unirse_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_box(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     if chat_id not in sesion_box:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /𝖻𝗈𝗑 𝗉𝖺𝗋𝖺 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 ᵎᵎ")
