@@ -8,10 +8,10 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, G
 DICCIONARIOS_CHARADA = {
     "peliculas_animadas": [
         "Blancanieves y los Siete Enanitos", "La Cenicienta", "La Bella Durmiente", "La Sirenita",
-        "La Bella y la Bestia", "Aladdín", "El Rey León"", "Mulan", "Tarzán", "Hércules",
+        "La Bella y la Bestia", "Aladdín", "El Rey León", "Mulan", "Tarzán", "Hércules",
         "Lilo & Stitch", "Los Increíbles", "Buscando a Nemo", "Toy Story", "Cars", "Ratatouille",
         "Up", "Valiente", "Frozen", "Enredados", "Moana", "Coco", "Zootopia",
-        "Intensamente", "Monsters, Inc.", "Toy Story", "El Jorobado de Notre Dame", 
+        "Intensamente", "Monsters, Inc.", "El Jorobado de Notre Dame",
         "Pinocho", "Dumbo", "Bambi", "Peter Pan", "La Dama y el Vagabundo", "101 Dálmatas",
         "El Libro de la Selva", "Robin Hood", "Los Aristogatos", "Winnie Pooh", "Chicken Little", "Bolt", "Ralph El Demoledor",
         "Rompe Ralph 2", "Mi villano favorito", "Kung Fu Panda", "La era del hielo",
@@ -276,6 +276,14 @@ async def iniciar_ronda(chat_id, context, bando, numero_ronda):
     except Exception:
         await context.bot.send_message(chat_id=chat_id,
             text=f"𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {nombre_moderador}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍.")
+        # Reseteamos todo el estado para que la sesión no quede trabada
+        task_previa = sesion_charada.get("reloj_task")
+        if task_previa and not task_previa.done():
+            task_previa.cancel()
+        sesion_charada["reloj_task"] = None
+        sesion_charada["activa"] = False
+        sesion_charada["fase_registro"] = False
+        sesion_charada["juego_en_curso"] = False
         return
 
     nombre_bando_jugando = sesion_charada["nombre_equipo_rojo"] if bando == "rojo" else sesion_charada["nombre_equipo_azul"]
@@ -396,6 +404,31 @@ async def finalizar_juego(chat_id, context):
     sesion_charada["fase_registro"] = False
     sesion_charada["juego_en_curso"] = False
 
+async def cancelar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Comando de emergencia para resetear la sesión si queda trabada
+    (ej: el moderador nunca inició el bot en privado y el DM falla)."""
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝖺𝗇𝖼𝖾𝗅𝖺𝗋𝗅𝖺 🚫")
+        return
+
+    if not (sesion_charada.get("fase_registro") or sesion_charada.get("activa") or sesion_charada.get("juego_en_curso")):
+        await update.message.reply_text("𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖾𝗇 𝖼𝗎𝗋𝗌𝗈 𝗉𝖺𝗋𝖺 𝖼𝖺𝗇𝖼𝖾𝗅𝖺𝗋.")
+        return
+
+    task_previa = sesion_charada.get("reloj_task")
+    if task_previa and not task_previa.done():
+        task_previa.cancel()
+
+    sesion_charada["activa"] = False
+    sesion_charada["fase_registro"] = False
+    sesion_charada["juego_en_curso"] = False
+    sesion_charada["jugadores"] = []
+    sesion_charada["equipo_rojo"] = []
+    sesion_charada["equipo_azul"] = []
+    sesion_charada["reloj_task"] = None
+
+    await update.message.reply_text("𝖫𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 𝖽𝖾 𝖼𝗁𝖺𝗋𝖺𝖽𝖺 𝖿𝗎𝖾 𝖼𝖺𝗇𝖼𝖾𝗅𝖺𝖽𝖺 ✅")
+
 # ================= MANEJO DE MENSAJES =================
 
 
@@ -424,15 +457,17 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
             f"𝗣𝗮𝗹𝗮𝗯𝗿𝗮: {texto_limpio.upper()}\n"
             f"{nombre_bando_jugando}: {adivinadas_totales}/𝟣𝟢 𝖺𝖼𝖾𝗋𝗍𝖺𝖽𝖺𝗌.")
 
-        if adivinadas_totales == 10:
+        if adivinadas_totales == len(sesion_charada["palabras_ronda"]):
             sesion_charada["activa"] = False
+            faltan_para_diez = 10 - len(sesion_charada["palabras_ronda"])
+            puntos_ronda = adivinadas_totales + faltan_para_diez
             if bando_actual == "rojo":
-                sesion_charada["puntos_rojo"] += 10
+                sesion_charada["puntos_rojo"] += puntos_ronda
             else:
-                sesion_charada["puntos_azul"] += 10
+                sesion_charada["puntos_azul"] += puntos_ronda
             await context.bot.send_message(chat_id=chat_id,
                 text=f"¡𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗣𝗘𝗥𝗙𝗘𝗖𝗧𝗢ⵑ\n\n"
-                     f"¡𝖤𝗅 𝖾𝗊𝗎𝗂𝗉𝗈 {nombre_bando_jugando.upper()} 𝖺𝖽𝗂𝗏𝗂𝗇𝗈 𝗅𝖺𝗌 𝟣𝟢 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!\n\n"
+                     f"¡𝖤𝗅 𝖾𝗊𝗎𝗂𝗉𝗈 {nombre_bando_jugando.upper()} 𝖺𝖽𝗂𝗏𝗂𝗇𝗈 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!\n\n"
                      f"𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗚𝗟𝗢𝗕𝗔𝗟:\n"
                      f"{sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} 𝗉𝗍𝗌\n"
                      f"{sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} 𝗉𝗍𝗌")
