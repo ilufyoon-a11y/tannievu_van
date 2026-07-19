@@ -1,8 +1,8 @@
 import random
 import asyncio
 import logging
-from telegram import Update
-from telegram.ext import ContextTypes
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ContextTypes, CallbackQueryHandler
 from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
 logger = logging.getLogger(__name__)
@@ -11,11 +11,11 @@ logger = logging.getLogger(__name__)
 # SÍMBOLOS Y PAGOS
 # =====================================================================
 
-SIMBOLOS = ["🍒", "🍋", "🍇", "⭐", "💎", "🐨", "🐹", "🐱", "🐿️", "🐥", "🐻", "🐰"]
-PESOS    = [12,   11,   10,  9,    9,    8,    8,   7,    7,    6,   6,    7]
+SIMBOLOS = ["🍒", "🍋", "💎", "🐨", "🐹", "🐱", "🐿️", "🐥", "🐻", "🐰"]
+PESOS    = [13,   11,   8,    7,    7,    6,    6,    5,    5,    6]
 
-PAGO_3 = 3
-PAGO_2 = 2.4
+PAGO_3 = 4
+PAGO_2 = 1.8
 
 FRAMES_ANIMACION = 4
 DELAY_ANIMACION = 0.6  # segundos entre frames (evita flood control de Telegram)
@@ -30,6 +30,18 @@ def get_saldo(user_id: int) -> int:
 
 def girar() -> list:
     return random.choices(SIMBOLOS, weights=PESOS, k=3)
+
+def markup_ruletas(simbolos: list) -> InlineKeyboardMarkup:
+    """3 botones inline que simulan los rodillos de la maquina."""
+    botones = [
+        InlineKeyboardButton(simbolos[i], callback_data="slots_noop")
+        for i in range(3)
+    ]
+    return InlineKeyboardMarkup([botones])
+
+async def cb_slots_noop(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Los botones de la ruleta son solo visuales: no hacen nada al tocarlos."""
+    await update.callback_query.answer()
 
 def evaluar(ruletas: list, apuesta: int) -> tuple:
     a, b, c = ruletas
@@ -61,8 +73,8 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "𝖴𝗌𝗈: <code>/jackpot &lt;cantidad&gt;</code>\n\n"
             "𝗣𝗿𝗲𝗺𝗶𝗼𝘀:\n"
-            "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟥 💰\n"
-            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟤.𝟦 ✨\n"
+            "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟦 💰\n"
+            "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟣.𝟪 ✨\n"
             "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 ➜ 𝗉𝗂𝖾𝗋𝖽𝖾𝗌 💸",
             parse_mode="HTML"
         )
@@ -91,18 +103,19 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     encabezado = f"🎰 {nombre} 𝖾𝗌𝗍𝖺 𝗀𝗂𝗋𝖺𝗇𝖽𝗈 𝗉𝗈𝗋 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌..."
     falso_inicial = [random.choice(SIMBOLOS) for _ in range(3)]
     msg = await update.message.reply_text(
-        f"{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
+        encabezado,
+        reply_markup=markup_ruletas(falso_inicial)
     )
 
-    # Animación: edita el mensaje varias veces con combinaciones al azar.
+    # Animación: mueve los "rodillos" (botones) varias veces con combinaciones al azar.
     # Si Telegram tira flood control aquí, no pasa nada grave: seguimos al resultado final.
     for _ in range(FRAMES_ANIMACION):
         falso = [random.choice(SIMBOLOS) for _ in range(3)]
         try:
-            await context.bot.edit_message_text(
+            await context.bot.edit_message_reply_markup(
                 chat_id=chat_id,
                 message_id=msg.message_id,
-                text=f"{encabezado}\n\n[ {falso[0]} | {falso[1]} | {falso[2]} ]"
+                reply_markup=markup_ruletas(falso)
             )
         except Exception as e:
             logger.warning(f"Slots: fallo animando frame ({e})")
@@ -110,12 +123,11 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Resultado final real
     resultado_txt, ganancia, multiplicador = evaluar(ruletas, cantidad)
-    display = " | ".join(ruletas)
 
     if ganancia > 0:
         sumar_robux(user_id, nombre, ganancia, f"Slots 🎰 (+x{multiplicador})")
         texto_final = (
-            f"🎰 {nombre}\n\n[ {display} ]\n\n"
+            f"🎰 {nombre}\n\n"
             f"{resultado_txt} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
     else:
@@ -123,7 +135,7 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
             sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
             sesion_puntos["jugadores"][user_id]["detalle"].append(f"Slots 🎰: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
         texto_final = (
-            f"🎰 {nombre}\n\n[ {display} ]\n\n"
+            f"🎰 {nombre}\n\n"
             f"{resultado_txt} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
 
@@ -135,11 +147,16 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.edit_message_text(
             chat_id=chat_id,
             message_id=msg.message_id,
-            text=texto_final
+            text=texto_final,
+            reply_markup=markup_ruletas(ruletas)
         )
     except Exception as e:
         logger.warning(f"Slots: fallo mostrando resultado final, mando mensaje nuevo ({e})")
         try:
-            await context.bot.send_message(chat_id=chat_id, text=texto_final)
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=texto_final,
+                reply_markup=markup_ruletas(ruletas)
+            )
         except Exception as e2:
             logger.error(f"Slots: fallo total al enviar resultado ({e2})")
