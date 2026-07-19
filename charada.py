@@ -6,21 +6,18 @@ from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, G
 # ================= DICCIONARIO =================
 
 DICCIONARIOS_CHARADA = {
-    "peliculas_disney_pixar": [
+    "peliculas_animadas": [
         "Blancanieves y los Siete Enanitos", "La Cenicienta", "La Bella Durmiente", "La Sirenita",
-        "La Bella y la Bestia", "Aladdín", "El Rey León", "Pocahontas", "Mulan", "Tarzán", "Hércules",
+        "La Bella y la Bestia", "Aladdín", "El Rey León"", "Mulan", "Tarzán", "Hércules",
         "Lilo & Stitch", "Los Increíbles", "Buscando a Nemo", "Toy Story", "Cars", "Ratatouille",
-        "Wall-E", "Up", "Valiente", "Frozen", "Enredados", "Vaiana", "Coco", "Zootopia",
-        "Intensamente", "Del Revés 2", "Encanto", "Luca", "Soul", "Onward", "Raya y el Último Dragón",
-        "Turning Red", "Elemental", "Wish", "Big Hero 6", "Monsters, Inc.", "Monsters University",
-        "Toy Story 2", "Toy Story 3", "Toy Story 4", "El Jorobado de Notre Dame", "Fantasía",
+        "Up", "Valiente", "Frozen", "Enredados", "Moana", "Coco", "Zootopia",
+        "Intensamente", "Monsters, Inc.", "Toy Story", "El Jorobado de Notre Dame", 
         "Pinocho", "Dumbo", "Bambi", "Peter Pan", "La Dama y el Vagabundo", "101 Dálmatas",
-        "El Libro de la Selva", "Robin Hood", "Los Aristogatos", "Winnie Pooh", "Chicken Little",
-        "El Planeta del Tesoro", "Atlantis", "Hermano Oso", "Bolt", "Rompe Ralph",
+        "El Libro de la Selva", "Robin Hood", "Los Aristogatos", "Winnie Pooh", "Chicken Little", "Bolt", "Ralph El Demoledor",
         "Rompe Ralph 2", "Mi villano favorito", "Kung Fu Panda", "La era del hielo",
         "Hotel Transylvania", "Rio", "Shrek", "Coraline y la Puerta Secreta",
     ],
-    "peliculas_hollywood": [
+    "peliculas": [
         "Titanic", "Jurassic Park", "Star Wars", "El Padrino", "Rocky", "Terminator", "Matrix",
         "Avatar", "Gladiador", "Forrest Gump", "El Señor de los Anillos", "Harry Potter",
         "Piratas del Caribe", "Misión Imposible", "Batman", "Superman", "Spider-Man", "Iron Man",
@@ -35,7 +32,7 @@ DICCIONARIOS_CHARADA = {
         "Mi Pobre Angelito", "El Diablo Viste a la Moda", "Chicago", "Moulin Rouge",
         "Corre Lola Corre", "Rápidos y Furiosos", "John Wick",
     ],
-    "superheroes_villanos": [
+    "superheroes__villanos": [
         "Superman", "Batman", "Spider-Man", "Iron Man", "Capitán América", "Thor", "Hulk",
         "Viuda Negra", "Ojo de Halcón", "Mujer Maravilla", "Flash", "Aquaman", "Linterna Verde",
         "Wolverine", "Deadpool", "Doctor Extraño", "Pantera Negra", "Guasón", "Lex Luthor",
@@ -45,17 +42,6 @@ DICCIONARIOS_CHARADA = {
         "Bestia", "Jean Grey", "Profesor X", "Robin", "Batgirl", "Nightwing", "Shazam", "Cyborg",
         "Flecha Verde", "Los 4 Fantásticos", "Antorcha Humana", "La Mole", "Mujer Invisible",
         "Hombre Elástico", "Kingpin", "Red Skull", "Two-Face", "Riddler",
-    ],
-    "animales": [
-        "Perro", "Gato", "León", "Tigre", "Elefante", "Jirafa", "Mono", "Oso", "Lobo", "Zorro",
-        "Conejo", "Caballo", "Vaca", "Cerdo", "Oveja", "Cabra", "Pato", "Gallina", "Pavo",
-        "Águila", "Búho", "Loro", "Pingüino", "Cocodrilo", "Serpiente", "Tortuga", "Rana",
-        "Delfín", "Ballena", "Tiburón", "Pulpo", "Cangrejo", "Pez", "Araña", "Abeja", "Mariposa",
-        "Hormiga", "Mosquito", "Camaleón", "Canguro", "Koala", "Panda", "Rinoceronte",
-        "Hipopótamo", "Cebra", "Gorila", "Orangután", "Puma", "Leopardo", "Guepardo", "Hiena",
-        "Búfalo", "Alce", "Reno", "Murciélago", "Erizo", "Ardilla", "Castor", "Nutria", "Foca",
-        "Morsa", "Flamenco", "Cisne", "Camello", "Llama", "Alpaca", "Burro", "Mula", "Faisán",
-        "Cuervo", "Halcón", "Colibrí", "Avestruz",
     ],
     "profesiones": [
         "Médico", "Enfermero", "Maestro", "Bombero", "Policía", "Abogado", "Chef", "Piloto",
@@ -69,16 +55,6 @@ DICCIONARIOS_CHARADA = {
         "Locutor", "DJ", "Entrenador personal", "Costurera", "Chofer", "Recepcionista",
         "Vendedor", "Camarero", "Portero", "Notario", "Analista", "Auditor",
     ],
-    "deportes": [
-        "Fútbol", "Básquetbol", "Voleibol", "Béisbol", "Tenis", "Natación", "Atletismo",
-        "Boxeo", "Karate", "Judo", "Golf", "Ciclismo", "Ping Pong", "Bádminton", "Rugby",
-        "Hockey", "Patinaje", "Esquí", "Snowboard", "Surf", "Skate", "Gimnasia", "Halterofilia",
-        "Lucha Libre", "Esgrima", "Tiro con Arco", "Equitación", "Vela", "Remo", "Buceo",
-        "Fútbol Americano", "Cricket", "Handball", "Waterpolo", "Motociclismo", "Automovilismo",
-        "Triatlón", "Maratón", "Escalada", "Paracaidismo", "Bowling", "Billar", "Curling",
-        "Softbol", "Kickboxing", "Taekwondo", "Cheerleading", "Polo", "Squash", "Rafting",
-        "Motocross", "Parapente", "Yoga", "Crossfit", "Pilates", "Zumba", "Windsurf", "Kitesurf",
-    ],
     "paises": [
         "Argentina", "México", "España", "Estados Unidos", "Brasil", "Francia", "Italia",
         "Alemania", "Reino Unido", "China", "Japón", "Corea del Sur", "India", "Rusia",
@@ -90,17 +66,6 @@ DICCIONARIOS_CHARADA = {
         "Filipinas", "Indonesia", "Malasia", "Singapur", "Nueva Zelanda", "Islandia", "Panamá",
         "Costa Rica", "Guatemala", "Honduras", "El Salvador", "Nicaragua", "Jamaica", "Haití",
         "Croacia", "Ucrania", "Hungría", "República Checa",
-    ],
-    "comidas_bebidas": [
-        "Pizza", "Hamburguesa", "Taco", "Sushi", "Pasta", "Ensalada", "Sopa", "Arroz",
-        "Pollo Frito", "Hot Dog", "Sándwich", "Helado", "Pastel", "Chocolate", "Papas Fritas",
-        "Burrito", "Empanada", "Tamal", "Ceviche", "Paella", "Lasaña", "Ramen", "Curry",
-        "Kebab", "Falafel", "Croissant", "Waffle", "Panqueque", "Donut", "Galleta", "Café",
-        "Té", "Jugo", "Agua", "Leche", "Cerveza", "Vino", "Refresco", "Batido", "Limonada",
-        "Mate", "Tequila", "Pisco", "Champagne", "Whisky", "Vodka", "Ron", "Margarita",
-        "Mojito", "Piña Colada", "Chocolate Caliente", "Cappuccino", "Espresso", "Guacamole",
-        "Nachos", "Quesadilla", "Chili", "Barbacoa", "Fondue", "Sashimi", "Tempura", "Pupusa",
-        "Arepa", "Tortilla Española", "Gazpacho", "Sancocho", "Choripán", "Milanesa",
     ],
     "videojuegos": [
         "Mario Bros", "Zelda", "Pokemon", "Minecraft", "Fortnite", "Among Us", "Roblox",
@@ -114,7 +79,7 @@ DICCIONARIOS_CHARADA = {
         "Clash Royale", "Clash of Clans", "Free Fire", "PUBG", "Stardew Valley", "Terraria",
         "Rainbow Six", "Bloodborne", "Skyrim", "Portal", "Doom", "Silent Hill",
     ],
-    "series_tv": [
+    "series": [
         "Friends", "Breaking Bad", "Game of Thrones", "Stranger Things", "The Office",
         "La Casa de Papel", "Grey's Anatomy", "The Walking Dead", "How I Met Your Mother",
         "Los Simpson", "Family Guy", "South Park", "Bob Esponja", "Rick and Morty",
@@ -126,7 +91,7 @@ DICCIONARIOS_CHARADA = {
         "The Big Bang Theory", "Sex and the City", "Prison Break", "Lost", "Supernatural",
         "Criminal Minds", "CSI", "Bones", "House", "Scrubs", "ER", "Anatomía de Grey",
     ],
-    "personajes_animados_anime": [
+    "personajes_animados": [
         "Mickey Mouse", "Bugs Bunny", "Bob Esponja", "Pato Donald", "Pikachu", "Pedro Picapiedra",
         "Las Chicas Superpoderosas", "La Pantera Rosa", "Dora la Exploradora", "Peppa Pig",
         "Hello Kitty", "El Grinch", "Goku", "Naruto", "Luffy", "Sailor Moon", "Doraemon",
@@ -139,25 +104,7 @@ DICCIONARIOS_CHARADA = {
         "El Increíble Mundo de Gumball", "Patricio Estrella", "Calamardo", "Kirby",
         "Astro Boy", "Speed Racer",
     ],
-    "emociones_sentimientos": [
-        "Felicidad", "Tristeza", "Enojo", "Miedo", "Sorpresa", "Asco", "Amor", "Odio", "Celos",
-        "Envidia", "Vergüenza", "Culpa", "Orgullo", "Ansiedad", "Estrés", "Nostalgia",
-        "Esperanza", "Desesperación", "Confusión", "Aburrimiento", "Emoción", "Curiosidad",
-        "Frustración", "Alivio", "Gratitud", "Soledad", "Nerviosismo", "Pánico", "Euforia",
-        "Melancolía", "Ternura", "Compasión", "Confianza", "Duda", "Rabia", "Impaciencia",
-        "Satisfacción", "Decepción", "Admiración", "Cariño",
-    ],
-    "objetos_cotidianos": [
-        "Teléfono", "Computadora", "Televisor", "Silla", "Mesa", "Cama", "Espejo", "Reloj",
-        "Lámpara", "Libro", "Lápiz", "Bolígrafo", "Mochila", "Paraguas", "Llave", "Billetera",
-        "Tijeras", "Cepillo de Dientes", "Peine", "Jabón", "Toalla", "Almohada", "Manta",
-        "Ventana", "Puerta", "Escoba", "Aspiradora", "Plancha", "Microondas", "Refrigerador",
-        "Licuadora", "Tostadora", "Sartén", "Olla", "Cuchara", "Tenedor", "Cuchillo", "Plato",
-        "Vaso", "Taza", "Botella", "Bolsa", "Caja", "Maleta", "Cámara", "Auriculares",
-        "Cargador", "Control Remoto", "Batería", "Foco", "Vela", "Fósforo", "Encendedor",
-        "Sombrilla", "Bicicleta", "Patineta", "Guitarra", "Piano", "Tambor", "Violín",
-    ],
-    "cuentos_fantasia": [
+    "cuentos_infantiles": [
         "Caperucita Roja", "Blancanieves", "Cenicienta", "La Bella Durmiente", "Hansel y Gretel",
         "Los Tres Cerditos", "El Patito Feo", "Pulgarcito", "Ricitos de Oro", "El Gato con Botas",
         "La Sirenita", "Rapunzel", "Peter Pan", "Alicia en el País de las Maravillas",
@@ -177,56 +124,7 @@ DICCIONARIOS_CHARADA = {
         "Día del Trabajo", "Día de la Amistad", "Boda", "Graduación", "Baby Shower",
         "Quinceañera", "Bautizo", "Aniversario", "Día de la Tierra",
     ],
-    "verbos_acciones": [
-        "Correr", "Saltar", "Nadar", "Bailar", "Cantar", "Dormir", "Comer", "Beber", "Cocinar",
-        "Leer", "Escribir", "Caminar", "Volar", "Manejar", "Andar en Bicicleta", "Reír",
-        "Llorar", "Gritar", "Susurrar", "Aplaudir", "Escalar", "Pescar", "Cazar", "Pelear",
-        "Abrazar", "Besar", "Estornudar", "Bostezar", "Tropezar", "Caer", "Saltar la Cuerda",
-        "Patinar", "Esquiar", "Surfear", "Bucear", "Pintar", "Dibujar", "Tocar Guitarra",
-        "Tocar Piano", "Cepillarse los Dientes", "Peinarse", "Maquillarse", "Afeitarse",
-        "Bañarse", "Lavar los Platos", "Barrer", "Planchar", "Coser", "Tejer", "Trotar",
-        "Estirarse", "Meditar", "Rezar", "Silbar", "Roncar", "Fumar", "Manejar Bicicleta",
-    ],
-    "memes_internet": [
-        "Distracted Boyfriend", "Doge", "Pepe the Frog", "Grumpy Cat", "Wojak", "This is Fine",
-        "Woman Yelling at Cat", "Drake Meme", "Galaxy Brain", "Stonks", "Among Us Sus",
-        "Rickroll", "Nyan Cat", "Baby Yoda", "Success Kid", "Bad Luck Brian", "Ermahgerd",
-        "Y U No", "Trollface", "Keyboard Cat", "Charlie Bit My Finger", "Gangnam Style",
-        "Harlem Shake", "Ice Bucket Challenge", "Salt Bae", "Coffin Dance", "Karen",
-        "OK Boomer", "YOLO", "FOMO", "Big Chungus", "Deja Vu", "Surprised Pikachu",
-        "Uno Reverse Card", "Spiderman Pointing", "Two Buttons", "Change My Mind", "Roll Safe",
-    ],
-    "canciones_famosas": [
-        "Despacito", "Bohemian Rhapsody", "Thriller", "Shape of You", "Imagine",
-        "Hotel California", "Billie Jean", "Like a Virgin", "We Will Rock You",
-        "Livin' la Vida Loca", "La Bamba", "Macarena", "Gasolina", "Waka Waka", "Happy",
-        "Uptown Funk", "Blinding Lights", "Shake It Off", "Old Town Road", "Bad Guy",
-        "Havana", "Señorita", "Levitating", "Watermelon Sugar", "Rolling in the Deep",
-        "Someone Like You", "Hello", "Roar", "Firework", "Baby", "Yellow", "Fix You",
-        "Viva la Vida", "Sweet Child O' Mine", "Stairway to Heaven", "Smells Like Teen Spirit",
-        "My Heart Will Go On", "I Will Always Love You", "Africa", "Take On Me",
-        "Never Gonna Give You Up", "Poker Face", "Toxic", "Umbrella", "Single Ladies",
-        "Party in the USA", "Wrecking Ball", "Wannabe", "Barbie Girl",
-    ],
-    "grupos_kpop": [
-        "BTS", "Blackpink", "EXO", "Twice", "Stray Kids", "Seventeen", "NCT", "Red Velvet",
-        "Itzy", "Aespa", "TXT", "Enhypen", "Ateez", "GOT7", "iKON", "Monsta X", "Big Bang",
-        "Girls' Generation", "Super Junior", "Shinee", "2NE1", "4Minute", "Wonder Girls",
-        "f(x)", "Mamamoo", "Oh My Girl", "Loona", "Gfriend", "Apink", "Sistar", "Kara",
-        "T-ara", "Winner", "Astro", "Pentagon", "The Boyz", "Cravity", "P1Harmony",
-        "Le Sserafim", "NewJeans", "Ive", "Kep1er", "StayC", "Weeekly", "Zerobaseone",
-        "Riize", "Boynextdoor", "Katseye",
-    ],
-    "frutas_verduras": [
-        "Manzana", "Plátano", "Naranja", "Uva", "Fresa", "Sandía", "Melón", "Piña", "Mango",
-        "Papaya", "Durazno", "Pera", "Kiwi", "Limón", "Cereza", "Ciruela", "Frambuesa", "Mora",
-        "Arándano", "Coco", "Aguacate", "Tomate", "Papa", "Zanahoria", "Cebolla", "Ajo",
-        "Lechuga", "Espinaca", "Brócoli", "Coliflor", "Pepino", "Calabaza", "Pimiento",
-        "Chile", "Maíz", "Frijol", "Guisante", "Apio", "Rábano", "Berenjena", "Camote",
-        "Yuca", "Champiñón", "Espárrago", "Alcachofa", "Remolacha", "Nabo", "Puerro", "Col",
-        "Repollo",
-    ],
-    "bts_discografia": [
+    "discografia_de_BTS": [
         "No More Dream", "N.O", "Boy in Luv", "Danger", "War of Hormone", "Just One Day",
         "I Need U", "Run", "Dope", "Fire", "Save Me", "Blood Sweat & Tears", "Spring Day",
         "Not Today", "DNA", "Mic Drop", "Fake Love", "Idol", "Boy With Luv", "Dionysus",
@@ -340,9 +238,9 @@ async def iniciar_charada(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=chat_id,
         text=f"⚔️ 𝗘𝗤𝗨𝗜𝗣𝗢𝗦 𝗙𝗢𝗥𝗠𝗔𝗗𝗢𝗦 ⚔️\n\n"
-             f"🔴 𝗘𝗤𝗨𝗜𝗣𝗢 𝗥𝗢𝗝𝗢: {', '.join(nombres_rojo)}\n"
-             f"🔵 𝗘𝗤𝗨𝗜𝗣𝗢 𝗔𝗭𝗨𝗟: {', '.join(nombres_azul)}\n\n"
-             f"📣 𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝗌𝖾 𝗃𝗎𝖾𝗀𝖺 𝖾𝗇 𝟤 𝗋𝗈𝗇𝖽𝖺𝗌: 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 𝗎𝗇 𝖾𝗊𝗎𝗂𝗉𝗈, 𝗅𝗎𝖾𝗀𝗈 𝖾𝗅 𝗈𝗍𝗋𝗈. ¡𝖦𝖺𝗇𝖺 𝗊𝗎𝗂𝖾𝗇 𝗍𝖾𝗇𝗀𝖺 𝗆𝖺𝗌 𝗉𝗎𝗇𝗍𝗈𝗌 𝖺𝗅 𝖿𝗂𝗇𝖺𝗅!"
+             f"𝗘𝗤𝗨𝗜𝗣𝗢 𝗥𝗢𝗝𝗢: {', '.join(nombres_rojo)}\n\n"
+             f"𝗘𝗤𝗨𝗜𝗣𝗢 𝗔𝗭𝗨𝗟: {', '.join(nombres_azul)}\n\n"
+             f"𝖤𝗅 𝗃𝗎𝖾𝗀𝗈 𝗌𝖾 𝗃𝗎𝖾𝗀𝖺 𝖾𝗇 𝟤 𝗋𝗈𝗇𝖽𝖺𝗌: 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 𝗎𝗇 𝖾𝗊𝗎𝗂𝗉𝗈, 𝗅𝗎𝖾𝗀𝗈 𝖾𝗅 𝗈𝗍𝗋𝗈. ¡𝖦𝖺𝗇𝖺 𝗊𝗎𝗂𝖾𝗇 𝗍𝖾𝗇𝗀𝖺 𝗆𝖺𝗌 𝗉𝗎𝗇𝗍𝗈𝗌 𝖺𝗅 𝖿𝗂𝗇𝖺𝗅!"
     )
 
     await iniciar_ronda(chat_id, context, bando_inicial, 1)
@@ -365,16 +263,16 @@ async def iniciar_ronda(chat_id, context, bando, numero_ronda):
 
     await context.bot.send_message(
         chat_id=chat_id,
-        text=f"📣 𝗥𝗢𝗡𝗗𝗔 {numero_ronda}: 𝖩𝗎𝖾𝗀𝖺 𝖾𝗅 𝗘𝗤𝗨𝗜𝗣𝗢 {bando.upper()}.\n"
-             f"🎙️ 𝗠𝗼𝗱𝗲𝗿𝗮𝗱𝗼𝗿: {nombre_moderador}"
+        text=f"𝗥𝗢𝗡𝗗𝗔 {numero_ronda}: 𝖩𝗎𝖾𝗀𝖺 𝖾𝗅 𝗘𝗤𝗨𝗜𝗣𝗢 {bando.upper()}.\n"
+             f"𝗠𝗼𝗱𝗲𝗿𝗮𝗱𝗼𝗿 𝗲𝗹𝗲𝗴𝗶𝗱𝗼: {nombre_moderador}"
     )
 
     lista_texto = "\n".join([f"🔹 {p.upper()}" for p in palabras_elegidas])
     try:
         await context.bot.send_message(chat_id=id_moderador,
-            text=f"🤫 ¡𝗔𝗤𝗨Ɩ́ 𝗘𝗦𝗧𝗔́𝗡 𝗧𝗨𝗦 𝗣𝗔𝗟𝗔𝗕𝗥𝗔𝗦 𝗦𝗘𝗖𝗥𝗘𝗧𝗔𝗦ⵑ 🤫\n\n"
-                 f"🗂️ 𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n{lista_texto}\n\n"
-                 f"¡𝖢𝗈𝗋𝗋𝖾 𝖺𝗅 𝗀𝗋𝗎𝗉𝗈! 𝖯𝗎𝖾𝖽𝖾𝗌 𝗎𝗌𝖺𝗋 𝖾𝗆𝗈𝗃𝗂𝗌 𝗒/𝗈 𝖻𝗋𝖾𝗏𝖾𝗌 𝖽𝖾𝗌𝖼𝗋𝗂𝗉𝖼𝗂𝗈𝗇𝖾𝗌 𝗉𝖺𝗋𝖺 𝗊𝗎𝖾 𝗍𝗎 𝖾𝗊𝗎𝗂𝗉𝗈 𝖺𝖽𝗂𝗏𝗂𝗇𝖾. 𝖭𝗈 𝖽𝗂𝗀𝖺𝗌 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗇𝗂 𝗉𝖺𝗋𝗍𝖾𝗌 𝖽𝖾 𝖾𝗅𝗅𝖺 💀")
+            text=f"¡𝗔𝗤𝗨Ɩ́ 𝗘𝗦𝗧𝗔́𝗡 𝗧𝗨𝗦 𝗣𝗔𝗟𝗔𝗕𝗥𝗔𝗦 𝗦𝗘𝗖𝗥𝗘𝗧𝗔𝗦ⵑ\n\n"
+                 f"𝗖𝗔𝗧𝗘𝗚𝗢𝗥𝗜𝗔: {categoria.upper()}\n\n{lista_texto}\n\n"
+                 f"¡𝖢𝗈𝗋𝗋𝖾 𝖺𝗅 𝗀𝗋𝗎𝗉𝗈! 𝖯𝗎𝖾𝖽𝖾𝗌 𝗎𝗌𝖺𝗋 𝖾𝗆𝗈𝗃𝗂𝗌 𝗒/𝗈 𝖻𝗋𝖾𝗏𝖾𝗌 𝖽𝖾𝗌𝖼𝗋𝗂𝗉𝖼𝗂𝗈𝗇𝖾𝗌 𝗉𝖺𝗋𝖺 𝗊𝗎𝖾 𝗍𝗎 𝖾𝗊𝗎𝗂𝗉𝗈 𝖺𝖽𝗂𝗏𝗂𝗇𝖾. 𝖯𝗋𝗈𝖼𝗎𝗋𝖺 𝗇𝗈 𝖽𝖾𝖼𝗂𝗋 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝗇𝗂 𝗉𝖺𝗋𝗍𝖾𝗌 𝗊𝗎𝖾 𝗅𝖺 𝖼𝗈𝗇𝖿𝗈𝗋𝗆𝖾𝗇")
     except Exception:
         await context.bot.send_message(chat_id=chat_id,
             text=f"𝖠𝗒, 𝗇𝗈 𝗌𝖾 𝗉𝗎𝖾𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋 𝗆𝖾𝗇𝗌𝖺𝗃𝖾 𝖺 {nombre_moderador}. 𝖯𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝖺𝗌𝖾𝗀𝗎𝗋𝖺𝗍𝖾 𝖽𝖾 𝗁𝖺𝖻𝖾𝗋 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝗈 𝖾𝗅 𝖻𝗈𝗍.")
@@ -384,8 +282,8 @@ async def iniciar_ronda(chat_id, context, bando, numero_ronda):
 
     await context.bot.send_message(
         chat_id=chat_id,
-        text=f"🕐 𝗘𝗾𝘂𝗶𝗽𝗼 {nombre_bando_jugando.upper()}, {nombre_moderador} 𝘆𝗮 𝘁𝗶𝗲𝗻𝗲 𝘀𝘂𝘀 𝗽𝗮𝗹𝗮𝗯𝗿𝗮𝘀.\n"
-             f"⏳ 𝗧𝗶𝗲𝗻𝗲𝗻 𝟯𝟬 𝘀𝗲𝗴𝘂𝗻𝗱𝗼𝘀 𝗽𝗮𝗿𝗮 𝗽𝗿𝗲𝗽𝗮𝗿𝗮𝗿𝘀𝗲... ¡𝗲𝗹 𝗰𝗼𝗻𝘁𝗿𝗮𝗿𝗿𝗲𝗹𝗼𝗷 𝘆𝗮 𝗮𝗿𝗿𝗮𝗻𝗰𝗮!"
+        text=f"𝗘𝗤𝗨𝗜𝗣𝗢 {nombre_bando_jugando.upper()}, {nombre_moderador} 𝘆𝗮 𝘁𝗶𝗲𝗻𝗲 𝘀𝘂𝘀 𝗽𝗮𝗹𝗮𝗯𝗿𝗮𝘀.\n"
+             f"𝗧𝗶𝗲𝗻𝗲𝗻 𝟯𝟬 𝘀𝗲𝗴𝘂𝗻𝗱𝗼𝘀 𝗽𝗮𝗿𝗮 𝗽𝗿𝗲𝗽𝗮𝗿𝗮𝗿𝘀𝗲... ¡𝗲𝗹 𝗰𝗼𝗻𝘁𝗿𝗮𝗿𝗿𝗲𝗹𝗼𝗷 𝘆𝗮 𝗮𝗿𝗿𝗮𝗻𝗰𝗮!"
     )
 
     await asyncio.sleep(30)
@@ -398,11 +296,11 @@ async def iniciar_ronda(chat_id, context, bando, numero_ronda):
 
     await context.bot.send_message(
         chat_id=chat_id,
-        text=f"🎮 ¡𝗘𝗠𝗣𝗜𝗘𝗭𝗔 𝗘𝗟 𝗖𝗢𝗡𝗧𝗥𝗔𝗥𝗥𝗘𝗟𝗢𝗝ⵑ 🎮\n\n"
-             f"🔥 𝗘𝗾𝘂𝗶𝗽𝗼 𝗮𝗰𝘁𝘂𝗮𝗹: ✨ {nombre_bando_jugando.upper()} ✨\n"
-             f"🎙️ 𝗠𝗼𝗱𝗲𝗿𝗮𝗱𝗼𝗿: {nombre_moderador}\n"
-             f"🗂️ 𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n"
-             f"¡𝖳𝗂𝖾𝗇𝖾𝗇 𝟪𝟢 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋 𝗅𝖺𝗌 𝟣𝟢 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌! 🔥"
+        text=f"¡𝗘𝗠𝗣𝗜𝗘𝗭𝗔 𝗘𝗟 𝗖𝗢𝗡𝗧𝗥𝗔𝗥𝗥𝗘𝗟𝗢𝗝ⵑ\n\n"
+             f"𝗘𝗤𝗨𝗜𝗣𝗢 𝗔𝗖𝗧𝗨𝗔𝗟: {nombre_bando_jugando.upper()}\n"
+             f"𝗠𝗢𝗗𝗘𝗥𝗔𝗗𝗢𝗥: {nombre_moderador}\n"
+             f"𝗖𝗔𝗧𝗘𝗚𝗢𝗥𝗜𝗔: {categoria.upper()}\n\n"
+             f"¡𝖳𝗂𝖾𝗇𝖾𝗇 𝟪𝟢 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋 𝗅𝖺𝗌 𝟣𝟢 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!"
     )
 
     task_anterior = sesion_charada.get("reloj_task")
@@ -433,16 +331,16 @@ async def reloj_charada(chat_id, context):
             sesion_charada["puntos_azul"] += adivinadas
 
         faltantes = [p.upper() for p in sesion_charada["palabras_originales"] if not sesion_charada["palabras_ronda"][p.lower()]]
-        texto_faltantes = ", ".join(faltantes) if faltantes else "¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋𝗈𝗇 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌! 🔥"
+        texto_faltantes = ", ".join(faltantes) if faltantes else "¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋𝗈𝗇 𝗍𝗈𝖽𝖺𝗌 𝗅𝖺𝗌 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!"
 
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"⏱️ ¡𝗧𝗜𝗘𝗠𝗣𝗢 𝗔𝗚𝗢𝗧𝗔𝗗𝗢ⵑ ⏱️\n\n"
+            text=f"¡𝗧𝗜𝗘𝗠𝗣𝗢 𝗔𝗚𝗢𝗧𝗔𝗗𝗢ⵑ\n\n"
                  f"𝖤𝗅 𝖾𝗊𝗎𝗂𝗉𝗈 {nombre_bando_jugando.upper()} 𝗅𝗈𝗀𝗋𝗈 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋 {adivinadas}/𝟣𝟢 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌.\n"
-                 f"❌ 𝖥𝖺𝗅𝗍𝖺𝗋𝗈𝗇: {texto_faltantes}\n\n"
-                 f"📊 𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗚𝗟𝗢𝗕𝗔𝗟:\n"
-                 f"🔴 {sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} 𝗉𝗍𝗌\n"
-                 f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} 𝗉𝗍𝗌\n\n"
+                 f"𝗙𝗮𝗹𝘁𝗮𝗿𝗼𝗻: {texto_faltantes}\n\n"
+                 f"𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗚𝗟𝗢𝗕𝗔𝗟:\n"
+                 f"{sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} 𝗉𝗍𝗌\n"
+                 f"{sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} 𝗉𝗍𝗌\n\n"
         )
 
         await avanzar_o_finalizar(chat_id, context)
@@ -464,10 +362,10 @@ async def finalizar_juego(chat_id, context):
     if pts_r == pts_a:
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"🤝 ¡𝗘𝗠𝗣𝗔𝗧𝗘ⵑ 🤝\n\n"
-                 f"📊 𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗙𝗜𝗡𝗔𝗟:\n"
-                 f"🔴 {sesion_charada['nombre_equipo_rojo']}: {pts_r} 𝗉𝗍𝗌\n"
-                 f"🔵 {sesion_charada['nombre_equipo_azul']}: {pts_a} 𝗉𝗍𝗌\n\n"
+            text=f"¡𝗘𝗠𝗣𝗔𝗧𝗘ⵑ 🤝\n\n"
+                 f"𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗙𝗜𝗡𝗔𝗟:\n"
+                 f"{sesion_charada['nombre_equipo_rojo']}: {pts_r} 𝗉𝗍𝗌\n"
+                 f"{sesion_charada['nombre_equipo_azul']}: {pts_a} 𝗉𝗍𝗌\n\n"
                  f"¡𝖭𝗈 𝗁𝗎𝖻𝗈 𝗋𝖾𝗉𝖺𝗋𝗍𝗈 𝖽𝖾 𝖿𝗂𝖼𝗁𝖺𝗌, 𝖾𝗆𝗉𝖺𝗍𝖺𝗋𝗈𝗇!"
         )
     else:
@@ -476,18 +374,18 @@ async def finalizar_juego(chat_id, context):
 
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"🏆 ¡𝗝𝗨𝗘𝗚𝗢 𝗧𝗘𝗥𝗠𝗜𝗡𝗔𝗗𝗢ⵑ 🏆\n\n"
-                 f"📊 𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗙𝗜𝗡𝗔𝗟:\n"
-                 f"🔴 {sesion_charada['nombre_equipo_rojo']}: {pts_r} 𝗉𝗍𝗌\n"
-                 f"🔵 {sesion_charada['nombre_equipo_azul']}: {pts_a} 𝗉𝗍𝗌\n\n"
-                 f"✨ ¡𝖦𝖺𝗇𝖺𝖽𝗈𝗋: {nombre_ganador.upper()}! ✨"
+            text=f"¡𝗝𝗨𝗘𝗚𝗢 𝗧𝗘𝗥𝗠𝗜𝗡𝗔𝗗𝗢ⵑ 🏆\n\n"
+                 f"𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗙𝗜𝗡𝗔𝗟:\n"
+                 f"{sesion_charada['nombre_equipo_rojo']}: {pts_r} 𝗉𝗍𝗌\n"
+                 f"{sesion_charada['nombre_equipo_azul']}: {pts_a} 𝗉𝗍𝗌\n\n"
+                 f"¡𝗘𝗤𝗨𝗜𝗣𝗢 𝗚𝗔𝗡𝗔𝗗𝗢𝗥: {nombre_ganador.upper()}!"
         )
 
         premio = sesion_puntos.get("premio_actual", {}).get("charada", 0)
         if premio > 0:
             for uid in equipo_ganador_ids:
                 nombre = next((j["name"] for j in sesion_charada["jugadores"] if j["id"] == uid), str(uid))
-                sumar_robux(uid, nombre, premio, f"𝖢𝗁𝖺𝗋𝖺𝖽𝖺 🎭 ({nombre_ganador})")
+                sumar_robux(uid, nombre, premio, f"𝗖𝗵𝗮𝗿𝗮𝗱𝗮: ({nombre_ganador})")
 
     task_previa = sesion_charada.get("reloj_task")
     if task_previa and not task_previa.done():
@@ -522,9 +420,9 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
         adivinadas_totales = sum(1 for v in sesion_charada["palabras_ronda"].values() if v)
 
         await update.message.reply_text(
-            f"🎉 ¡{nombre_usuario(update.effective_user)} 𝖺𝖽𝗂𝗏𝗂𝗇𝗈 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺! ✨\n"
-            f"✅ 𝖯𝖺𝗅𝖺𝖻𝗋𝖺: {texto_limpio.upper()}\n"
-            f"📊 {nombre_bando_jugando}: {adivinadas_totales}/𝟣𝟢 𝖺𝖼𝖾𝗋𝗍𝖺𝖽𝖺𝗌.")
+            f"¡{nombre_usuario(update.effective_user)} 𝖺𝖽𝗂𝗏𝗂𝗇𝗈 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺!\n"
+            f"𝗣𝗮𝗹𝗮𝗯𝗿𝗮: {texto_limpio.upper()}\n"
+            f"{nombre_bando_jugando}: {adivinadas_totales}/𝟣𝟢 𝖺𝖼𝖾𝗋𝗍𝖺𝖽𝖺𝗌.")
 
         if adivinadas_totales == 10:
             sesion_charada["activa"] = False
@@ -533,11 +431,11 @@ async def escuchar_charada_grupo(update: Update, context: ContextTypes.DEFAULT_T
             else:
                 sesion_charada["puntos_azul"] += 10
             await context.bot.send_message(chat_id=chat_id,
-                text=f"🏆 ¡𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗣𝗘𝗥𝗙𝗘𝗖𝗧𝗢ⵑ 🏆\n\n"
+                text=f"¡𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗣𝗘𝗥𝗙𝗘𝗖𝗧𝗢ⵑ\n\n"
                      f"¡𝖤𝗅 𝖾𝗊𝗎𝗂𝗉𝗈 {nombre_bando_jugando.upper()} 𝖺𝖽𝗂𝗏𝗂𝗇𝗈 𝗅𝖺𝗌 𝟣𝟢 𝗉𝖺𝗅𝖺𝖻𝗋𝖺𝗌!\n\n"
-                     f"📊 𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗚𝗟𝗢𝗕𝗔𝗟:\n"
-                     f"🔴 {sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} 𝗉𝗍𝗌\n"
-                     f"🔵 {sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} 𝗉𝗍𝗌")
+                     f"𝗣𝗨𝗡𝗧𝗔𝗝𝗘 𝗚𝗟𝗢𝗕𝗔𝗟:\n"
+                     f"{sesion_charada['nombre_equipo_rojo']}: {sesion_charada['puntos_rojo']} 𝗉𝗍𝗌\n"
+                     f"{sesion_charada['nombre_equipo_azul']}: {sesion_charada['puntos_azul']} 𝗉𝗍𝗌")
 
             await avanzar_o_finalizar(chat_id, context)
 
@@ -557,4 +455,4 @@ async def manejar_botones_charada(update: Update, context: ContextTypes.DEFAULT_
             return
         if not any(j["id"] == user.id for j in sesion_charada["jugadores"]):
             sesion_charada["jugadores"].append({"id": user.id, "name": nombre_usuario(user)})
-            await query.message.reply_text(f"🎭 ֹ  {nombre_usuario(user)} se unio 𓂃")
+            await query.message.reply_text(f"— {nombre_usuario(user)} se unio 𝅄 𖹭' ა")
