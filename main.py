@@ -15,7 +15,7 @@ from utils import (
     GIF_BIENVENIDA, GIF_INFO, GIF_COMANDOS,
     sesion_puntos, nombre_usuario,
     cmd_new_session, cmd_wallet, cmd_spent, cmd_reset, cmd_saldo_final,
-    detener_juegos, cmd_add, cmd_claim, cmd_export, cmd_import  
+    detener_juegos, cmd_add, cmd_claim, cmd_export, cmd_import, cmd_transfer, cmd_remove 
 )
 
 # =====================================================================
