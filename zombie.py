@@ -3,7 +3,7 @@ import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from telegram.error import RetryAfter
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_ZOMBIE, GIF_ERROR, GIF_CERO
+from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, GIF_ZOMBIE, GIF_ERROR, GIF_CERO
 
 # ================= UTILIDAD ANTI FLOOD =================
 
@@ -33,6 +33,11 @@ sesion_zombie = {
 # ================= CODIGO PRINCIPAL =================
 
 async def unirse_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
+    
     sesion_zombie["jugadores"] = []
     sesion_zombie["zombies"] = []
     sesion_zombie["vivos"] = []
@@ -50,6 +55,10 @@ async def unirse_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_zombie(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     args = context.args or []
     if len(args) >= 2:
