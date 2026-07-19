@@ -21,7 +21,7 @@ CORREDORES = {
 # Mapa emoji -> key para parsear /apostar_carrera con emoji
 EMOJI_A_KEY = {v: k for k, v in CORREDORES.items()}
 
-PISTA_LARGO = 15
+PISTA_LARGO = 16
 
 # =====================================================================
 # SESION
@@ -266,13 +266,13 @@ async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if corredor_apostado == ganador_key:
             ganancia = cantidad * 2
-            sumar_robux(user_id, nombre, ganancia, f"𝗖𝗔𝗥𝗥𝗘𝗥𝗔 (+x2)")
-            ganadores_txt.append(f"— {nombre} ➜ +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            sumar_robux(user_id, nombre, ganancia, f"𝗖𝗮𝗿𝗿𝗲𝗿𝗮 (𝘅𝟮)")
+            ganadores_txt.append(f"— {nombre} ➜ +{ganancia} 𝗋𝗈𝖻𝗎𝗑")
         else:
-            restar_robux(user_id, cantidad, f"𝗖𝗔𝗥𝗥𝗘𝗥𝗔: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            restar_robux(user_id, cantidad, f"𝗖𝗮𝗿𝗿𝗲𝗿𝗮: -{cantidad} 𝗋𝗈𝖻𝗎𝗑")
             perdedores_txt.append(f"— {nombre} 𝖺𝗉𝗈𝗌𝗍𝗈 𝖺 {CORREDORES[corredor_apostado]}")
 
-    resultado = [f"( 𐃯 ) — ¡{emoji_ganador} 𝗚𝗔𝗡𝗢 𝗟𝗔 𝗖𝗔𝗥𝗥𝗘𝗥𝗔ⵑ 🎉\n\n"]
+    resultado = [f"( 𐃯 ) — ¡ {emoji_ganador} 𝗚𝗔𝗡𝗢 𝗟𝗔 𝗖𝗔𝗥𝗥𝗘𝗥𝗔ⵑ 🎉\n\n"]
     if ganadores_txt:
         resultado.append("っ⠀˖⠀꒰⠀𝗚𝗔𝗡𝗔𝗗𝗢𝗥𝗘𝗦⠀꒱\n")
         resultado.extend(ganadores_txt)
