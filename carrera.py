@@ -2,7 +2,7 @@ import random
 import asyncio
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
+from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, guardar_sesion
 
 # =====================================================================
 # CORREDORES BTS 💜
@@ -49,7 +49,7 @@ def build_pista(posiciones: dict) -> str:
         pos = posiciones.get(key, 0)
         avance = "█" * pos
         resto =  "░" * (PISTA_LARGO - pos)
-        lineas.append(f"{emoji} `{avance}{resto}` 🏁")
+        lineas.append(f"{emoji} {avance}{resto} 🏁")
     return "\n".join(lineas)
 
 def sala_apuestas_txt(chat_id: int) -> str:
@@ -77,6 +77,10 @@ def sala_apuestas_txt(chat_id: int) -> str:
 
 async def cmd_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     if not sesion_puntos["activa"]:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n𝖴𝗌𝖺 `/new_session` 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
@@ -192,6 +196,10 @@ async def cmd_apostar_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 async def cmd_start_carrera(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     estado = sesion_carrera.get(chat_id)
     if not estado or not estado["activa"]:
