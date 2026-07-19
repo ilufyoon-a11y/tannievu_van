@@ -188,11 +188,15 @@ async def manejar_paginas_info(update: Update, context: ContextTypes.DEFAULT_TYP
     if query.data == "info_noop":
         return
     pagina = int(query.data.split("_")[-1])
-    await query.edit_message_caption(
-        caption=PAGINAS_INFO[pagina],
-        reply_markup=botones_pagina(pagina),
-        parse_mode="HTML"
-    )
+    try:
+        await query.edit_message_caption(
+            caption=PAGINAS_INFO[pagina],
+            reply_markup=botones_pagina(pagina),
+            parse_mode="HTML"
+        )
+    except Exception as e:
+        if "not modified" not in str(e).lower():
+            raise
 
 # =====================================================================
 # HANDLER DE MENSAJES — despacha según el contexto activo
