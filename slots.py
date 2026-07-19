@@ -33,12 +33,7 @@ def girar() -> list:
     return random.choices(SIMBOLOS, weights=PESOS, k=3)
 
 async def enviar_resultado_final(context, chat_id, message_id, texto, intentos=3):
-    """
-    Muestra el resultado final pase lo que pase. A diferencia de un simple
-    try/except, si Telegram tira flood control (RetryAfter) esperamos el
-    tiempo indicado y reintentamos, en vez de darnos por vencidos al toque.
-    Esto es lo que evitaba que el mensaje se quedara pegado en "girando...".
-    """
+
     for intento in range(intentos):
         try:
             await context.bot.edit_message_text(
@@ -130,7 +125,7 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     encabezado = f"🎰 {nombre} 𝖾𝗌𝗍𝖺 𝗀𝗂𝗋𝖺𝗇𝖽𝗈 𝗉𝗈𝗋 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌..."
     falso_inicial = [random.choice(SIMBOLOS) for _ in range(3)]
     msg = await update.message.reply_text(
-        f"{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
+        f"𝖫𝗈𝗌 𝗋𝗈𝖽𝗂𝗅𝗅𝗈𝗌 𝖾𝗆𝗉𝖾𝗓𝖺𝗋𝗈𝗇 𝖺 𝗀𝗂𝗋𝖺𝗋... ¡𝖬𝗎𝖼𝗁𝖺 𝗌𝗎𝖾𝗋𝗍𝖾, {nombre}!{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
     )
 
     await asyncio.sleep(DELAY_ANIMACION)
