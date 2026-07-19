@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 
 from utils import (
     GIF_AHORCADO, GIF_ERROR, GIF_RECHAZADO, GIF_LETRISTA,
-    sesion_puntos, sumar_robux, nombre_usuario,
+    sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion,
 )
 
 # !!  MANEJO SEGURO DE FLOOD CONTROL  ───  ♥︎
