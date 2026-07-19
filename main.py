@@ -318,8 +318,6 @@ if __name__ == '__main__':
 
     # Slots 🎰
     application.add_handler(CommandHandler("jackpot", cmd_open_slots))
-    application.add_handler(CommandHandler("apostar", cmd_slots))
-    application.add_handler(CommandHandler("girar",   cmd_spin))
 
     # Anagrama 🔀
     application.add_handler(CommandHandler("jumble",       cmd_anagrama))
