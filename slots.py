@@ -1,7 +1,7 @@
 import random
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
+from utils import sesion_puntos, sumar_robux, es_admin_sesion, nombre_usuario, guardar_sesion
 
 # =====================================================================
 # SÍMBOLOS Y PAGOS
@@ -38,19 +38,28 @@ def evaluar(ruletas: list, apuesta: int) -> tuple:
     a, b, c = ruletas
     if a == b == c:
         ganancia = int(apuesta * PAGO_3)
-        return f"¡𝗧𝗥𝗜𝗣𝗟𝗘 {a}ⵑ 𝗑{PAGO_3}", ganancia
+        return f"¡𝗧𝗥𝗜𝗣𝗟𝗘 {a}ⵑ 𝗑{PAGO_3}", ganancia, PAGO_3
     elif a == b or b == c or a == c:
         ganancia = int(apuesta * PAGO_2)
-        return f"¡𝗣𝗔𝗥 𝗑{PAGO_2}ⵑ", ganancia
+        return f"¡𝗣𝗔𝗥 𝗑{PAGO_2}ⵑ", ganancia, PAGO_2
     else:
-        return "💸 𝖲𝗂𝗇 𝗌𝗎𝖾𝗋𝗍𝖾...", 0
+        return "💸 𝖲𝗂𝗇 𝗌𝗎𝖾𝗋𝗍𝖾...", 0, 0
 
 def sala_txt(chat_id: int) -> str:
     apuestas = sesion_slots[chat_id]["apuestas"]
     lineas = [
         "<b>๑ ꞈ 𝗧𝗥𝗔𝗚𝗔𝗠𝗢𝗡𝗘𝗗𝗔𝗦 ⋆ ٠</b>\n",
-        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/slot &lt;cantidad&gt;</code></blockquote>\n",
+        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/apostar &lt;cantidad&gt;</code></blockquote>\n",
     ]
+
+    if apuestas:
+        lineas.append("𝗔𝗽𝘂𝗲𝘀𝘁𝗮𝘀:")
+        for datos in apuestas.values():
+            lineas.append(f"• {datos['nombre']}: {datos['cantidad']} 𝖿𝗂𝖼𝗁𝖺𝗌")
+    else:
+        lineas.append("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇 ⵑ")
+
+    return "\n".join(lineas)
 
 
 # =====================================================================
@@ -59,6 +68,10 @@ def sala_txt(chat_id: int) -> str:
 
 async def cmd_open_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
 
     if not sesion_puntos["activa"]:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n\n𝖴𝗌𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
@@ -97,7 +110,7 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     estado = sesion_slots.get(chat_id)
     if not estado or not estado["activa"]:
         await update.message.reply_text(
-            "ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jackpot 𝗉𝖺𝗋𝖺 𝖺𝖻𝗋𝗂𝗋 𝗎𝗇𝖺, 𝗒 𝗅𝗎𝖾𝗀𝗈 /slots &lt;cantidad&gt; 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋 ᵎᵎ"
+            "ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jackpot 𝗉𝖺𝗋𝖺 𝖺𝖻𝗋𝗂𝗋 𝗎𝗇𝖺, 𝗒 𝗅𝗎𝖾𝗀𝗈 /apostar &lt;cantidad&gt; 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋 ᵎᵎ"
         )
         return
 
@@ -160,6 +173,10 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def cmd_spin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
+
     estado = sesion_slots.get(chat_id)
     if not estado or not estado["activa"]:
         await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖻𝗂𝖾𝗋𝗍𝖺 ᵎᵎ")
@@ -188,10 +205,10 @@ async def cmd_spin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         ruletas = girar()
         display = " | ".join(ruletas)
-        resultado_txt, ganancia = evaluar(ruletas, cantidad)
+        resultado_txt, ganancia, multiplicador = evaluar(ruletas, cantidad)
 
         if ganancia > 0:
-            sumar_robux(user_id, nombre, ganancia, f"Slots 🎰 (+x{int(ganancia//cantidad)})")
+            sumar_robux(user_id, nombre, ganancia, f"Slots 🎰 (+x{multiplicador})")
             resultado_lines.append(f"{nombre}\n[ {display} ]\n{resultado_txt} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌\n")
         else:
             if user_id in sesion_puntos["jugadores"]:
