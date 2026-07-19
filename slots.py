@@ -115,17 +115,17 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     saldo = get_saldo(user_id)
     if saldo < cantidad:
         await update.message.reply_text(
-            f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n𝗦𝗮𝗹𝗱𝗼: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n𝗦𝗮𝗹𝗱𝗼: {saldo} 𝗋𝗈𝖻𝗎𝗑"
         )
         return
 
     # Resultado real ya calculado desde el inicio (la animación es solo visual)
     ruletas = girar()
 
-    encabezado = f"🎰 {nombre} 𝖾𝗌𝗍𝖺 𝗀𝗂𝗋𝖺𝗇𝖽𝗈 𝗉𝗈𝗋 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌..."
+    encabezado = f"𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝗉𝗈𝗋 {cantidad} 𝗋𝗈𝖻𝗎𝗑 𝗋𝖾𝗀𝗂𝗌𝗍𝗋𝖺𝖽𝖺, 𝗅𝗈𝗌 𝗋𝗈𝖽𝗂𝗅𝗅𝗈𝗌 𝖾𝗆𝗉𝖾𝗓𝖺𝗋𝗈𝗇 𝖺 𝗀𝗂𝗋𝖺𝗋... ¡𝖬𝗎𝖼𝗁𝖺 𝗌𝗎𝖾𝗋𝗍𝖾, {nombre}!"
     falso_inicial = [random.choice(SIMBOLOS) for _ in range(3)]
     msg = await update.message.reply_text(
-        f"𝖫𝗈𝗌 𝗋𝗈𝖽𝗂𝗅𝗅𝗈𝗌 𝖾𝗆𝗉𝖾𝗓𝖺𝗋𝗈𝗇 𝖺 𝗀𝗂𝗋𝖺𝗋... ¡𝖬𝗎𝖼𝗁𝖺 𝗌𝗎𝖾𝗋𝗍𝖾, {nombre}!{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
+        f"{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
     )
 
     await asyncio.sleep(DELAY_ANIMACION)
@@ -154,18 +154,18 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     display = " | ".join(ruletas)
 
     if ganancia > 0:
-        sumar_robux(user_id, nombre, ganancia, f"Slots 🎰 (+x{multiplicador})")
+        sumar_robux(user_id, nombre, ganancia, f"𝗝𝗮𝗰𝗸𝗽𝗼𝘁 (𝘅{multiplicador})")
         texto_final = (
-            f"🎰 {nombre}\n\n[ {display} ]\n\n"
-            f"{resultado_txt} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"¡𝖥𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, {nombre}!\n\n[ {display} ]\n\n"
+            f"— {resultado_txt} ➜ +{ganancia} 𝗋𝗈𝖻𝗎𝗑"
         )
     else:
         if user_id in sesion_puntos["jugadores"]:
             sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
-            sesion_puntos["jugadores"][user_id]["detalle"].append(f"Slots 🎰: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
+            sesion_puntos["jugadores"][user_id]["detalle"].append(f"𝗝𝗮𝗰𝗸𝗽𝗼𝘁: -{cantidad} 𝗋𝗈𝖻𝗎𝗑")
         texto_final = (
-            f"🎰 {nombre}\n\n[ {display} ]\n\n"
-            f"{resultado_txt} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"¡𝖠𝗒, 𝗆𝖾𝗃𝗈𝗋 𝗌𝗎𝖾𝗋𝗍𝖾 𝗉𝖺𝗋𝖺 𝗅𝖺 𝗉𝗋𝗈𝗑𝗂𝗆𝖺, {nombre}!\n\n[ {display} ]\n\n"
+            f"— {resultado_txt} ➜ -{cantidad} 𝗋𝗈𝖻𝗎𝗑"
         )
 
     guardar_sesion()
