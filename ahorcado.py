@@ -232,8 +232,8 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
         context.bot.send_message,
         chat_id=gid,
         text=(f"¡𝗟𝗮 𝗽𝗮𝗿𝘁𝗶𝗱𝗮 𝗱𝗲 𝗮𝗵𝗼𝗿𝗰𝗮𝗱𝗼 𝗵𝗮 𝗶𝗻𝗶𝗰𝗶𝗮𝗱𝗼ⵑ\n\n"
-              f"𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria}\n\n"
-              f"`{pantalla}`\n\n"
+              f"𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n"
+              f"{pantalla}\n\n"
               f"𝗜𝗻𝘁𝗲𝗻𝘁𝗼𝘀 𝗽𝗼𝗿 𝗷𝘂𝗴𝗮𝗱𝗼𝗿: {MAX_FALLOS}\n\n"
               f"¡𝖤𝗌𝖼𝗋𝗂𝖻𝖾 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗈 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋!"
               f"{_letras_intentadas(set())}"),
@@ -268,7 +268,8 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
     incorrectas = sesion_ahorcado["letras_incorrectas"]
 
     if intento in correctas or intento in incorrectas:
-        await _enviar_seguro(update.message.reply_text, f"𝖠𝗒, <b>{intento}</b> 𝗒𝖺 𝖿𝗎𝖾 𝗆𝖾𝗇𝖼𝗂𝗈𝗇𝖺𝖽𝖺")
+        await _enviar_seguro(update.message.reply_text, f"𝖠𝗒, <b>{intento.upper()}</b> 𝗒𝖺 𝖿𝗎𝖾 𝗆𝖾𝗇𝖼𝗂𝗈𝗇𝖺𝖽𝖺",
+        parse_mode="HTML")
         return
 
     nombre = nombre_usuario(update.effective_user)
@@ -285,7 +286,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
             await _enviar_seguro(
                 update.message.reply_text,
                 f"<b>¡{nombre} 𝖠𝖣𝖨𝖵𝖨𝖭𝖮 𝖫𝖠 𝖯𝖠𝖫𝖠𝖡𝖱𝖠!</b>\n\n"
-                f"𝖫𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝖾𝗋𝖺: <b>{palabra}</b>",
+                f"𝖫𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺 𝖾𝗋𝖺: <b>{palabra.upper()}</b>",
                 parse_mode="HTML"
             )
             await _enviar_seguro(
@@ -297,7 +298,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
 
         await _enviar_seguro(
             update.message.reply_text,
-            f"<b>{intento}</b> 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺\n\n`{pantalla}`{_letras_intentadas(incorrectas)}",
+            f"<b>{intento.upper()}</b> 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺\n\n{pantalla}{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
         )
     else:
@@ -322,7 +323,7 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
                 await _enviar_seguro(
                     context.bot.send_message,
                     chat_id=chat_id,
-                    text=f"¡𝗡𝗮𝗱𝗶𝗲 𝗹𝗼𝗴𝗿𝗼 𝗮𝗱𝗶𝘃𝗶𝗻𝗮𝗿ⵑ\n\nLa palabra era: <b>{palabra}</b>",
+                    text=f"¡𝗡𝗮𝗱𝗶𝗲 𝗹𝗼𝗴𝗿𝗼 𝗮𝗱𝗶𝘃𝗶𝗻𝗮𝗿ⵑ\n\nLa palabra era: <b>{palabra.upper()}</b>",
                     parse_mode="HTML"
                 )
             return
@@ -330,8 +331,8 @@ async def escuchar_ahorcado_grupo(update: Update, context: ContextTypes.DEFAULT_
         pantalla = _pantalla_ahorcado(palabra, correctas)
         await _enviar_seguro(
             update.message.reply_text,
-            f"<b>{intento}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
-            f"`{pantalla}`\n"
+            f"<b>{intento.upper()}</b> 𝗇𝗈 𝖿𝗈𝗋𝗆𝖺 𝗉𝖺𝗋𝗍𝖾 𝖽𝖾 𝗅𝖺 𝗉𝖺𝗅𝖺𝖻𝗋𝖺.\n\n"
+            f"{pantalla}\n"
             f"{nombre}, 𝗍𝖾 𝗊𝗎𝖾𝖽𝖺𝗇 {vidas_restantes} 𝗂𝗇𝗍𝖾𝗇𝗍𝗈𝗌."
             f"{_letras_intentadas(incorrectas)}",
             parse_mode="HTML"
