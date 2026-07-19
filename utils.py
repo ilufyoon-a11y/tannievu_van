@@ -3,6 +3,7 @@
 import json
 import io
 import os
+import re
 import psycopg2
 from telegram import Update
 from telegram.ext import ContextTypes
@@ -187,6 +188,43 @@ async def cmd_new_session(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA08swWpNqNnZt1zzMtnHo2C7O4H2dURHAAIgBwACYSZoRojECEp9-LYLPAQ")
 
+def _resumen_wallet(detalle: list) -> str:
+    """Agrupa las entradas del detalle por concepto (sumando repetidos con
+    contador 'xN') y las separa en Ganaste / Gastaste segun el signo."""
+    patron = re.compile(r'^(.*?)\s*:?\s*([+\-−])\s*(\d+)')
+    ganancias = {}
+    gastos = {}
+
+    for linea in detalle:
+        m = patron.match(linea.strip())
+        if not m:
+            continue
+        concepto = m.group(1).strip()
+        signo = "-" if m.group(2) in ("-", "−") else "+"
+        monto = int(m.group(3))
+        destino = ganancias if signo == "+" else gastos
+        if concepto not in destino:
+            destino[concepto] = [0, 0]
+        destino[concepto][0] += monto
+        destino[concepto][1] += 1
+
+    partes = []
+    if ganancias:
+        partes.append("𝖦𝖺𝗇𝖺𝗌𝗍𝖾:")
+        for concepto, (suma, veces) in ganancias.items():
+            etiqueta = f"{concepto} (x{veces})" if veces > 1 else concepto
+            partes.append(f"+ {etiqueta}: {suma}")
+    if gastos:
+        if partes:
+            partes.append("")
+        partes.append("𝖦𝖺𝗌𝗍𝖺𝗌𝗍𝖾:")
+        for concepto, (suma, veces) in gastos.items():
+            etiqueta = f"{concepto} (x{veces})" if veces > 1 else concepto
+            partes.append(f"− {etiqueta}: {suma}")
+
+    return "\n".join(partes) if partes else "𝖠𝗎𝗇 𝗌𝗂𝗇 𝗆𝗈𝗏𝗂𝗆𝗂𝖾𝗇𝗍𝗈𝗌."
+
+
 async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     if not sesion_puntos["activa"]:
@@ -203,11 +241,11 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=chat_id,
             sticker="CAACAgEAAxkBA08sLmpNp_zFlMtSCQUHA4XfcbSUu3BvAAIcCAACHgVIRPqP67GwLA_qPAQ")
         return
-    detalle = "\n".join(datos["detalle"])
+    resumen = _resumen_wallet(datos["detalle"])
     await update.message.reply_text(
         f"𝖧𝗈𝗅𝖺, {nombre_usuario(update.effective_user)}:\n\n"
-        f"{detalle}\n\n"
-        f"𝖳𝗎 𝖿𝗈𝗋𝗍𝗎𝗇𝖺 𝖺𝗌𝖼𝗂𝖾𝗇𝖽𝖾 𝖺 {datos['robux']} 𝗋𝗈𝖻𝗎𝗑"
+        f"{resumen}\n\n"
+        f"💰 𝖳𝗎 𝖿𝗈𝗋𝗍𝗎𝗇𝖺 𝖺𝗌𝖼𝗂𝖾𝗇𝖽𝖾 𝖺 {datos['robux']} 𝗋𝗈𝖻𝗎𝗑"
     )
     await context.bot.send_sticker(
             chat_id=chat_id,
