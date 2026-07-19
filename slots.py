@@ -18,7 +18,8 @@ PESOS    = [13,   11,   8,    7,    7,    6,    6,    5,    5,    6]
 PAGO_3 = 3
 PAGO_2 = 2
 
-DELAY_SUSPENSO = 1.2  # segundos de suspenso antes de mostrar el resultado
+DELAY_ANIMACION = 0.8  # antes de mostrar el frame falso
+DELAY_SUSPENSO = 0.9   # antes de mostrar el resultado real
 
 # =====================================================================
 # HELPERS
@@ -127,9 +128,28 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ruletas = girar()
 
     encabezado = f"🎰 {nombre} 𝖾𝗌𝗍𝖺 𝗀𝗂𝗋𝖺𝗇𝖽𝗈 𝗉𝗈𝗋 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌..."
-    msg = await update.message.reply_text(encabezado)
+    falso_inicial = [random.choice(SIMBOLOS) for _ in range(3)]
+    msg = await update.message.reply_text(
+        f"{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
+    )
 
-    # Un solo respiro de suspenso, sin editar el mensaje varias veces.
+    await asyncio.sleep(DELAY_ANIMACION)
+
+    # Un único frame de "giro" (no varios) para que se vea movimiento
+    # sin bombardear a Telegram de ediciones y arriesgar flood control.
+    falso = [random.choice(SIMBOLOS) for _ in range(3)]
+    try:
+        await context.bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=msg.message_id,
+            text=f"{encabezado}\n\n[ {falso[0]} | {falso[1]} | {falso[2]} ]"
+        )
+    except RetryAfter as e:
+        logger.warning(f"Slots: flood control animando, espero {e.retry_after}s")
+        await asyncio.sleep(e.retry_after)
+    except TelegramError as e:
+        logger.warning(f"Slots: fallo animando frame ({e})")
+
     await asyncio.sleep(DELAY_SUSPENSO)
 
     # Resultado final real
@@ -156,14 +176,3 @@ async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Nunca se debe perder el resultado: reintenta respetando el flood control
     # y, si aun así falla, manda un mensaje nuevo en vez de dejarlo pegado.
     await enviar_resultado_final(context, chat_id, msg.message_id, texto_final)
-
-# =====================================================================
-# REGISTRO (en tu main.py):
-#
-#   from slots import cmd_jackpot
-#   application.add_handler(CommandHandler("jackpot", cmd_jackpot))
-#
-# Ya no hay botones ni callback que registrar: si en manejar_botones_main
-# de tu main.py habías agregado la rama de "slots_noop", podés borrarla,
-# y también el import de cb_slots_noop.
-# =====================================================================
