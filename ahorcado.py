@@ -233,7 +233,7 @@ async def escuchar_ahorcado_privado(update: Update, context: ContextTypes.DEFAUL
         chat_id=gid,
         text=(f"¡𝗟𝗮 𝗽𝗮𝗿𝘁𝗶𝗱𝗮 𝗱𝗲 𝗮𝗵𝗼𝗿𝗰𝗮𝗱𝗼 𝗵𝗮 𝗶𝗻𝗶𝗰𝗶𝗮𝗱𝗼ⵑ\n\n"
               f"𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗮: {categoria.upper()}\n\n"
-              f"PALABRA: '{pantalla}'\n\n"
+              f"<b>{pantalla}</b>\n\n"
               f"𝗜𝗻𝘁𝗲𝗻𝘁𝗼𝘀 𝗽𝗼𝗿 𝗷𝘂𝗴𝗮𝗱𝗼𝗿: {MAX_FALLOS}\n\n"
               f"¡𝖤𝗌𝖼𝗋𝗂𝖻𝖾 𝗎𝗇𝖺 𝗅𝖾𝗍𝗋𝖺 𝗈 𝗎𝗇 𝗇𝗎𝗆𝖾𝗋𝗈 𝗉𝖺𝗋𝖺 𝖺𝖽𝗂𝗏𝗂𝗇𝖺𝗋!"
               f"{_letras_intentadas(set())}"),
