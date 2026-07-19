@@ -2,7 +2,7 @@ import random
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, nombre_usuario, GIF_PIRATA
+from utils import sesion_puntos, sumar_robux, nombre_usuario, es_admin_sesion, GIF_PIRATA
 
 # ================= UTILIDAD ANTI FLOOD =================
 
@@ -36,6 +36,9 @@ def _sesion_base() -> dict:
 # ================= CODIGO PRINCIPAL =================
 
 async def unirse_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
     chat_id = update.effective_chat.id
     sesion_pirata[chat_id] = _sesion_base()
 
@@ -49,6 +52,11 @@ async def unirse_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_pirata(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
+
+    if not es_admin_sesion(update.effective_user.id):
+        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
+        return
+
     sesion = sesion_pirata.get(chat_id)
 
     if not sesion:
