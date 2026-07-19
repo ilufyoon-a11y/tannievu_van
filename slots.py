@@ -1,7 +1,8 @@
 import random
+import asyncio
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils import sesion_puntos, sumar_robux, es_admin_sesion, nombre_usuario, guardar_sesion
+from utils import sesion_puntos, sumar_robux, nombre_usuario, guardar_sesion
 
 # =====================================================================
 # SÍMBOLOS Y PAGOS
@@ -13,15 +14,8 @@ PESOS    = [50,   35,   15]
 PAGO_3 = 3
 PAGO_2 = 1.5
 
-# =====================================================================
-# SESION GRUPAL
-# =====================================================================
-
-# chat_id -> {
-#   "activa": bool,
-#   "apuestas": { user_id: { "nombre", "cantidad" } }
-# }
-sesion_slots = {}
+FRAMES_ANIMACION = 6
+DELAY_ANIMACION = 0.4  # segundos entre frames
 
 # =====================================================================
 # HELPERS
@@ -45,82 +39,29 @@ def evaluar(ruletas: list, apuesta: int) -> tuple:
     else:
         return "💸 𝖲𝗂𝗇 𝗌𝗎𝖾𝗋𝗍𝖾...", 0, 0
 
-def sala_txt(chat_id: int) -> str:
-    apuestas = sesion_slots[chat_id]["apuestas"]
-    lineas = [
-        "<b>๑ ꞈ 𝗧𝗥𝗔𝗚𝗔𝗠𝗢𝗡𝗘𝗗𝗔𝗦 ⋆ ٠</b>\n",
-        "<blockquote>𝖠𝗉𝗎𝖾𝗌𝗍𝖺 𝖼𝗈𝗇 <code>/apostar &lt;cantidad&gt;</code></blockquote>\n",
-    ]
-
-    if apuestas:
-        lineas.append("𝗔𝗽𝘂𝗲𝘀𝘁𝗮𝘀:")
-        for datos in apuestas.values():
-            lineas.append(f"• {datos['nombre']}: {datos['cantidad']} 𝖿𝗂𝖼𝗁𝖺𝗌")
-    else:
-        lineas.append("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇 ⵑ")
-
-    return "\n".join(lineas)
-
-
 # =====================================================================
-# /jackpot — Host abre la sala
+# /jackpot <cantidad> — Juega al instante
 # =====================================================================
 
-async def cmd_open_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
-
-    if not es_admin_sesion(update.effective_user.id):
-        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
-        return
-
-    if not sesion_puntos["activa"]:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖼𝗍𝗂𝗏𝖺 𝖺𝗎𝗇, 𝗇𝖺𝖽𝗂𝖾 𝖼𝗎𝖾𝗇𝗍𝖺 𝖼𝗈𝗇 𝖿𝗂𝖼𝗁𝖺𝗌 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋.\n\n𝖴𝗌𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
-        return
-
-    if chat_id in sesion_slots and sesion_slots[chat_id]["activa"]:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖸𝖺 𝗁𝖺𝗒 𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖽𝖾 𝗌𝗅𝗈𝗍𝗌 𝖺𝖻𝗂𝖾𝗋𝗍𝖺. 𝖴𝗌𝖺 /girar 𝗉𝖺𝗋𝖺 𝗋𝖾𝗏𝖾𝗅𝖺𝗋 ᵎᵎ")
-        return
-
-    sesion_slots[chat_id] = {
-        "activa": True,
-        "apuestas": {},
-        "msg_id": None,
-    }
-
-    await context.bot.send_sticker(
-        chat_id=chat_id,
-        sticker="CAACAgEAAxkBA0urQGpJsaVbFkgF0QfZXwO_a7P4kHqiAAI5BQACwmFQRnvqQCAORooQPAQ")
-
-    msg = await update.message.reply_text(sala_txt(chat_id), parse_mode="HTML")
-    sesion_slots[chat_id]["msg_id"] = msg.message_id
-
-# =====================================================================
-# /apostar <cantidad> — Apostar
-# =====================================================================
-
-async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def cmd_jackpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     chat_id = update.effective_chat.id
+    nombre = nombre_usuario(user)
 
     if not sesion_puntos["activa"]:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /slots 𝗉𝖺𝗋𝖺 𝗉𝖺𝗋𝗍𝗂𝖼𝗂𝗉𝖺𝗋 ᵎᵎ")
-        return
-
-    estado = sesion_slots.get(chat_id)
-    if not estado or not estado["activa"]:
-        await update.message.reply_text(
-            "ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖺𝗅𝖺 𝖺𝖻𝗂𝖾𝗋𝗍𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /jackpot 𝗉𝖺𝗋𝖺 𝖺𝖻𝗋𝗂𝗋 𝗎𝗇𝖺, 𝗒 𝗅𝗎𝖾𝗀𝗈 /apostar &lt;cantidad&gt; 𝗉𝖺𝗋𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝗋 ᵎᵎ"
-        )
+        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗂𝗇𝗂𝖼𝗂𝖺𝖽𝖺, 𝗉𝗈𝗋 𝖿𝖺𝗏𝗈𝗋, 𝗎𝗍𝗂𝗅𝗂𝗓𝖺 /new_session 𝗉𝗋𝗂𝗆𝖾𝗋𝗈 ᵎᵎ")
         return
 
     args = context.args or []
     if not args:
         await update.message.reply_text(
-            "𝗣𝗿𝗲𝗺𝗶𝗼𝘀:\n\n"
+            "𝖴𝗌𝗈: <code>/jackpot &lt;cantidad&gt;</code>\n\n"
+            "𝗣𝗿𝗲𝗺𝗶𝗼𝘀:\n"
             "𝟥 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟥 💰\n"
             "𝟤 𝗂𝗀𝗎𝖺𝗅𝖾𝗌 ➜ 𝗑𝟣.𝟧 ✨\n"
-            "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 ➜ 𝗉𝗂𝖾𝗋𝖽𝖾𝗌 💸"
+            "𝖳𝗈𝖽𝗈𝗌 𝖽𝗂𝖿𝖾𝗋𝖾𝗇𝗍𝖾𝗌 ➜ 𝗉𝗂𝖾𝗋𝖽𝖾𝗌 💸",
+            parse_mode="HTML"
         )
         return
 
@@ -137,90 +78,58 @@ async def cmd_slots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     saldo = get_saldo(user_id)
     if saldo < cantidad:
         await update.message.reply_text(
-            f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n"
-            f"𝗦𝗮𝗹𝗱𝗼: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
+            f"ⓘ ˖ ࣪ 𝖭𝗈 𝗍𝗂𝖾𝗇𝖾𝗌 𝗌𝗎𝖿𝗂𝖼𝗂𝖾𝗇𝗍𝖾𝗌 𝖿𝗂𝖼𝗁𝖺𝗌 ᵎᵎ\n𝗦𝗮𝗹𝗱𝗼: {saldo} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
         return
 
-    if user_id in estado["apuestas"]:
-        estado["apuestas"][user_id]["cantidad"] = cantidad
-        await update.message.reply_text(
-            f"— {nombre_usuario(user)} 𝖺𝖼𝗍𝗎𝖺𝗅𝗂𝗓𝗈 𝗌𝗎 𝖺𝗉𝗎𝖾𝗌𝗍𝖺 𝖺 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა"
+    # Resultado real ya calculado desde el inicio (la animación es solo visual)
+    ruletas = girar()
+
+    encabezado = f"🎰 {nombre} 𝖾𝗌𝗍𝖺 𝗀𝗂𝗋𝖺𝗇𝖽𝗈 𝗉𝗈𝗋 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌..."
+    falso_inicial = [random.choice(SIMBOLOS) for _ in range(3)]
+    msg = await update.message.reply_text(
+        f"{encabezado}\n\n[ {falso_inicial[0]} | {falso_inicial[1]} | {falso_inicial[2]} ]"
+    )
+
+    # Animación: edita el mensaje varias veces con combinaciones al azar
+    for _ in range(FRAMES_ANIMACION):
+        falso = [random.choice(SIMBOLOS) for _ in range(3)]
+        try:
+            await context.bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=msg.message_id,
+                text=f"{encabezado}\n\n[ {falso[0]} | {falso[1]} | {falso[2]} ]"
+            )
+        except Exception:
+            pass
+        await asyncio.sleep(DELAY_ANIMACION)
+
+    # Resultado final real
+    resultado_txt, ganancia, multiplicador = evaluar(ruletas, cantidad)
+    display = " | ".join(ruletas)
+
+    if ganancia > 0:
+        sumar_robux(user_id, nombre, ganancia, f"Slots 🎰 (+x{multiplicador})")
+        texto_final = (
+            f"🎰 {nombre}\n\n[ {display} ]\n\n"
+            f"{resultado_txt} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
     else:
-        estado["apuestas"][user_id] = {
-            "nombre": nombre_usuario(user),
-            "cantidad": cantidad,
-        }
-        await update.message.reply_text(
-            f"— {nombre_usuario(user)} 𝖺𝗉𝗈𝗌𝗍𝗈 {cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌 𝅄 𖹭' ა"
+        if user_id in sesion_puntos["jugadores"]:
+            sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
+            sesion_puntos["jugadores"][user_id]["detalle"].append(f"Slots 🎰: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
+        texto_final = (
+            f"🎰 {nombre}\n\n[ {display} ]\n\n"
+            f"{resultado_txt} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌"
         )
-
-    try:
-        await context.bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=estado["msg_id"],
-            text=sala_txt(chat_id),
-            parse_mode="HTML"
-        )
-    except Exception:
-        pass
-
-# =====================================================================
-# /girar — Host revela
-# =====================================================================
-
-async def cmd_spin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
-
-    if not es_admin_sesion(update.effective_user.id):
-        await update.message.reply_text("𝖲𝗈𝗅𝗈 𝗊𝗎𝗂𝖾𝗇 𝗂𝗇𝗂𝖼𝗂𝗈 𝗅𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝗉𝗎𝖾𝖽𝖾 𝗂𝗇𝗂𝖼𝗂𝖺𝗋 𝗅𝖺 𝗉𝖺𝗋𝗍𝗂𝖽𝖺 🚫")
-        return
-
-    estado = sesion_slots.get(chat_id)
-    if not estado or not estado["activa"]:
-        await update.message.reply_text("ⓘ ˖ ࣪ 𝖭𝗈 𝗁𝖺𝗒 𝗇𝗂𝗇𝗀𝗎𝗇𝖺 𝗌𝖾𝗌𝗂𝗈𝗇 𝖺𝖻𝗂𝖾𝗋𝗍𝖺 ᵎᵎ")
-        return
-
-    apuestas_validas = {uid: d for uid, d in estado["apuestas"].items() if d["cantidad"] > 0}
-    if not apuestas_validas:
-        await update.message.reply_text("𝖭𝖺𝖽𝗂𝖾 𝗁𝖺 𝖺𝗉𝗈𝗌𝗍𝖺𝖽𝗈 𝖺𝗎𝗇.")
-        return
-
-    # Cerrar sala
-    try:
-        await context.bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=estado["msg_id"],
-            text="🎰 ¡𝖫𝖺𝗌 𝖺𝗉𝗎𝖾𝗌𝗍𝖺𝗌 𝖾𝗌𝗍𝖺𝗇 𝖼𝖾𝗋𝗋𝖺𝖽𝖺𝗌! 𝖦𝗂𝗋𝖺𝗇𝖽𝗈 𝗍𝗋𝖺𝗀𝖺 𝗆𝗈𝗇𝖾𝖽𝖺𝗌..."
-        )
-    except Exception:
-        pass
-
-    resultado_lines = ["🎰 𝗥𝗘𝗦𝗨𝗟𝗧𝗔𝗗𝗢𝗦:\n"]
-
-    for user_id, datos in apuestas_validas.items():
-        nombre = datos["nombre"]
-        cantidad = datos["cantidad"]
-
-        ruletas = girar()
-        display = " | ".join(ruletas)
-        resultado_txt, ganancia, multiplicador = evaluar(ruletas, cantidad)
-
-        if ganancia > 0:
-            sumar_robux(user_id, nombre, ganancia, f"Slots 🎰 (+x{multiplicador})")
-            resultado_lines.append(f"{nombre}\n[ {display} ]\n{resultado_txt} → +{ganancia} 𝖿𝗂𝖼𝗁𝖺𝗌\n")
-        else:
-            if user_id in sesion_puntos["jugadores"]:
-                sesion_puntos["jugadores"][user_id]["robux"] -= cantidad
-                sesion_puntos["jugadores"][user_id]["detalle"].append(f"Slots 🎰: -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌")
-            resultado_lines.append(f"{nombre}\n[ {display} ]\n{resultado_txt} → -{cantidad} 𝖿𝗂𝖼𝗁𝖺𝗌\n")
 
     guardar_sesion()
 
-    await context.bot.send_message(
-        chat_id=chat_id,
-        text="\n".join(resultado_lines)
-    )
-
-    del sesion_slots[chat_id]
+    try:
+        await context.bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=msg.message_id,
+            text=texto_final
+        )
+    except Exception:
+        pass
