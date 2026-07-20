@@ -207,14 +207,14 @@ def _resumen_wallet(detalle: list) -> str:
 
     partes = []
     if ganancias:
-        partes.append("𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦:\n\n")
+        partes.append("𝗚𝗔𝗡𝗔𝗡𝗖𝗜𝗔𝗦:\n")
         for concepto, (suma, veces) in ganancias.items():
             etiqueta = f"{concepto} — ({veces} 𝗋𝗈𝗇𝖽𝖺𝗌 𝗀𝖺𝗇𝖺𝖽𝖺𝗌)" if veces > 1 else concepto
             partes.append(f"+ {etiqueta}: {suma}")
     if gastos:
         if partes:
             partes.append("")
-        partes.append("𝗣𝗘𝗥𝗗𝗜𝗗𝗔𝗦:\n\n")
+        partes.append("𝗣𝗘𝗥𝗗𝗜𝗗𝗔𝗦:\n")
         for concepto, (suma, veces) in gastos.items():
             etiqueta = f"{concepto} — ({veces} 𝗋𝗈𝗇𝖽𝖺𝗌 𝗉𝖾𝗋𝖽𝗂𝖽𝖺𝗌)" if veces > 1 else concepto
             partes.append(f"− {etiqueta}: {suma}")
